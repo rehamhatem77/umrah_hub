@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+:root {
+    --app-bg: #ffffff;
+    --app-surface: #ffffff;
+    --app-text: #000000;
+    --app-primary: #0f3d2e; 
+}

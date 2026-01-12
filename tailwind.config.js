@@ -10,10 +10,23 @@ export default {
         './resources/js/**/*.jsx',
     ],
 
-    theme: {
+    // theme: {
+    //     extend: {
+    //         fontFamily: {
+    //             sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+    //         },
+    //     },
+    // },
+
+     theme: {
         extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            colors: {
+                app: {
+                    bg: 'var(--app-bg)',
+                    surface: 'var(--app-surface)',
+                    text: 'var(--app-text)',
+                    primary: 'var(--app-primary)',
+                },
             },
         },
     },
