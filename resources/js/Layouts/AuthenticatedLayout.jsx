@@ -107,7 +107,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
 
                 <div className="border-t p-4 flex-shrink-0 bg-[var(--app-bg)]">
-                    <div className={`flex items-center gap-3 p-3 rounded-lg transition-all ${sidebarOpen ? 'bg-gradient-to-r from-blue-100 to-blue-50' : 'justify-center'}`}>
+                    <div className={`flex items-center gap-3 p-3 rounded-lg transition-all ${sidebarOpen ? 'bg-gradient-to-r from-gray-100 to-gray-50' : 'justify-center p-0 rounded-full'}`}>
                         <div className="w-14 h-14 rounded-full flex items-center justify-center
                                         bg-[var(--app-primary)] text-white font-bold text-xl shadow-md ring-2 ring-white">
                             {user.name.charAt(0)}

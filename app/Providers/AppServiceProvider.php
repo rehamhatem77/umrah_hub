@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Providers;
+
+use App\Models\Offer;
+use App\Observers\OfferObserver;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Vite;
@@ -22,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Offer::observe(OfferObserver::class);
+
 
       Inertia::share([
         'auth' => fn () => [
