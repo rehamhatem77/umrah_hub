@@ -8,4 +8,73 @@
     --app-surface: #ffffff;
     --app-text: #000000;
     --app-primary: #0f3d2e; 
+    --app-font: 0.875rem;
+}
+
+/* Apply the global font size */
+ html,
+    body,
+    button,
+    input,
+    select,
+    textarea,
+    a,
+    span,
+    p,
+    div {
+    font-size: var(--app-font-size);
+    font-family: 'Arial', sans-serif ;
+  
+}
+
+/* Sidebar scrollbar styling */
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #9ca3af #f3f4f6;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #9ca3af;
+    border-radius: 3px;
+}
+
+/* Links hover */
+.sidebar-link {
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+    background-color: #f3f4f6;
+}
+
+/* User card */
+.user-card {
+    font-size: 0.8rem; /* slightly smaller than global font */
+}
+
+/* Logout button */
+.logout-btn {
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+}
+
+/* Mobile overlay */
+.mobile-sidebar-bg {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Hide sidebar toggle button on desktop */
+@media(min-width: 1024px) {
+    .mobile-menu-button {
+        display: none;
+    }
 }
