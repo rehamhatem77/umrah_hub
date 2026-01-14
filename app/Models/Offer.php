@@ -11,12 +11,12 @@ class Offer extends Model
     protected $fillable = [
         'offer_code','title','slug',
         'governorate_id','trip_type_id','company_id',
-        'duration_days','price','airline','hotel','program',
-        'distance_from_kaaba','distance_from_nabawi',
+        'duration_days','price','airline','hotel_id','program',
+        
         'tour_level','is_special_offer','is_featured','is_popular','is_active',
         'start_date','end_date','available_places',
         'whatsapp_number',
-        'seo_title','seo_description','seo_image',
+        'seo_title','seo_description',
     ];
 
     protected $casts = [
@@ -54,6 +54,11 @@ class Offer extends Model
     {
         return $this->belongsToMany(Feature::class);
     }
+    public function hotel()
+{
+    return $this->belongsTo(Hotel::class);
+}
+
 
     /* ================= Query Scopes ================= */
 

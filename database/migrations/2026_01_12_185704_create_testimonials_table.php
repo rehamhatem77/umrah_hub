@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
             $table->string('customer_name');
-            $table->tinyInteger('rating');
+            $table->integer('rating');
             $table->text('comment');
             $table->boolean('is_active')->default(true);
             $table->timestamps();

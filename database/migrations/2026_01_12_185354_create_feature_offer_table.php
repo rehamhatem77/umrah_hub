@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('feature_offer', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('feature_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('offer_id')->constrained()->cascadeOnDelete();
+            
             $table->timestamps();
         });
     }

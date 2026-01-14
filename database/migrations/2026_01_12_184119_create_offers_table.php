@@ -13,49 +13,51 @@ return new class extends Migration
     {
         Schema::create('offers', function (Blueprint $table) {
 
-       $table->id();
+            $table->id();
 
-    $table->string('offer_code')->unique();
-    $table->string('title');
-    $table->string('slug')->unique();
+            $table->string('offer_code')->unique();
+            $table->string('title');
+            $table->string('slug')->unique();
 
-    $table->foreignId('governorate_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('trip_type_id')->constrained()->cascadeOnDelete();
-    $table->foreignId('company_id')->nullable()
-          ->constrained('tour_companies')->nullOnDelete();
+            $table->foreignId('governorate_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('trip_type_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id')->nullable()
+                ->constrained('tour_companies')->nullOnDelete();
 
-    $table->integer('duration_days');
-    $table->decimal('price', 10, 2);
-    $table->string('airline')->nullable();
-    $table->string('hotel')->nullable();
-    $table->text('program');
+            $table->integer('duration_days');
+            $table->decimal('price', 10, 2);
+            $table->string('airline')->nullable();
+            $table->text('program');
 
-    $table->integer('distance_from_kaaba')->nullable(); 
-    $table->integer('distance_from_nabawi')->nullable(); 
+            $table->foreignId('hotel_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
-    $table->enum('tour_level', [
-        'economical',
-        'standard',
-        'luxury',
-        'vip'
-    ])->default('economical');
 
-    $table->boolean('is_special_offer')->default(false);
-    $table->boolean('is_featured')->default(false);
-    $table->boolean('is_popular')->default(false);
-    $table->boolean('is_active')->default(true);
+            $table->enum('tour_level', [
+                'economical',
+                'standard',
+                'luxury',
+                'vip'
+            ])->default('economical');
 
-    $table->date('start_date');
-    $table->date('end_date');
-    $table->integer('available_places');
+            $table->boolean('is_special_offer')->default(false);
+            $table->boolean('is_featured')->default(false);
+            $table->boolean('is_popular')->default(false);
+            $table->boolean('is_active')->default(true);
 
-    $table->string('whatsapp_number');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->integer('available_places');
 
-    $table->string('seo_title')->nullable();
-    $table->text('seo_description')->nullable();
-    $table->string('seo_image')->nullable();
+            $table->string('whatsapp_number');
 
-    $table->timestamps();
+            $table->string('seo_title')->nullable();
+            $table->text('seo_description')->nullable();
+            
+
+            $table->timestamps();
         });
     }
 
@@ -64,7 +66,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        
+
         Schema::dropIfExists('offers');
     }
 };

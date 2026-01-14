@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('whatsapp')->nullable();
             $table->foreignId('governorate_id')->constrained()->cascadeOnDelete();
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

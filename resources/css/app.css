@@ -2,79 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
-
+/* =====================
+   APP THEME VARIABLES
+===================== */
 :root {
     --app-bg: #ffffff;
     --app-surface: #ffffff;
-    --app-text: #000000;
-    --app-primary: #0f3d2e; 
-    --app-font: 0.875rem;
+    --app-text: #0f172a;
+
+    --app-primary: #0f3d2e;
+    --app-primary-soft: #e6f2ee;
+
+    --app-success: #16a34a;
+    --app-danger: #dc2626;
+
+    --app-font-size: 0.875rem;
+    --app-font-family: 'Cairo', 'Arial', sans-serif;
 }
 
-/* Apply the global font size */
- html,
-    body,
-    button,
-    input,
-    select,
-    textarea,
-    a,
-    span,
-    p,
-    div {
+/* =====================
+   GLOBAL STYLES
+===================== */
+html,
+body {
+    font-family: var(--app-font-family);
     font-size: var(--app-font-size);
-    font-family: 'Arial', sans-serif ;
-  
+    color: var(--app-text);
+    background-color: var(--app-bg);
 }
 
-/* Sidebar scrollbar styling */
-.scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: #9ca3af #f3f4f6;
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
 }
 
-.scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-}
+/* =====================
+   TAILWIND COMPONENTS
+===================== */
+@layer components {
 
-.scrollbar-thin::-webkit-scrollbar-track {
-    background: #f3f4f6;
-}
+    /* ---------- Buttons ---------- */
+    .btn-primary {
+        @apply px-5 py-2 rounded-lg text-white font-medium transition shadow;
+        background-color: var(--app-primary);
+    }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #9ca3af;
-    border-radius: 3px;
-}
+    .btn-primary:hover {
+        filter: brightness(0.9);
+    }
 
-/* Links hover */
-.sidebar-link {
-    font-weight: 500;
-    transition: all 0.2s;
-}
+    .btn-danger {
+        @apply px-4 py-2 rounded-lg text-white transition;
+        background-color: var(--app-danger);
+    }
 
-.sidebar-link:hover {
-    background-color: #f3f4f6;
-}
+    .btn-danger:hover {
+        filter: brightness(0.9);
+    }
 
-/* User card */
-.user-card {
-    font-size: 0.8rem; /* slightly smaller than global font */
-}
+    /* ---------- Inputs ---------- */
+    .input {
+        @apply w-full rounded-lg border px-3 py-2 transition focus:outline-none focus:ring-2;
+        border-color: #e5e7eb;
+        background-color: var(--app-surface);
+        color: var(--app-text);
+    }
 
-/* Logout button */
-.logout-btn {
-    border-radius: 9999px;
-    transition: background-color 0.2s;
-}
+    .input:focus {
+        --tw-ring-color: var(--app-primary);
+    }
 
-/* Mobile overlay */
-.mobile-sidebar-bg {
-    background-color: rgba(0, 0, 0, 0.4);
-}
+    /* ---------- Cards ---------- */
+    .card {
+        @apply rounded-xl shadow p-4;
+        background-color: var(--app-surface);
+    }
 
-/* Hide sidebar toggle button on desktop */
-@media(min-width: 1024px) {
-    .mobile-menu-button {
-        display: none;
+    /* ---------- Tables ---------- */
+    .table {
+        @apply w-full text-sm border-collapse;
+    }
+
+    .table thead {
+        background-color: #f8fafc;
+    }
+
+    .table th {
+        @apply px-4 py-3 text-right font-semibold;
+    }
+
+    .table td {
+        @apply px-4 py-3 border-t;
+    }
+
+    /* ---------- Alerts ---------- */
+    .alert-success {
+        @apply border px-4 py-3 rounded-lg;
+        background-color: #ecfdf5;
+        color: var(--app-success);
+        border-color: #bbf7d0;
+    }
+
+    .alert-error {
+        @apply border px-4 py-3 rounded-lg;
+        background-color: #fef2f2;
+        color: var(--app-danger);
+        border-color: #fecaca;
+    }
+
+    /* ---------- Modal ---------- */
+    .modal-backdrop {
+        @apply fixed inset-0 bg-black/40 flex items-center justify-center z-50;
+    }
+
+    .modal {
+        @apply rounded-xl shadow-lg w-full max-w-md;
+        background-color: var(--app-surface);
+    }
+
+    /* ---------- Sidebar Active ---------- */
+    .sidebar-active {
+        background-color: var(--app-primary);
+        color: white;
     }
 }

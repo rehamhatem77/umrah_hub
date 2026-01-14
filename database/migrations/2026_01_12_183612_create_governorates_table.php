@@ -16,8 +16,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('seo_title')->nullable();
-            $table->text('seo_description')->nullable();
             $table->timestamps();
         });
     }
