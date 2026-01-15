@@ -3,21 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Hotel extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
-        'name',
-        'slug',
-        'city',
-        'distance_from_kaaba',
-        'distance_from_nabawi',
-        'stars',
-        'features',
-        'address_location',
-        'is_active',
-    ];
+    'name',
+    'slug',
+    'city',
+    'distance_from_kaaba',
+    'distance_from_nabawi',
+    'stars',
+    'address_location',
+    'features',
+    'is_active',
+];
+protected $dates = ['deleted_at']; 
 
     protected static function booted()
     {
@@ -35,7 +38,7 @@ class Hotel extends Model
 
     public function getDistanceAttribute()
     {
-        return $this->city === 'makkah'
+        return $this->city === 'مكة'
             ? $this->distance_from_kaaba
             : $this->distance_from_nabawi;
     }

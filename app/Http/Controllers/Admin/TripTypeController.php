@@ -6,13 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\TripType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class TripTypeController extends Controller
 {
-     public function index()
+     public function index( Request $request)
     {
-        $tripTypes = TripType::latest()->paginate(20);
-        return view('admin.trip-types.index', compact('tripTypes'));
+
+    $query = TripType::query();
+    if ($request->has('search') && $request->search) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+        $tripTypes = $query->latest()->paginate(20)->withQueryString();
+      return Inertia::render('Admin/TripTypes/Index', [
+            'tripTypes' => $tripTypes,
+            'filters' => [
+            'search' => $request->search ?? '',
+        ],
+        ]);
     }
 
     public function store(Request $request)
@@ -21,7 +32,7 @@ class TripTypeController extends Controller
         $data['slug'] = Str::slug($data['name']);
 
         TripType::create($data);
-        return back()->with('success','Trip type added');
+        return back()->with('success','تم إضافة نوع الرحلة');
     }
 
     public function update(Request $request, TripType $tripType)
@@ -30,12 +41,12 @@ class TripTypeController extends Controller
         $data['slug'] = Str::slug($data['name']);
 
         $tripType->update($data);
-        return back()->with('success','Trip type updated');
+        return back()->with('success','تم تحديث نوع الرحلة');
     }
 
     public function destroy(TripType $tripType)
     {
         $tripType->delete();
-        return back()->with('success','Trip type deleted');
+        return back()->with('success','تم حذف نوع الرحلة');
     }
 }

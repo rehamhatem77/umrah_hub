@@ -21,13 +21,11 @@ import { FaRegBuilding, FaWhatsapp } from 'react-icons/fa6';
 import AddCompanyModal from './PageComponents/AddCompanyModal';
 import EditCompanyModal from './PageComponents/EditCompanyModal';
 
-/* Animations */
 const pageMotion = { hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } };
 const rowMotion = { hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -3 } };
 
 export default function Index({ companies, governorates, filters }) {
 
-    /* Modals */
     const [addModal, setAddModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -35,7 +33,6 @@ export default function Index({ companies, governorates, filters }) {
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [search, setSearch] = useState(filters.search || '');
 
-    /* Form */
     const form = useForm({
         id: null,
         name: '',
@@ -78,7 +75,6 @@ export default function Index({ companies, governorates, filters }) {
         placeholder: (base) => ({ ...base, color: '#9ca3af' }),
     };
 
-    /* Search */
     const handleSearch = (e) => {
         setSearch(e.target.value);
         router.get(route('tour-companies.index'), { search: e.target.value }, { preserveState: true, replace: true });
@@ -90,7 +86,6 @@ export default function Index({ companies, governorates, filters }) {
         setAddModal(true);
     };
 
-    /* ADD COMPANY */
     const submit = (e) => {
         e.preventDefault();
 
@@ -102,7 +97,6 @@ export default function Index({ companies, governorates, filters }) {
         });
     };
 
-    /* EDIT COMPANY */
     const openEdit = (company) => {
         form.clearErrors();
         setSelectedCompany(company);
@@ -130,7 +124,6 @@ export default function Index({ companies, governorates, filters }) {
     };
 
 
-    /* DELETE COMPANY */
     const openDelete = (company) => {
         if (company.offers_count > 0) {
             toast.error('لا يمكن حذف شركة مرتبطة بعروض');

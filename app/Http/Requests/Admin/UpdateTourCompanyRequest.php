@@ -20,4 +20,12 @@ class UpdateTourCompanyRequest extends FormRequest
             'governorate_id' => 'required|exists:governorates,id',
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'name.required'           => 'اسم الشركة مطلوب',
+            'governorate_id.required' => 'المحافظة مطلوبة',
+            'governorate_id.exists'   => 'المحافظة غير صحيحة',
+        ];
+    }
 }

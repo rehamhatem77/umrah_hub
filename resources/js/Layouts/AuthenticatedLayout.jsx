@@ -43,10 +43,10 @@ export default function AuthenticatedLayout({ children }) {
         { name: 'الرحلات الأكثر طلبا ', icon: <FiTrendingUp />, path: '#' },
         { name: 'المحافظات', icon: <FaMapLocationDot />, path: '/admin/governorates' },
         { name: 'شركات السياحة', icon: <FaRegBuilding />, path: '/admin/tour-companies' },
-        { name: 'الفنادق', icon: <MdOutlineHotel />, path: '#' },
-        { name: 'أنواع الرحلات ', icon: <MdOutlineCategory />, path: '#' },
-        { name: 'التقييمات', icon: <FiStar />, path: '#' },
-        { name: 'المستخدمون', icon: <FiUsers />, path: '#' },
+        { name: 'الفنادق', icon: <MdOutlineHotel />, path: '/admin/hotels' },
+        // { name: 'أنواع الرحلات ', icon: <MdOutlineCategory />, path: '/admin/trip-types' },
+        { name: 'التقييمات', icon: <FiStar />, path: '/admin/testimonials' },
+        // { name: 'المستخدمون', icon: <FiUsers />, path: '#' },
         { name: 'الإعدادات', icon: <FiSettings />, path: '#' },
     ];
 
@@ -81,7 +81,6 @@ export default function AuthenticatedLayout({ children }) {
     return (
         <div className="min-h-screen flex bg-gray-100" dir="rtl">
 
-            {/* Sidebar overlay for mobile */}
             {sidebarOpen && isMobile && (
                 <div
                     className="fixed inset-0 z-30 bg-black/30"
@@ -90,7 +89,6 @@ export default function AuthenticatedLayout({ children }) {
             )}
 
 
-            {/* Sidebar */}
             <aside
                 className={`fixed lg:relative z-40 bg-[var(--app-bg)] border-r flex-shrink-0 transition-all duration-300
                     ${isMobile
@@ -111,8 +109,7 @@ export default function AuthenticatedLayout({ children }) {
                 />
             </aside>
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col lg:ml-0">
+=            <div className="flex-1 flex flex-col lg:ml-0">
                 <Header
                     user={user}
                     sidebarOpen={sidebarOpen}

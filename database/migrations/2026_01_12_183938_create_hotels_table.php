@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('slug')->unique();
-            $table->enum('city', ['makkah', 'madinah']);
+            $table->enum('city', ['مكة', 'المدينة المنورة']);
             $table->string('address_location')->nullable();
 
             $table->integer('distance_from_kaaba')->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('features')->nullable(); 
 
             $table->boolean('is_active')->default(true);
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

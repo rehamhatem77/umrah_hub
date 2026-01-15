@@ -39,13 +39,13 @@ class TourCompanyController extends Controller
     public function store(StoreTourCompanyRequest $request)
     {
         TourCompany::create($request->validated());
-        return back();
+        return back()->with('success', 'تم إضافة شركة جديدة بنجاح');
     }
 
     public function update(UpdateTourCompanyRequest $request, TourCompany $tourCompany)
     {
         $tourCompany->update($request->validated());
-        return back();
+        return back()->with('success', 'تم تحديث بيانات الشركة بنجاح');
     }
 
     // public function destroy(TourCompany $tourCompany)
@@ -63,7 +63,6 @@ class TourCompanyController extends Controller
     public function destroy(Request $request, TourCompany $tourCompany)
 {
     if ($request->query('force') === '1') {
-        // Hard delete
         $tourCompany->forceDelete();
         return back()->with('success', 'تم حذف الشركة نهائياً');
     }

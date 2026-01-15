@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronLeft, FiTrash2, FiAlertTriangle, FiMapPin, FiPhone, FiSearch } from 'react-icons/fi';
 import { FaRegBuilding, FaWhatsapp, FaWindowRestore } from 'react-icons/fa6';
 import { MdRestore } from "react-icons/md";
+import toast from 'react-hot-toast';
 
 const pageMotion = { hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } };
 const rowMotion = { hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -3 } };
@@ -29,7 +30,9 @@ export default function Trash({ companies, filters }) {
     }, [debouncedSearch]);
     const restore = (company) => {
         router.post(route('tour-companies.restore', company.id), {}, {
-            onSuccess: () => router.reload(),
+            onSuccess: () => {
+                toast.success('تم استعادة الشركة بنجاح');
+                router.reload()},
         });
     };
 
@@ -45,7 +48,11 @@ export default function Trash({ companies, filters }) {
 
     const destroy = () => {
         router.delete(route('tour-companies.destroy', selectedCompany.id) + '?force=1', {
-            onSuccess: () => setDeleteModal(false),
+            onSuccess: () => {
+                
+                toast.success('تم الحذف بنجاح');
+                setDeleteModal(false)},
+            onError: () => toast.error('حدث خطأ'),
         });
     };
 

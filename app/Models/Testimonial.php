@@ -12,4 +12,6 @@ class Testimonial extends Model
         'comment',
         'is_active',
     ];
+    protected $dates = ['deleted_at'];
+    
 }

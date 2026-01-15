@@ -72,7 +72,7 @@ $query = Governorate::query();
 
         Governorate::create($data);
 
-        return back();
+        return back()->with('success','تم إضافة المحافظة بنجاح');
     }
 
     public function update(Request $request, Governorate $governorate)
