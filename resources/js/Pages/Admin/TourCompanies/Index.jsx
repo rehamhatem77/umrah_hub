@@ -117,9 +117,13 @@ export default function Index({ companies, governorates, filters }) {
 
         form.put(route('tour-companies.update', form.data.id), {
             onSuccess: () => {
+                toast.success('تم تحديث الشركة بنجاح');
                 setEditModal(false);
                 form.reset();
             },
+            onError: () => {
+                toast.error('حدث خطأ أثناء تحديث الشركة. يرجى المحاولة مرة أخرى.');
+            }
         });
     };
 
@@ -139,6 +143,9 @@ export default function Index({ companies, governorates, filters }) {
                 toast.success('تم حذف الشركة بنجاح');
                 setDeleteModal(false);
             },
+            onError: () => {
+                toast.error('حدث خطأ أثناء حذف الشركة. يرجى المحاولة مرة أخرى.');
+            }
         });
     };
 

@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Testimonial extends Model
 {
+    use SoftDeletes;
      protected $fillable = [
         'customer_name',
         'rating',
         'comment',
         'is_active',
     ];
-    protected $dates = ['deleted_at'];
     
 }

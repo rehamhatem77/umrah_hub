@@ -19,10 +19,16 @@ class HotelRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-        public function rules(): array
+public function rules(): array
 {
     return [
-        'name' => ['required', 'string', 'max:255'],
+        'name' => [
+            'required',
+            'string',
+            'max:255',
+            'unique:hotels,name'
+        ],
+
         'city' => ['required', 'in:مكة,المدينة المنورة'],
 
         'distance_from_kaaba' => [
@@ -45,11 +51,15 @@ class HotelRequest extends FormRequest
 }
 
 
+
     public function messages(): array
     {
         return [
             'name.required' => 'اسم الفندق مطلوب',
+            'name.unique' => 'اسم الفندق مستخدم بالفعل',
             'city.required' => 'المدينة مطلوبة',
+            'city.in' => 'المدينة المختارة غير صالحة',
+            'slug.unique' => 'هذا الرابط التعريفي مستخدم بالفعل',
 
             'distance_from_kaaba.required_if' =>
                 'المسافة من الكعبة مطلوبة عند اختيار مكة',

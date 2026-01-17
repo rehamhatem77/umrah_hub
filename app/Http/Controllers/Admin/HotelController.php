@@ -55,31 +55,37 @@ class HotelController extends Controller
         return Inertia::render('Admin/Hotels/Create');
     }
 
-    public function store(HotelRequest $request)
-    {
-        $data = $request->validated();
+   public function store(HotelRequest $request)
+{
+    $data = $request->validated();
 
-        $data['slug'] = $this->generateUniqueSlug($data['name']);
 
-        Hotel::create($data);
+    $data['slug'] = Str::slug($data['name']);
 
-        return redirect()->route('hotels.create')
-            ->with('success', 'تم إضافة الفندق بنجاح');
+    if (Hotel::withTrashed()->where('name', $data['name'])->exists()) {
+        return back()->with('error', 'يوجد فندق بنفس الاسم، يرجى اختيار اسم مختلف');
     }
+
+    Hotel::create($data);
+
+    return redirect()->route('hotels.create')
+        ->with('success', 'تم إضافة الفندق بنجاح');
+}
+
     private function generateUniqueSlug(string $name): string
     {
         $slug = Str::slug($name);
+        // $originalSlug = $slug;
+        // $counter = 1;
 
-        $originalSlug = $slug;
-        $counter = 1;
-
-        while (Hotel::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
+        // while (Hotel::withTrashed()->where('slug', $slug)->exists()) {
+        //     $slug = $originalSlug . '-' . $counter;
+        //     $counter++;
+        // }
 
         return $slug;
     }
+
 
 
 

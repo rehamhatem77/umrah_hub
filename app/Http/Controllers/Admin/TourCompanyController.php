@@ -60,15 +60,16 @@ class TourCompanyController extends Controller
     //     return back();
     // }
 
-    public function destroy(Request $request, TourCompany $tourCompany)
+    public function destroy(Request $request, $id)
 {
-    if ($request->query('force') === '1') {
-        $tourCompany->forceDelete();
+     $company = TourCompany::withTrashed()->findOrFail($id);
+    if ($request->boolean('force')) {
+        $company->forceDelete();
         return back()->with('success', 'تم حذف الشركة نهائياً');
     }
 
     // Soft delete
-    $tourCompany->delete();
+    $company->delete();
     return back()->with('success', 'تم حذف الشركة بنجاح');
 }
 

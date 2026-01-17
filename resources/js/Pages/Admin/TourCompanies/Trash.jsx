@@ -80,7 +80,7 @@ export default function Trash({ companies, filters }) {
                 </div>
 
                 <h1 className="text-xl font-bold flex items-center gap-2">
-                    <FiTrash2 className="text-[var(--app-primary)] text-2xl" /> شركات محذوفة
+                    <FiTrash2 className="text-[var(--app-primary)] text-2xl" /> سلة محذوفات شركات السياحة 
                 </h1>
                 <div className="relative flex items-center gap-2">
                     <FiSearch className="text-gray-400" />

@@ -24,6 +24,11 @@ class TestimonialController extends Controller
             ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Admin/Testimonials/Create');
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -34,7 +39,14 @@ class TestimonialController extends Controller
         ]);
 
         Testimonial::create($data);
-        return redirect()->route('admin.testimonials.create')->with('success','تم إضافة التقييم');
+        return redirect()->route('testimonials.create')->with('success','تم إضافة التقييم');
+    }
+
+    public function edit(Testimonial $testimonial)
+    {
+        return Inertia::render('Admin/Testimonials/Edit', [
+            'testimonial' => $testimonial,
+        ]);
     }
 
     public function update(Request $request, Testimonial $testimonial)
@@ -46,19 +58,17 @@ class TestimonialController extends Controller
             'customer_name'=>'required',
         ]));
 
-        return redirect()->route('admin.testimonials.index')->with('success','تم تحديث التقييم');
+        return redirect()->route('testimonials.index')->with('success','تم تحديث التقييم');
     }
 
-    public function destroy(Testimonial $testimonial, Request $request)
+    public function destroy($id, Request $request)
     {
+        $testimonial = Testimonial::withTrashed()->findOrFail($id);
+       if ($request->boolean('force')) {
 
-   
-       if ($request->query('force') === '1') {
         $testimonial->forceDelete();
         return back()->with('success', 'تم حذف التقييم نهائياً');
     }
-
-    // Soft delete
     $testimonial->delete();
     return back()->with('success', 'تم حذف التقييم بنجاح');
     }
@@ -74,16 +84,16 @@ class TestimonialController extends Controller
 
     public function trash(Request $request)
 {
-    $query = Testimonial::onlyTrashed()->with('governorate');
+    $query = Testimonial::onlyTrashed();
 
     if ($request->search) {
-        $query->where('name', 'like', '%' . $request->search . '%');
+        $query->where('customer_name', 'like', '%' . $request->search . '%');
     }
 
     $testimonials = $query->latest()->paginate(10)->withQueryString();
 
     return Inertia::render('Admin/Testimonials/Trash', [
-        'testimonials' => $testimonials->toArray(), 
+        'testimonials' => $testimonials, 
         'filters' => [
             'search' => $request->search ?? '',
         ],

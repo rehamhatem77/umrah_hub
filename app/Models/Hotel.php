@@ -22,12 +22,7 @@ class Hotel extends Model
 ];
 protected $dates = ['deleted_at']; 
 
-    protected static function booted()
-    {
-        static::creating(function ($hotel) {
-            $hotel->slug = Str::slug($hotel->name);
-        });
-    }
+ 
 
 
     public function offers()

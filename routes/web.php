@@ -88,13 +88,14 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
         Route::get('/testimonials/create', [TestimonialController::class, 'create'])->name('testimonials.create');
         Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
         Route::get('/testimonials/{testimonial}/edit', [TestimonialController::class, 'edit'])->name('testimonials.edit');
-        Route::put('/testimonials/{testimonial}', [TestimonialController::class, 'update'])->name('testimonials.update');
+        Route::post('/testimonials/{testimonial}', [TestimonialController::class, 'update'])->name('testimonials.update');
         Route::delete('/testimonials/{testimonial}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy');
 
         Route::get('/testimonials/trash', [TestimonialController::class, 'trash'])->name('testimonials.trash');
         Route::post('/testimonials/{id}/restore', [TestimonialController::class, 'restore'])->name('testimonials.restore');
 
-        Route::get('/testimonials/{testimonial}', [TestimonialController::class, 'show'])->name('testimonials.show');
+
+        Route::get('/testimonials/{id}', [TestimonialController::class, 'show'])->name('testimonials.show');
     });
 });
 

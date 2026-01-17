@@ -36,20 +36,16 @@ const StarRating = ({ value, onChange }) => (
     </div>
 );
 
-export default function Create() {
+export default function Edit({ testimonial }) {
     const form = useForm({
-        Customer_name: '',
-        rating: null,
-        comment: '',
-        is_active: true,
+        customer_name: testimonial?.customer_name || '',
+        rating: testimonial?.rating || null,
+        comment: testimonial?.comment || '',
+        is_active: testimonial?.is_active || true,
     });
 
     const [frontendErrors, setFrontendErrors] = useState({});
 
-    // const cityOptions = [
-    //     { value: 'مكة', label: 'مكة المكرمة' },
-    //     { value: 'المدينة المنورة', label: 'المدينة المنورة' },
-    // ];
 
     const selectStyles = {
         control: (base, state) => ({
@@ -73,7 +69,8 @@ export default function Create() {
     const validate = () => {
         const errors = {};
 
-        if (!form.data.Customer_name.trim()) errors.Customer_name = 'اسم العميل مطلوب';
+        if (!form.data.customer_name.trim()) errors.customer_name = 'اسم العميل مطلوب';
+        if (!form.data.rating) errors.rating = 'تقييم العميل مطلوب';
         if (!form.data.comment.trim()) errors.comment = ' تعليق العميل مطلوب';
 
         setFrontendErrors(errors);
@@ -86,20 +83,20 @@ export default function Create() {
         if (!validate()) return;
 
         const submitData = {
-            ...form.data,
-            // distance_from_kaaba: form.data.distance_from_kaaba ? Number(form.data.distance_from_kaaba) : null,
-            // distance_from_nabawi: form.data.distance_from_nabawi ? Number(form.data.distance_from_nabawi) : null,
+            customer_name: form.data.customer_name,
+            rating: form.data.rating,
+            comment: form.data.comment,
+            is_active: form.data.is_active,
         };
 
-        form.post(route('testimonials.store'), {
+        form.post(route('testimonials.update', testimonial), {
             data: submitData,
             onSuccess: () => {
-                toast.success('تم إضافة تقييم العميل بنجاح');
-                form.reset();
-                router.get(route('testimonials.create'));
+                toast.success('تم تحديث تقييم العميل بنجاح');
+                // router.get(route('testimonials.index'));
             },
             onError: () => {
-                toast.error('حدثت أخطاء في الإدخال. يرجى التحقق والمحاولة مرة أخرى.');
+                toast.error('حدثت أخطاء في التعديل. يرجى التحقق والمحاولة مرة أخرى.');
             },
         });
     };
@@ -113,12 +110,12 @@ export default function Create() {
                     <FiChevronLeft />
                     <button onClick={() => router.get(route('testimonials.index'))} className="hover:underline">التقييمات</button>
                     <FiChevronLeft />
-                    <span className="text-[var(--app-primary)] font-medium">إضافة تقييم</span>
+                    <span className="text-[var(--app-primary)] font-medium">تعديل تقييم</span>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <FaHotel className="text-2xl text-[var(--app-primary)]" />
-                    <h1 className="text-xl font-bold">إضافة تقييم جديد</h1>
+                    <h1 className="text-xl font-bold">تعديل تقييم العميل</h1>
                 </div>
 
                 <form onSubmit={submit} className="card p-6 space-y-6 w-full">
@@ -129,31 +126,14 @@ export default function Create() {
 
                             className={`input w-full ${frontendErrors.Customer_name ? 'border-red-500  focus:border-red-500 focus:ring-red-500' : 'focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] '}`}
                             placeholder="ادخل هنا اسم العميل"
-                            value={form.data.Customer_name}
+                            value={form.data.customer_name}
                             onChange={e => {
-                                form.setData('Customer_name', e.target.value);
-                                setFrontendErrors(prev => ({ ...prev, Customer_name: null }));
+                                form.setData('customer_name', e.target.value);
+                                setFrontendErrors(prev => ({ ...prev, customer_name: null }));
                             }}
                         />
-                        <InputError message={frontendErrors.Customer_name || form.errors.Customer_name} />
+                        <InputError message={frontendErrors.customer_name || form.errors.customer_name} />
                     </div>
-
-                    {/* <div>
-                        <label className="label flex items-center gap-1">
-                            <FiMapPin /> المدينة
-                        </label>
-                        <Select
-                            options={cityOptions}
-                            value={cityOptions.find(c => c.value === form.data.city)}
-                            onChange={handleCityChange}
-                            styles={selectStyles}
-                            placeholder="اختر المدينة"
-                            isClearable
-                            isSearchable={false}
-                        />
-                        <InputError message={frontendErrors.city || form.errors.city} />
-                    </div> */}
-
                     <div>
                         <label className="label flex items-center gap-1">
                             <FaStar /> التقييم
@@ -191,7 +171,7 @@ export default function Create() {
                             إلغاء
                         </button>
                         <button type="submit" className="btn-primary flex items-center gap-2" disabled={form.processing}>
-                            <FiSave /> حفظ
+                            <FiSave /> حفظ التعديلات
                         </button>
                     </div>
 

@@ -1,12 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { useForm, router } from '@inertiajs/react';
+import { useForm, router, usePage } from '@inertiajs/react';
 import Select from 'react-select';
 import InputError from '@/Components/InputError';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { FiChevronLeft, FiMapPin, FiSave } from 'react-icons/fi';
 import { FaStar, FaHotel } from 'react-icons/fa6';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const pageMotion = { hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } };
 
@@ -47,6 +47,7 @@ export default function Create() {
         features: '',
         is_active: true,
     });
+    const flash = usePage().props.flash;
 
     const [frontendErrors, setFrontendErrors] = useState({});
 
@@ -116,11 +117,21 @@ export default function Create() {
                 form.reset();
                 router.get(route('hotels.create'));
             },
-            onError: () => {
-                toast.error('حدثت أخطاء في الإدخال. يرجى التحقق والمحاولة مرة أخرى.');
+            onError: (e) => {
+                toast.error(e.message || 'حدثت أخطاء في الإدخال. يرجى التحقق والمحاولة مرة أخرى.');
+
             },
         });
     };
+    useEffect(() => {
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+    }, [flash]);
+
 
     return (
         <AuthenticatedLayout>
@@ -138,6 +149,11 @@ export default function Create() {
                     <FaHotel className="text-2xl text-[var(--app-primary)]" />
                     <h1 className="text-xl font-bold">إضافة فندق جديد</h1>
                 </div>
+                {flash?.error && (
+                    <div className="mb-4 rounded-lg bg-red-100 border border-red-300 px-4 py-3 text-red-700">
+                        {flash.error}
+                    </div>
+                )}
 
                 <form onSubmit={submit} className="card p-6 space-y-6 w-full">
 
