@@ -16,6 +16,7 @@ import {
     FiSearch
 } from 'react-icons/fi';
 import { FaMapLocationDot } from 'react-icons/fa6';
+import { MdOutlineCategory } from 'react-icons/md';
 
 const pageMotion = { hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
 const cardMotion = { hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0, transition: { duration: 0.25 } } };
@@ -74,7 +75,9 @@ export default function Index({ tripTypes, filters }) {
         if (selectedTripTypes.includes(form.data.name)) { toast.error('هذا النوع موجود مسبقًا'); return; }
 
         form.post(route('trip-types.store'), {
-            onSuccess: () => { toast.success('تمت إضافة نوع الرحلة بنجاح'); form.reset(); setAddSelect(null); setFrontendErrors({}); },
+            onSuccess: () => { 
+                // toast.success('تمت إضافة نوع الرحلة بنجاح'); 
+                form.reset(); setAddSelect(null); setFrontendErrors({}); },
             onError: () => toast.error('حدث خطأ أثناء الإضافة'),
         });
     };
@@ -92,17 +95,27 @@ export default function Index({ tripTypes, filters }) {
             toast.error('هذا النوع موجود مسبقًا'); return;
         }
         form.put(route('trip-types.update', form.data.id), {
-            onSuccess: () => { toast.success('تم تحديث نوع الرحلة بنجاح'); setEditModal(false); setEditSelect(null); form.reset(); },
+            onSuccess: () => {
+                
+                // toast.success('تم تحديث نوع الرحلة بنجاح');
+                 setEditModal(false); setEditSelect(null); form.reset(); },
             onError: () => toast.error('حدث خطأ أثناء التحديث'),
         });
     };
 
     const openDelete = (id) => { setSelectedId(id); setDeleteModal(true); };
     const destroy = () => {
+        if (filters.offers_count[selectedId].offers_count > 0) {
+            toast.error('لا يمكن حذف نوع الرحلة مرتبط بعروض');
+            return;
+        }
+        else{
         router.delete(route('trip-types.destroy', selectedId), {
-            onSuccess: () => { toast.success('تم حذف نوع الرحلة بنجاح'); setDeleteModal(false); },
+            onSuccess: () => { 
+                // toast.success('تم حذف نوع الرحلة بنجاح');
+                 setDeleteModal(false); },
             onError: () => toast.error('فشل حذف نوع الرحلة'),
-        });
+        });}
     };
 
     const handleSearch = (e) => {
@@ -112,20 +125,20 @@ export default function Index({ tripTypes, filters }) {
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="space-y-3 px-2 sm:px-4">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
-                {/* BREADCRUMBS */}
+             
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <span>لوحة التحكم</span>
                     <FiChevronLeft />
                     <span className="text-[var(--app-primary)] font-medium">أنواع الرحلات</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center  gap-3">
-                    <FaMapLocationDot className="text-2xl text-[var(--app-primary)]" />
+                    <MdOutlineCategory className="text-2xl text-[var(--app-primary)]" />
 
                     <h1 className="text-lg sm:text-xl font-bold">إدارة أنواع الرحلات</h1>
                 </div>
-                {/* ADD */}
+                
                 <motion.div variants={cardMotion} className="card p-3">
                     <h2 className="text-md font-semibold mb-2 flex items-center gap-2"><FiPlus /> إضافة نوع رحلة</h2>
                     <form onSubmit={submit} className="flex gap-2 items-start">
@@ -145,7 +158,7 @@ export default function Index({ tripTypes, filters }) {
                     </form>
                 </motion.div>
 
-                {/* SEARCH */}
+              
                 <div className="flex items-center gap-2">
                     <FiSearch className="text-gray-400" />
                     <input
@@ -157,7 +170,7 @@ export default function Index({ tripTypes, filters }) {
                     />
                 </div>
 
-                {/* TABLE */}
+           
                 <div className="card p-0 overflow-hidden">
                     <table className="table text-sm">
                         <thead>
@@ -173,7 +186,7 @@ export default function Index({ tripTypes, filters }) {
                                     tripTypes.data.map(tripType => (
                                         <motion.tr key={tripType.id} variants={rowMotion} initial="hidden" animate="visible" exit="exit" whileHover={{ scale: 1.003 }} transition={{ duration: 0.15 }}>
                                             <td>{tripType.id}</td>
-                                            <td className="flex items-center gap-2 font-medium"><FiMapPin className="text-[var(--app-primary)]" /> {tripType.name}</td>
+                                            <td className="flex items-center gap-2 font-medium"><MdOutlineCategory className="text-[var(--app-primary)]" /> {tripType.name}</td>
                                             <td className="text-center">
                                                 <div className="flex justify-center gap-3">
                                                     <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.9 }} onClick={() => openEdit(tripType)} className="text-[var(--app-primary)]"><FiEdit2 size={20} /></motion.button>

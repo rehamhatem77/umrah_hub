@@ -15,11 +15,15 @@ import {
     FiChevronLeft,
     FiSearch,
     FiMapPin,
-    FiPhone
+    FiPhone,
+    FiEye,
+    FiHash,
+    FiMail
 } from 'react-icons/fi';
-import { FaRegBuilding, FaWhatsapp } from 'react-icons/fa6';
+import { FaMapLocationDot, FaRegBuilding, FaWhatsapp } from 'react-icons/fa6';
 import AddCompanyModal from './PageComponents/AddCompanyModal';
 import EditCompanyModal from './PageComponents/EditCompanyModal';
+import InfoItem from '@/Components/InfoItem';
 
 const pageMotion = { hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } };
 const rowMotion = { hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -3 } };
@@ -29,16 +33,21 @@ export default function Index({ companies, governorates, filters }) {
     const [addModal, setAddModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
 
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [search, setSearch] = useState(filters.search || '');
+
 
     const form = useForm({
         id: null,
         name: '',
         phone: '',
         whatsapp: '',
-        governorate_id: null,
+        governorate_ids: [],
+        email: '',
+        company_code: '',
     });
 
     const governorateOptions = governorates.map(g => ({
@@ -97,6 +106,18 @@ export default function Index({ companies, governorates, filters }) {
         });
     };
 
+    // const openShow = async (id) => {
+    //     const response = await fetch(route('tour-companies.show', id));
+    //     const data = await response.json();
+    //     setSelectedCompany(data);
+    //     setShowModal(true);
+    // };
+    const openShow = (company) => {
+        setSelectedCompany(company);
+        setShowModal(true);
+    };
+
+
     const openEdit = (company) => {
         form.clearErrors();
         setSelectedCompany(company);
@@ -106,7 +127,9 @@ export default function Index({ companies, governorates, filters }) {
             name: company.name ?? '',
             phone: company.phone ?? '',
             whatsapp: company.whatsapp ?? '',
-            governorate_id: company.governorate_id,
+            governorate_ids: company.governorate_ids || [],
+            email: company.email || '',
+            company_code: company.company_code || '',
         });
 
         setEditModal(true);
@@ -117,7 +140,7 @@ export default function Index({ companies, governorates, filters }) {
 
         form.put(route('tour-companies.update', form.data.id), {
             onSuccess: () => {
-                toast.success('تم تحديث الشركة بنجاح');
+                // toast.success('تم تحديث الشركة بنجاح');
                 setEditModal(false);
                 form.reset();
             },
@@ -129,18 +152,19 @@ export default function Index({ companies, governorates, filters }) {
 
 
     const openDelete = (company) => {
-        if (company.offers_count > 0) {
-            toast.error('لا يمكن حذف شركة مرتبطة بعروض');
-            return;
-        }
+
         setSelectedCompany(company);
         setDeleteModal(true);
     };
 
     const destroy = () => {
+        //  if (selectedCompany.offers_count > 0) {
+        //     toast.error('لا يمكن حذف شركة مرتبطة بعروض');
+        //     return;
+        // }
         router.delete(route('tour-companies.destroy', selectedCompany.id), {
             onSuccess: () => {
-                toast.success('تم حذف الشركة بنجاح');
+                // toast.success('تم حذف الشركة بنجاح');
                 setDeleteModal(false);
             },
             onError: () => {
@@ -151,13 +175,13 @@ export default function Index({ companies, governorates, filters }) {
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="space-y-4 px-2 sm:px-4">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
-                
+
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <button onClick={() => router.get(route('dashboard'))} className="hover:underline">لوحة التحكم</button>
                     <FiChevronLeft />
-                   
+
                     <span className="text-[var(--app-primary)] font-medium"> شركات السياحة</span>
                 </div>
 
@@ -196,7 +220,7 @@ export default function Index({ companies, governorates, filters }) {
                     <table className="w-full text-sm border-collapse">
                         <thead className="bg-gray-50">
                             <tr className="text-gray-600">
-                                <th className="px-4 py-3 text-right">#</th>
+                                <th className="px-4 py-3 text-right">الكود</th>
                                 <th className="px-4 py-3 text-right">الشركة</th>
                                 <th className="px-4 py-3 text-right">المحافظة</th>
                                 <th className="px-4 py-3 text-right">التواصل</th>
@@ -216,7 +240,7 @@ export default function Index({ companies, governorates, filters }) {
                                         whileHover={{ backgroundColor: '#f9fafb' }}
                                         className="border-t"
                                     >
-                                        <td className="px-4 py-3 text-gray-500">{company.id}</td>
+                                        <td className="px-4 py-3 text-gray-500">{company.company_code}</td>
                                         <td className="px-4 py-3 font-medium flex items-center gap-2">
                                             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--app-primary)]/10 text-[var(--app-primary)]">
                                                 <FaRegBuilding size={16} />
@@ -226,7 +250,11 @@ export default function Index({ companies, governorates, filters }) {
                                         <td className="px-4 py-3">
                                             <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-1 text-xs text-blue-700">
                                                 <FiMapPin />
-                                                {company.governorate.name}
+                                                {company.governorate_ids.map(id => {
+                                                    const gov = governorates.find(g => g.id === id);
+                                                    return gov ? gov.name : '';
+                                                }).join(' , ')}
+
                                             </span>
                                         </td>
                                         <td className="space-y-1 text-xs">
@@ -242,9 +270,16 @@ export default function Index({ companies, governorates, filters }) {
                                                     <span>{company.whatsapp}</span>
                                                 </div>
                                             )}
+                                            {!company.phone && !company.whatsapp && (<span className="text-gray-400">لا توجد بيانات تواصل</span>)}
                                         </td>
                                         <td className="px-4 py-3 text-center">
                                             <div className="flex justify-center gap-3">
+                                                <button
+                                                    onClick={() => openShow(company)}
+                                                    className="p-1.5 rounded-full text-[var(--app-primary)] hover:bg-[var(--app-primary)]/10 transition"
+                                                >
+                                                    <FiEye size={18} />
+                                                </button>
                                                 <button
                                                     onClick={() => openEdit(company)}
                                                     className="p-1.5 rounded-full text-[var(--app-primary)] hover:bg-[var(--app-primary)]/10 transition"
@@ -330,6 +365,91 @@ export default function Index({ companies, governorates, filters }) {
                         </div>
                     </div>
                 </Modal>
+
+                <Modal
+                    show={showModal}
+                    onClose={() => setShowModal(false)}
+                    title="تفاصيل الشركة"
+                    className="max-w-4xl w-full"
+                    contentClassName="max-h-[80vh] overflow-y-auto p-6 space-y-6"
+                >
+                    {selectedCompany && (
+                        <div className="grid gap-4 sm:grid-cols-2 text-sm">
+
+                            <InfoItem
+                                icon={<FiHash />}
+                                label="كود الشركة"
+                                value={selectedCompany.company_code}
+                                iconColor="text-indigo-500"
+                            />
+
+                            <InfoItem
+                                icon={<FaRegBuilding />}
+                                label="اسم الشركة"
+                                value={selectedCompany.name}
+                                iconColor="text-[var(--app-primary)]"
+                            />
+
+                            {!governorates && (
+                                <InfoItem
+                                    icon={<FiAlertTriangle />}
+                                    label="المحافظات"
+                                    value="لا توجد بيانات"
+                                    iconColor="text-red-500"
+                                />
+
+                            )}
+                            <InfoItem
+                                icon={<FaMapLocationDot />}
+                                label="المحافظات"
+                                value={governorates?.map(g => g.name).join('، ')}
+                                iconColor="text-green-500"
+                            />
+
+                            {!selectedCompany.email && (
+                                <InfoItem
+                                    icon={<FiAlertTriangle />}
+                                    label="البريد الإلكتروني"
+                                    value="لا توجد بيانات"
+                                    iconColor="text-red-500"
+                                />
+                            )}
+                            <InfoItem
+                                icon={<FiMail />}
+                                label="البريد الإلكتروني"
+                                value={selectedCompany.email}
+                                iconColor="text-blue-500"
+                            />
+
+
+                            <InfoItem
+                                icon={<FiPhone />}
+                                label="رقم الهاتف"
+                                value={selectedCompany.phone}
+                                iconColor="text-purple-500"
+                                full
+                            />
+
+                            {!selectedCompany.whatsapp && (
+                                <InfoItem
+                                    icon={<FiAlertTriangle />}
+                                    label="رقم الواتساب"
+                                    value="لا توجد بيانات"
+                                    iconColor="text-red-500"
+                                />
+                            )}
+                            <InfoItem
+                                icon={<FaWhatsapp />}
+                                label="رقم الواتساب"
+                                value={selectedCompany.whatsapp}
+                                iconColor="text-green-600"
+                                full
+                            />
+
+                        </div>
+                    )}
+                </Modal>
+
 
             </motion.div>
         </AuthenticatedLayout>

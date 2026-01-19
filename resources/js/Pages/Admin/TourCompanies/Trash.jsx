@@ -3,19 +3,22 @@ import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import Modal from '@/Components/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronLeft, FiTrash2, FiAlertTriangle, FiMapPin, FiPhone, FiSearch } from 'react-icons/fi';
-import { FaRegBuilding, FaWhatsapp, FaWindowRestore } from 'react-icons/fa6';
+import { FiChevronLeft, FiTrash2, FiAlertTriangle, FiMapPin, FiPhone, FiSearch, FiEye, FiHash, FiMail } from 'react-icons/fi';
+import { FaMapLocationDot, FaRegBuilding, FaWhatsapp, FaWindowRestore } from 'react-icons/fa6';
 import { MdRestore } from "react-icons/md";
 import toast from 'react-hot-toast';
+import InfoItem from '@/Components/InfoItem';
 
 const pageMotion = { hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } };
 const rowMotion = { hidden: { opacity: 0, y: 3 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -3 } };
 
-export default function Trash({ companies, filters }) {
+export default function Trash({ companies, filters, governorates }) {
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [search, setSearch] = useState(filters.search || '');
     const [debouncedSearch, setDebouncedSearch] = useState(search);
+    const [showModal, setShowModal] = useState(false);
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -24,15 +27,21 @@ export default function Trash({ companies, filters }) {
 
         return () => clearTimeout(timer);
     }, [search]);
-
+    const openShow = async (id) => {
+        const response = await fetch(route('tour-companies.show', id));
+        const data = await response.json();
+        setSelectedCompany(data);
+        setShowModal(true);
+    };
     useEffect(() => {
         router.get(route('tour-companies.trash'), { search: debouncedSearch }, { preserveState: true, replace: true });
     }, [debouncedSearch]);
     const restore = (company) => {
         router.post(route('tour-companies.restore', company.id), {}, {
             onSuccess: () => {
-                toast.success('تم استعادة الشركة بنجاح');
-                router.reload()},
+                // toast.success('تم استعادة الشركة بنجاح');
+                router.reload()
+            },
         });
     };
 
@@ -41,24 +50,25 @@ export default function Trash({ companies, filters }) {
         setDeleteModal(true);
     };
 
-   const handleSearch = (e) => {
-    setSearch(e.target.value);
-    router.get(route('tour-companies.trash'), { search: e.target.value }, { preserveState: true, replace: true });
-};
+    const handleSearch = (e) => {
+        setSearch(e.target.value);
+        router.get(route('tour-companies.trash'), { search: e.target.value }, { preserveState: true, replace: true });
+    };
 
     const destroy = () => {
         router.delete(route('tour-companies.destroy', selectedCompany.id) + '?force=1', {
             onSuccess: () => {
-                
-                toast.success('تم الحذف بنجاح');
-                setDeleteModal(false)},
+
+                // toast.success('تم الحذف بنجاح');
+                setDeleteModal(false)
+            },
             onError: () => toast.error('حدث خطأ'),
         });
     };
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="space-y-4 px-2 sm:px-4">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
 
                 <div className="flex items-center gap-1 text-sm text-gray-500">
@@ -80,7 +90,7 @@ export default function Trash({ companies, filters }) {
                 </div>
 
                 <h1 className="text-xl font-bold flex items-center gap-2">
-                    <FiTrash2 className="text-[var(--app-primary)] text-2xl" /> سلة محذوفات شركات السياحة 
+                    <FiTrash2 className="text-[var(--app-primary)] text-2xl" /> سلة محذوفات شركات السياحة
                 </h1>
                 <div className="relative flex items-center gap-2">
                     <FiSearch className="text-gray-400" />
@@ -105,7 +115,7 @@ export default function Trash({ companies, filters }) {
                     <table className="w-full text-sm border-collapse">
                         <thead className="bg-gray-50">
                             <tr className="text-gray-600">
-                                <th className="px-4 py-3 text-right">#</th>
+                                <th className="px-4 py-3 text-right">الكود</th>
                                 <th className="px-4 py-3 text-right">الشركة</th>
                                 <th className="px-4 py-3 text-right">المحافظة</th>
                                 <th className="px-4 py-3 text-right">التواصل</th>
@@ -125,7 +135,7 @@ export default function Trash({ companies, filters }) {
                                         whileHover={{ backgroundColor: '#f9fafb' }}
                                         className="border-t"
                                     >
-                                        <td className="px-4 py-3 text-gray-500">{company.id}</td>
+                                        <td className="px-4 py-3 text-gray-500">{company.company_code}</td>
                                         <td className="px-4 py-3 font-medium flex items-center gap-2">
                                             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--app-primary)]/10 text-[var(--app-primary)]">
                                                 <FaRegBuilding size={16} />
@@ -135,9 +145,10 @@ export default function Trash({ companies, filters }) {
                                         <td className="px-4 py-3">
                                             <span className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-1 text-xs text-blue-700">
                                                 <FiMapPin />
-                                                {company.governorate.name}
+                                                {governorates?.map(g => g.name).join(' , ')}
                                             </span>
                                         </td>
+
                                         <td className="space-y-1 text-xs">
                                             {company.phone && (
                                                 <div className="flex items-center gap-1 text-gray-700">
@@ -151,8 +162,16 @@ export default function Trash({ companies, filters }) {
                                                     <span>{company.whatsapp}</span>
                                                 </div>
                                             )}
+                                            {!company.phone && !company.whatsapp && (<span className="text-gray-400">لا توجد بيانات تواصل</span>)}
                                         </td>
                                         <td className="px-4 py-3 text-center flex justify-center gap-2">
+                                            <button
+                                                onClick={() => openShow(company)}
+                                                title="عرض الشركة"
+                                                className="px-3 py-1 bg-[var(--app-primary)] text-white rounded-lg hover:bg-green-700 transition flex items-center gap-1"
+                                            >
+                                                <FiEye size={18} />
+                                            </button>
                                             <button
                                                 onClick={() => restore(company)}
                                                 title="استعادة الشركة"
@@ -218,6 +237,89 @@ export default function Trash({ companies, filters }) {
                             <button onClick={destroy} className="btn-danger flex-1">حذف نهائي</button>
                         </div>
                     </div>
+                </Modal>
+
+
+                <Modal
+                    show={showModal}
+                    onClose={() => setShowModal(false)}
+                    title="تفاصيل الشركة"
+                    className="max-w-4xl w-full"
+                    contentClassName="max-h-[80vh] overflow-y-auto p-6 space-y-6"
+                >
+                    {selectedCompany && (
+                        <div className="grid gap-4 sm:grid-cols-2 text-sm">
+
+                            <InfoItem
+                                icon={<FiHash />}
+                                label="كود الشركة"
+                                value={selectedCompany.company_code}
+                                iconColor="text-indigo-500"
+                            />
+
+                            <InfoItem
+                                icon={<FaRegBuilding />}
+                                label="اسم الشركة"
+                                value={selectedCompany.name}
+                                iconColor="text-[var(--app-primary)]"
+                            />
+
+
+                            <InfoItem
+                                icon={<FaMapLocationDot />}
+                                label="المحافظات"
+                                value={governorates?.map(g => g.name).join('، ')}
+                                iconColor="text-green-500"
+                            />
+                            {!selectedCompany.email && (
+                                <InfoItem
+                                    icon={<FiAlertTriangle />}
+                                    label="البريد الإلكتروني"
+                                    value="لا توجد بيانات"
+                                    iconColor="text-red-500"
+                                />
+                            )}
+                            <InfoItem
+                                icon={<FiMail />}
+                                label="البريد الإلكتروني"
+                                value={selectedCompany.email}
+                                iconColor="text-blue-500"
+                            />
+                            {!selectedCompany.phone && (
+                                <InfoItem
+                                    icon={<FiAlertTriangle />}
+                                    label="رقم الهاتف"
+                                    value="لا توجد بيانات"
+                                    iconColor="text-red-500"
+                                />
+                            )}
+
+                            <InfoItem
+                                icon={<FiPhone />}
+                                label="رقم الهاتف"
+                                value={selectedCompany.phone}
+                                iconColor="text-purple-500"
+                                full
+                            />
+
+                            {!selectedCompany.whatsapp && (
+                                <InfoItem
+                                    icon={<FiAlertTriangle />}
+                                    label="رقم الواتساب"
+                                    value="لا توجد بيانات"
+                                    iconColor="text-red-500"
+                                />
+                            )}
+                            <InfoItem
+                                icon={<FaWhatsapp />}
+                                label="رقم الواتساب"
+                                value={selectedCompany.whatsapp}
+                                iconColor="text-green-600"
+                                full
+                            />
+
+                        </div>
+                    )}
                 </Modal>
 
             </motion.div>

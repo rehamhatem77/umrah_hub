@@ -18,10 +18,12 @@ class TripTypeController extends Controller
         $query->where('name', 'like', '%' . $request->search . '%');
     }
         $tripTypes = $query->latest()->paginate(20)->withQueryString();
+        $offers_count=TripType::withCount('offers')->get()->keyBy('id');
       return Inertia::render('Admin/TripTypes/Index', [
             'tripTypes' => $tripTypes,
             'filters' => [
             'search' => $request->search ?? '',
+            'offers_count' => $offers_count,
         ],
         ]);
     }

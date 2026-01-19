@@ -55,22 +55,22 @@ class HotelController extends Controller
         return Inertia::render('Admin/Hotels/Create');
     }
 
-   public function store(HotelRequest $request)
-{
-    $data = $request->validated();
+    public function store(HotelRequest $request)
+    {
+        $data = $request->validated();
 
 
-    $data['slug'] = Str::slug($data['name']);
+        $data['slug'] = Str::slug($data['name']);
 
-    if (Hotel::withTrashed()->where('name', $data['name'])->exists()) {
-        return back()->with('error', 'يوجد فندق بنفس الاسم، يرجى اختيار اسم مختلف');
+        if (Hotel::withTrashed()->where('name', $data['name'])->exists()) {
+            return back()->with('error', 'يوجد فندق بنفس الاسم، يرجى اختيار اسم مختلف');
+        }
+
+        Hotel::create($data);
+
+        return redirect()->route('hotels.create')
+            ->with('success', 'تم إضافة الفندق بنجاح');
     }
-
-    Hotel::create($data);
-
-    return redirect()->route('hotels.create')
-        ->with('success', 'تم إضافة الفندق بنجاح');
-}
 
     private function generateUniqueSlug(string $name): string
     {
@@ -109,9 +109,17 @@ class HotelController extends Controller
 
     public function destroy(Request $request, $id)
     {
+
         $hotel = Hotel::withTrashed()->findOrFail($id);
 
+
         if ($request->boolean('force')) {
+
+            if ($hotel->offers()->count() > 0) {
+                return redirect()
+                    ->route('hotels.index')
+                    ->withErrors(['error' => 'لا يمكن حذف الفندق لأنه مرتبط بعروض سفر.']);
+            }
             $hotel->forceDelete();
 
             return redirect()
@@ -119,11 +127,16 @@ class HotelController extends Controller
                 ->with('success', 'تم حذف الفندق نهائيًا');
         }
 
-        $hotel->delete();
-
-        return redirect()
-            ->route('hotels.index')
-            ->with('success', 'تم نقل الفندق إلى سلة المحذوفات');
+        if ($hotel->offers()->count() > 0) {
+            return redirect()
+                ->route('hotels.index')
+                ->withErrors(['error' => 'لا يمكن حذف الفندق لأنه مرتبط بعروض سفر.']);
+        } else {
+            $hotel->delete();
+            return redirect()
+                ->route('hotels.index')
+                ->with('success', 'تم نقل الفندق إلى سلة المحذوفات');
+        }
     }
 
 

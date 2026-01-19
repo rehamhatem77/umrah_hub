@@ -8,6 +8,7 @@ class Feature extends Model
 {
     protected $fillable = [
         'name',
+        'icon'
     ];
     public function offers()
     {

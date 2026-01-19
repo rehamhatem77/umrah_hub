@@ -112,7 +112,7 @@ export default function Edit({ hotel }) {
         form.put(route('hotels.update', hotel.id), {
             data: submitData,
             onSuccess: () => {
-                toast.success('تم تعديل الفندق بنجاح');
+                // toast.success('تم تعديل الفندق بنجاح');
                 form.reset();
                 router.get(route('hotels.index'));
             },
@@ -124,7 +124,7 @@ export default function Edit({ hotel }) {
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="h-[calc(100vh-80px)] overflow-y-auto px-3 sm:px-6 space-y-6">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <button onClick={() => router.get(route('dashboard'))} className="hover:underline">لوحة التحكم</button>

@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('offer_images', function (Blueprint $table) {
+        Schema::create('governorate_offer', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('offer_id')->constrained()->cascadeOnDelete();
-            $table->string('image_path');
-            $table->boolean('is_main')->default(false);
-            $table->integer('sort_order')->default(0);
-            $table->softDeletes();
+             $table->foreignId('offer_id')->constrained('offers')->cascadeOnDelete();
+            $table->foreignId('governorate_id')->constrained('governorates')->cascadeOnDelete();
             $table->timestamps();
+            $table->unique(['offer_id', 'governorate_id']);
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('offer_images');
+        Schema::dropIfExists('governorate_offer');
     }
 };

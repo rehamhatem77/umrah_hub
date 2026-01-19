@@ -92,7 +92,7 @@ export default function Create() {
         form.post(route('testimonials.store'), {
             data: submitData,
             onSuccess: () => {
-                toast.success('تم إضافة تقييم العميل بنجاح');
+                // toast.success('تم إضافة تقييم العميل بنجاح');
                 form.reset();
                 router.get(route('testimonials.create'));
             },
@@ -104,7 +104,7 @@ export default function Create() {
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="h-[calc(100vh-80px)] overflow-y-auto px-3 sm:px-6 space-y-6">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <button onClick={() => router.get(route('dashboard'))} className="hover:underline">لوحة التحكم</button>

@@ -92,7 +92,7 @@ export default function Edit({ testimonial }) {
         form.post(route('testimonials.update', testimonial), {
             data: submitData,
             onSuccess: () => {
-                toast.success('تم تحديث تقييم العميل بنجاح');
+                // toast.success('تم تحديث تقييم العميل بنجاح');
                 // router.get(route('testimonials.index'));
             },
             onError: () => {
@@ -103,7 +103,7 @@ export default function Edit({ testimonial }) {
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="h-[calc(100vh-80px)] overflow-y-auto px-3 sm:px-6 space-y-6">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <button onClick={() => router.get(route('dashboard'))} className="hover:underline">لوحة التحكم</button>

@@ -25,9 +25,14 @@ protected $dates = ['deleted_at'];
  
 
 
-    public function offers()
+    // public function offers()
+    // {
+    //     return $this->hasMany(Offer::class);
+    // }
+
+     public function offers()
     {
-        return $this->hasMany(Offer::class);
+        return $this->belongsToMany(Offer::class);
     }
 
 

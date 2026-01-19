@@ -13,7 +13,9 @@ export default function AddCompanyModal({
     onSubmit,
 }) {
     const [frontendErrors, setFrontendErrors] = useState({});
-
+const noOptionsMessage = ({ inputValue }) => {
+        return inputValue ? 'لا توجد نتائج' : 'لا توجد خيارات متاحة';
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -32,8 +34,18 @@ export default function AddCompanyModal({
             errors.whatsapp = 'رقم الواتساب يجب أن يكون 11 رقم';
         }
 
-        if (!form.data.governorate_id) {
-            errors.governorate_id = 'المحافظة مطلوبة';
+          if (!form.data.governorate_ids || form.data.governorate_ids.length === 0) {
+            errors.governorate_ids = 'المحافظة مطلوبة';
+        }
+
+        if(!form.data.company_code.trim()){
+            errors.company_code = 'كود الشركة مطلوب';
+        }
+        if(form.data.company_code && form.data.company_code.trim().length > 100){
+            errors.company_code = 'كود الشركة يجب ألا يزيد عن 100 حرف';
+        }
+        if(form.data.email && !/\S+@\S+\.\S+/.test(form.data.email)){
+            errors.email = 'البريد الإلكتروني غير صالح';
         }
 
         setFrontendErrors(errors);
@@ -48,6 +60,16 @@ export default function AddCompanyModal({
     return (
         <Modal show={show} title="إضافة شركة سياحة" onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-3">
+
+                <div>
+                    <label className="text-xs text-gray-500 mb-1 block">كود الشركة</label>
+                    <input
+                        className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
+                        value={form.data.company_code}
+                        onChange={e => form.setData('company_code', e.target.value)}
+                    />
+                    <InputError message={frontendErrors.company_code || form.errors.company_code} />
+                </div>
                 <div>
                     <label className="text-xs text-gray-500 mb-1 block">اسم الشركة</label>
                     <input
@@ -77,18 +99,35 @@ export default function AddCompanyModal({
                     />
                     <InputError message={frontendErrors.whatsapp || form.errors.whatsapp} />
                 </div>
+                <div> 
+                    <label className="text-xs text-gray-500 mb-1 block">البريد الإلكتروني</label>
+                    <input
+                        className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
+                        value={form.data.email}
+                        onChange={e => form.setData('email', e.target.value)}
+                    />
+                    <InputError message={frontendErrors.email || form.errors.email} />
+                </div>
 
-                <div>
-                    <label className="text-xs text-gray-500 mb-1 block">المحافظة</label>
+                 <div>
+                    <label className="text-xs text-gray-500 mb-1 block">المحافظات</label>
+
+                    {governorateOptions.length === 0 ? (
+                        <div className="text-red-500 text-xs mb-1">يرجى إضافة المحافظات أولاً من خلال صفحة المحافظات.</div>
+                    ) : (
                     <Select
                         isRtl
-                        placeholder="اختر المحافظة"
+                        noOptionsMessage={noOptionsMessage}
+                        placeholder="اختر المحافظات"
                         options={governorateOptions}
                         styles={selectStyles}
-                        value={governorateOptions.find(g => g.value === form.data.governorate_id) || null}
-                        onChange={o => form.setData('governorate_id', o.value)}
+                        isMulti
+                        value={governorateOptions.filter(g => form.data.governorate_ids.includes(g.value))}
+                        onChange={options => form.setData('governorate_ids', options.map(o => o.value))}
                     />
-                    <InputError message={frontendErrors.governorate_id || form.errors.governorate_id} />
+                    )}
+                    <InputError message={frontendErrors.governorate_ids || form.errors.governorate_ids} />
+                    
                 </div>
 
                 <button type="submit" className="btn-primary w-full">حفظ</button>

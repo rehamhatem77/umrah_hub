@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OfferImage extends Model
+class FeatureOffer extends Model
 {
-     use SoftDeletes;
+      use SoftDeletes;
     protected $fillable = [
         'offer_id',
-        'image_path',
-        'is_main',
-        'sort_order',
+        'feature_id',
     ];
 
     public function offer()

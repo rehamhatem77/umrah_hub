@@ -31,7 +31,10 @@ export default function Trash({ hotels, filters }) {
     }, [debouncedSearch]);
     const restore = (hotel) => {
         router.post(route('hotels.restore', hotel.id), {}, {
-            onSuccess: () => {router.reload(); toast.success('تم استعادة الفندق بنجاح');},
+            onSuccess: () => {router.reload(); 
+                
+                // toast.success('تم استعادة الفندق بنجاح');
+            },
             onError: () => toast.error('حدث خطأ أثناء استعادة الفندق'),
         });
     };
@@ -55,7 +58,10 @@ export default function Trash({ hotels, filters }) {
 
     const destroy = () => {
         router.delete(route('hotels.destroy', selectedHotel.id) + '?force=1', {
-            onSuccess: () =>{setDeleteModal(false); toast.success('تم الحذف بنجاح') },
+            onSuccess: () =>{setDeleteModal(false); 
+                
+                // toast.success('تم الحذف بنجاح') 
+            },
                 onError: () => toast.error('حدث خطأ'),
 
         });
@@ -66,7 +72,7 @@ export default function Trash({ hotels, filters }) {
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="space-y-4 px-2 sm:px-4">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
 
                 <div className="flex items-center gap-1 text-sm text-gray-500">

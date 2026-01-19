@@ -129,3 +129,18 @@ textarea {
         color: white;
     }
 }
+
+
+.badge {
+    @apply text-xs px-2 py-0.5 rounded-full;
+}
+
+.icon-btn {
+    @apply p-2 rounded-full hover:bg-gray-100;
+}
+.icon-btn-danger {
+    @apply p-2 rounded-full hover:bg-red-100 text-red-600;
+}
+.ql-container {
+    min-height: 180px;
+}

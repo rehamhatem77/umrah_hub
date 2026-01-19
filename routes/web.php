@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\GovernorateController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\PackageController;
@@ -46,6 +47,11 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
         Route::patch('{offer}/toggle/{flag}', [OfferController::class, 'toggleFlag'])
             ->name('toggle-flag');
 
+        Route::get('trash', [OfferController::class, 'trash'])->name('trash');
+        Route::put('{id}/restore', [OfferController::class, 'restore'])->name('restore');
+        Route::delete('{id}/force-delete', [OfferController::class, 'forceDelete'])->name('forceDelete');
+        Route::get('show/{offer}', [OfferController::class, 'show'])->name('show');
+
 
         Route::delete('images/{image}', [OfferController::class, 'deleteImage'])
             ->name('images.delete');
@@ -58,6 +64,7 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::resource('governorates', GovernorateController::class);
         Route::resource('trip-types', TripTypeController::class);
+        Route::resource('features', FeatureController::class);
 
 
         Route::get('/tour-companies', [TourCompanyController::class, 'index'])->name('tour-companies.index');
@@ -70,6 +77,7 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
 
         Route::delete('/tour-companies/{id}/force-delete', [TourCompanyController::class, 'destroy'])
             ->name('tour-companies.destroyPermanent');
+        Route::get('/tour-companies/{id}', [TourCompanyController::class, 'show'])->name('tour-companies.show');
 
         Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
         Route::get('/hotels/create', [HotelController::class, 'create'])->name('hotels.create');

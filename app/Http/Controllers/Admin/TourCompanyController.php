@@ -16,19 +16,30 @@ class TourCompanyController extends Controller
     {
         // $query = TourCompany::with(['governorate'])
         //     ->withCount('offers');
-        $query = TourCompany::with(['governorate'])->whereNull('deleted_at');
+        $query = TourCompany::whereNull('deleted_at');
 
         if ($request->search) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
+        // if ($request->governorate_id) {
+        //     $query->where('governorate_id', $request->governorate_id);
+        // }
         if ($request->governorate_id) {
-            $query->where('governorate_id', $request->governorate_id);
+            $query->whereJsonContains('governorate_ids', (int) $request->governorate_id);
         }
+        $companies = $query->latest()->paginate(10)->withQueryString();
+
+        $allGovernorates = Governorate::select('id', 'name')->get();
+
+        $companies->getCollection()->transform(function ($company) {
+            $company->governorates_list = $company->governorates->map(fn($g) => ['id' => $g->id, 'name' => $g->name]);
+            return $company;
+        });
 
         return Inertia::render('Admin/TourCompanies/Index', [
-            'companies' => $query->latest()->paginate(10)->withQueryString(),
-            'governorates' => Governorate::select('id', 'name')->get(),
+            'companies' => $companies,
+            'governorates' => $allGovernorates,
             'filters' => [
                 'search' => $request->search ?? '',
                 'governorate_id' => $request->governorate_id ?? '',
@@ -61,47 +72,68 @@ class TourCompanyController extends Controller
     // }
 
     public function destroy(Request $request, $id)
-{
-     $company = TourCompany::withTrashed()->findOrFail($id);
-    if ($request->boolean('force')) {
-        $company->forceDelete();
-        return back()->with('success', 'تم حذف الشركة نهائياً');
+    {
+        $company = TourCompany::withTrashed()->findOrFail($id);
+
+        //  if ($company->offers()->count() > 0) {
+        //     return back()->withErrors(['error' => 'لا يمكن حذف الشركة لأنها مرتبطة بعروض سفر.']);
+        // }
+        if ($request->boolean('force')) {
+            if ($company->offers()->count() > 0) {
+                return back()->withErrors(['error' => 'لا يمكن حذف الشركة لأنها مرتبطة بعروض سفر.']);
+            }
+            $company->forceDelete();
+            return back()->with('success', 'تم حذف الشركة نهائياً');
+        }
+
+        $company->delete();
+        return back()->with('success', 'تم حذف الشركة بنجاح');
     }
 
-    // Soft delete
-    $company->delete();
-    return back()->with('success', 'تم حذف الشركة بنجاح');
-}
 
-//  soft-deleted companies
-public function trash(Request $request)
-{
-    $query = TourCompany::onlyTrashed()->with('governorate');
+    public function trash(Request $request)
+    {
+        $query = TourCompany::onlyTrashed();
 
-    if ($request->search) {
-        $query->where('name', 'like', '%' . $request->search . '%');
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+         if ($request->governorate_id) {
+            $query->whereJsonContains('governorate_ids', (int) $request->governorate_id);
+        }
+        $companies = $query->latest()->paginate(10)->withQueryString();
+
+        $allGovernorates = Governorate::select('id', 'name')->get();
+
+        $companies->getCollection()->transform(function ($company) {
+            $company->governorates_list = $company->governorates->map(fn($g) => ['id' => $g->id, 'name' => $g->name]);
+            return $company;
+        });
+
+
+        return Inertia::render('Admin/TourCompanies/Trash', [
+            'companies' => $companies->toArray(),
+            'governorates' => $allGovernorates,
+            'filters' => [
+                'search' => $request->search ?? '',
+            ],
+        ]);
+    }
+public function show($id)
+    {
+        $company = TourCompany::withTrashed()->findOrFail($id);
+
+        $governorates= $company->governorates->map(fn($g) => ['id' => $g->id, 'name' => $g->name]);
+       return response()->json($company);
     }
 
-    $companies = $query->latest()->paginate(10)->withQueryString();
 
-    return Inertia::render('Admin/TourCompanies/Trash', [
-        'companies' => $companies->toArray(), 
-        'filters' => [
-            'search' => $request->search ?? '',
-        ],
-    ]);
-}
+    public function restore($id)
+    {
+        $company = TourCompany::onlyTrashed()->findOrFail($id);
+        $company->restore();
 
-
-// Restore a soft-deleted company
-public function restore($id)
-{
-    $company = TourCompany::onlyTrashed()->findOrFail($id);
-    $company->restore();
-
-    return back()->with('success', 'تم استعادة الشركة بنجاح');
-}
-
-
-
+        return back()->with('success', 'تم استعادة الشركة بنجاح');
+    }
 }

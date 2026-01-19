@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Offer extends Model
 {
-    
+    use SoftDeletes;
     protected $fillable = [
         'offer_code','title','slug',
-        'governorate_id','trip_type_id','company_id',
-        'duration_days','price','airline','hotel_id','program',
+       'trip_type_id','company_id',
+        'duration_days','price','airline','program',
         
         'tour_level','is_special_offer','is_featured','is_popular','is_active',
         'start_date','end_date','available_places',
@@ -30,9 +31,12 @@ class Offer extends Model
 
     /* ================= Relations ================= */
 
-    public function governorate()
-    {
-        return $this->belongsTo(Governorate::class);
+    // public function governorate()
+    // {
+    //     return $this->belongsTo(Governorate::class);
+    // }
+    public function governorates(){
+        return $this->belongsToMany(Governorate::class);
     }
 
     public function tripType()
@@ -54,9 +58,22 @@ class Offer extends Model
     {
         return $this->belongsToMany(Feature::class);
     }
-    public function hotel()
+//     public function hotel()
+// {
+//     return $this->belongsTo(Hotel::class);
+// }
+
+public function hotels()
+    {
+        return $this->belongsToMany(Hotel::class);
+    }
+
+
+    public function mainImage()
 {
-    return $this->belongsTo(Hotel::class);
+    return $this->hasOne(OfferImage::class)
+        ->where('is_main', true)
+        ->whereNull('deleted_at');
 }
 
 

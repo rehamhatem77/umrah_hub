@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('tour_companies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('company_code')->unique();
             $table->string('phone')->nullable();
             $table->string('whatsapp')->nullable();
-            $table->foreignId('governorate_id')->constrained()->cascadeOnDelete();
+            $table->string('email')->nullable();
+            // $table->foreignId('governorate_id')->constrained()->cascadeOnDelete();
+            $table->json('governorate_ids')->nullable();
+
             $table->softDeletes(); 
             $table->timestamps();
         });

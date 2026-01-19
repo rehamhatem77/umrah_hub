@@ -53,7 +53,7 @@ export default function Trash({ testimonials, filters }) {
     const restoreTestimonial = (id) => {
         router.post(route('testimonials.restore', id), {}, {
             onSuccess: () => {
-                toast.success('تم استعادة التقييم بنجاح');
+                // toast.success('تم استعادة التقييم بنجاح');
             },
             onError: () => { toast.error('حدث خطأ أثناء الاستعادة') },
         });
@@ -67,7 +67,7 @@ export default function Trash({ testimonials, filters }) {
     const forceDelete = () => {
         router.delete(route('testimonials.destroy', selectedTestimonial.id) + '?force=1', {
             onSuccess: () => {
-                toast.success('تم الحذف النهائي للتقييم بنجاح');
+                // toast.success('تم الحذف النهائي للتقييم بنجاح');
                 setDeleteModal(false);
             },
             onError: () => { toast.error('حدث خطأ أثناء الحذف النهائي') },
@@ -80,7 +80,7 @@ export default function Trash({ testimonials, filters }) {
                 variants={pageMotion}
                 initial="hidden"
                 animate="visible"
-                className="space-y-5 px-2 sm:px-4"
+                className="px-3 sm:px-6 space-y-6"
             >
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <button onClick={() => router.get(route('dashboard'))} className="hover:underline">

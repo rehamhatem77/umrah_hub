@@ -19,22 +19,112 @@ use Inertia\Inertia;
 
 class OfferController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $offers = Offer::with(['governorates', 'tripType', 'company', 'hotels', 'features', 'images'])
+    //         ->when($request->governorate_id, fn ($q) =>
+    //             $q->where('governorate_id', $request->governorate_id)
+    //         )
+    //         ->when($request->trip_type_id, fn ($q) =>
+    //             $q->where('trip_type_id', $request->trip_type_id)
+    //         )
+    //         ->when($request->status && $request->status !== 'all', fn ($q) =>
+    //             $q->where('is_active', $request->status === 'active')
+    //         )
+    //         ->when($request->search, fn ($q) =>
+    //             $q->where(function ($sub) use ($request) {
+    //                 $sub->where('offer_code', 'like', "%{$request->search}%")
+    //                     ->orWhereHas('governorate', fn ($g) =>
+    //                         $g->where('name', 'like', "%{$request->search}%")
+    //                     );
+    //             })
+    //         )
+    //         ->latest()
+    //         ->paginate(20)
+    //         ->withQueryString();
+
+    //     return Inertia::render('Admin/Offers/Index', [
+    //         'offers'       => $offers,
+    //         'filters'      => $request->only([
+    //             'governorate_id',
+    //             'trip_type_id',
+    //             'status',
+    //             'search'
+    //         ]),
+    //         'governorates' => Governorate::select('id', 'name')->get(),
+    //         'tripTypes'    => TripType::select('id', 'name')->get(),
+    //         'images'       => OfferImage::all(),
+    //         'features'     => Feature::all(),
+    //         'companies'    => TourCompany::select('id', 'name')->get(),
+    //         'hotels'       => Hotel::select('id', 'name')->get(),
+
+
+    //     ]);
+    // }
+
     public function index(Request $request)
     {
-        $offers = Offer::with(['governorate', 'tripType', 'company', 'hotel'])
-            ->when($request->governorate_id, fn ($q) =>
-                $q->where('governorate_id', $request->governorate_id)
+        $offers = Offer::with([
+            'governorates',
+            'tripType',
+            'company',
+            'hotels',
+            'features',
+            'images',
+            'mainImage'
+        ])
+            ->when(
+                $request->governorate_id,
+                fn($q) =>
+                $q->whereHas(
+                    'governorates',
+                    fn($g) =>
+                    $g->where('governorates.id', $request->governorate_id)
+                )
+            )->when(
+                $request->hotel_id,
+                fn($q) =>
+                $q->whereHas(
+                    'hotels',
+                    fn($g) =>
+                    $g->where('hotels.id', $request->hotel_id)
+                )
+            )->when(
+                $request->company_id,
+                fn($q) =>
+                $q->where('company_id', $request->company_id)
             )
-            ->when($request->trip_type_id, fn ($q) =>
+            ->when(
+                $request->trip_type_id,
+                fn($q) =>
                 $q->where('trip_type_id', $request->trip_type_id)
             )
-            ->when($request->status && $request->status !== 'all', fn ($q) =>
-                $q->where('is_active', $request->status === 'active')
-            )
-            ->when($request->search, fn ($q) =>
+            // ->when(
+            //     $request->status && $request->status !== 'all',
+            //     fn($q) =>
+            //     $q->where('is_active', $request->status === 'active')
+            // )
+            ->when($request->status, function ($q) use ($request) {
+
+                if ($request->status === 'active') {
+                    $q->where('is_active', true)
+                        ->whereDate('end_date', '>=', now());
+                } elseif ($request->status === 'inactive') {
+                    $q->where('is_active', false);
+                } elseif ($request->status === 'expired') {
+                    $q->whereDate('end_date', '<', now());
+                }
+            })
+
+
+            ->when(
+                $request->search,
+                fn($q) =>
                 $q->where(function ($sub) use ($request) {
                     $sub->where('offer_code', 'like', "%{$request->search}%")
-                        ->orWhereHas('governorate', fn ($g) =>
+                        ->orWhereHas(
+                            'governorates',
+                            fn($g) =>
                             $g->where('name', 'like', "%{$request->search}%")
                         );
                 })
@@ -42,19 +132,24 @@ class OfferController extends Controller
             ->latest()
             ->paginate(20)
             ->withQueryString();
-
+$counts = [
+    'all' => Offer::count(),
+    'active' => Offer::where('is_active', true)->count(),
+    'inactive' => Offer::where('is_active', false)->count(),
+    'expired' => Offer::whereDate('end_date', '<', now())->count(),
+];
         return Inertia::render('Admin/Offers/Index', [
             'offers'       => $offers,
-            'filters'      => $request->only([
-                'governorate_id',
-                'trip_type_id',
-                'status',
-                'search'
-            ]),
+            'filters'      => $request->only(['governorate_id', 'trip_type_id', 'company_id', 'hotel_id', 'status', 'search']),
             'governorates' => Governorate::select('id', 'name')->get(),
             'tripTypes'    => TripType::select('id', 'name')->get(),
+            'companies'    => TourCompany::select('id', 'name')->get(),
+            'hotels'       => Hotel::select('id', 'name')->get(),
+            'features'     => Feature::all(),
+            'counts'       => $counts,
         ]);
     }
+
 
     public function create()
     {
@@ -64,17 +159,24 @@ class OfferController extends Controller
             'companies'    => TourCompany::all(),
             'hotels'       => Hotel::all(),
             'features'     => Feature::all(),
+
+
         ]);
     }
 
     public function store(StoreOfferRequest $request)
     {
-        $data = $request->validated();
+       
+
+        try {
+             $data = $request->validated();
         $data['slug'] = $this->generateUniqueSlug($data['title']);
 
         $offer = Offer::create($data);
 
         $offer->features()->sync($request->features ?? []);
+        $offer->governorates()->sync($request->governorates ?? []);
+        $offer->hotels()->sync($request->hotels ?? []);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
@@ -88,14 +190,18 @@ class OfferController extends Controller
             }
         }
 
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'حدث خطأ أثناء إنشاء الباقة: ' ]);
+        }
+
         return redirect()
             ->route('admin.offers.index')
-            ->with('success', 'تم إنشاء العرض بنجاح');
+            ->with('success', 'تم إنشاء الباقة بنجاح');
     }
 
     public function edit(Offer $offer)
     {
-        $offer->load('features', 'images');
+        $offer->load('features', 'images', 'governorates', 'hotels');
 
         return Inertia::render('Admin/Offers/Edit', [
             'offer'        => $offer,
@@ -104,16 +210,22 @@ class OfferController extends Controller
             'companies'    => TourCompany::all(),
             'hotels'       => Hotel::all(),
             'features'     => Feature::all(),
+            'images'       => $offer->images()->orderBy('sort_order')->get(),
         ]);
     }
 
     public function update(UpdateOfferRequest $request, Offer $offer)
     {
-        $data = $request->validated();
+       
+
+        try {
+             $data = $request->validated();
         $data['slug'] = $this->generateUniqueSlug($data['title']);
 
         $offer->update($data);
         $offer->features()->sync($request->features ?? []);
+        $offer->governorates()->sync($request->governorates ?? []);
+        $offer->hotels()->sync($request->hotels ?? []);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
@@ -126,19 +238,25 @@ class OfferController extends Controller
                 ]);
             }
         }
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'حدث خطأ أثناء تحديث الباقة: ' ]);
+        }
 
         return redirect()
             ->route('admin.offers.index')
-            ->with('success', 'تم تحديث العرض بنجاح');
+            ->with('success', 'تم تحديث الباقة بنجاح');
     }
 
     public function destroy(Offer $offer)
     {
-        $offer->delete();
+
+        $offer->images()->delete(); 
+    
+        $offer->delete();  
 
         return redirect()
             ->route('admin.offers.index')
-            ->with('success', 'تم حذف العرض');
+            ->with('success','تم نقل الباقة إلى سلة المهملات');
     }
 
     public function toggleFlag(Request $request, Offer $offer)
@@ -166,7 +284,7 @@ class OfferController extends Controller
 
     public function deleteImage(OfferImage $image)
     {
-        Storage::disk('public')->delete($image->image_path);
+        
         $image->delete();
 
         return back()->with('success', 'تم حذف الصورة');
@@ -192,4 +310,93 @@ class OfferController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+   public function show($id)
+{
+    $offer = Offer::withTrashed()
+        ->with([
+            'governorates',
+            'hotels',
+            'tripType',
+            'company',
+            'features',
+            'images' => fn ($q) => $q->withTrashed(),
+        ])
+        ->findOrFail($id);
+
+    return Inertia::render('Admin/Offers/Show', [
+        'offer' => $offer,
+    ]);
+}
+
+
+
+
+
+public function trash(Request $request)
+{
+    $offers = Offer::onlyTrashed()
+    ->with([
+        'governorates',
+        'tripType',
+        'company',
+        'hotels',
+        'features',
+        'images' => fn ($q) => $q->withTrashed(),
+    ])
+        ->when($request->search, function($q) use ($request) {
+            $q->where('title', 'like', "%{$request->search}%")
+              ->orWhere('offer_code', 'like', "%{$request->search}%");
+        })
+        ->paginate(12)
+        ->withQueryString();
+
+    return Inertia::render('Admin/Offers/Trash', [
+        'offers' => $offers,
+    ]);
+}
+
+public function restore($id)
+{
+    $offer = Offer::onlyTrashed()->findOrFail($id);
+
+    $offer->restore();
+    $offer->images()->withTrashed()->restore();
+
+    return redirect()
+        ->route('admin.offers.trash')
+        ->with('success', 'تم استعادة الباقة بنجاح');
+}
+
+
+public function forceDelete($id)
+{
+    $offer = Offer::onlyTrashed()
+        ->with([
+            'images' => fn ($q) => $q->withTrashed(),
+            'features',
+            'governorates',
+            'hotels',
+        ])
+        ->findOrFail($id);
+
+    foreach ($offer->images as $image) {
+        Storage::disk('public')->delete($image->image_path);
+        $image->forceDelete();
+    }
+
+    $offer->features()->detach();
+    $offer->governorates()->detach();
+    $offer->hotels()->detach();
+
+    $offer->forceDelete();
+
+    return redirect()
+        ->route('admin.offers.trash')
+        ->with('success', 'تم حذف الباقة نهائياً');
+}
+
+
+
+
 }

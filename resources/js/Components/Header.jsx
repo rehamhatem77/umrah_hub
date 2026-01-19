@@ -24,7 +24,7 @@ export default function Header() {
     ];
 
     return (
-        <header className="h-20 border-b border-gray-200 px-6 sm:px-8 flex items-center justify-between
+        <header className="p-5 h-20 border-b border-gray-200  sm:px-8 flex items-center justify-between
                            bg-white/95 backdrop-blur-md sticky top-0 z-20 shadow-sm">
 
             <div className="flex items-center gap-3 w-full max-w-2xl">

@@ -19,20 +19,20 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
 
-            $table->foreignId('governorate_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('trip_type_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('company_id')->nullable()
-                ->constrained('tour_companies')->nullOnDelete();
+            // $table->foreignId('governorate_id')->constrained('governorates')->cascadeOnDelete();
+            $table->foreignId('trip_type_id')->constrained('trip_types')->cascadeOnDelete();
+            $table->foreignId('company_id')
+                ->constrained('tour_companies')->cascadeOnDelete();
 
             $table->integer('duration_days');
             $table->decimal('price', 10, 2);
             $table->string('airline')->nullable();
             $table->text('program');
 
-            $table->foreignId('hotel_id')
-                ->nullable()
-                ->constrained()
-                ->nullOnDelete();
+            // $table->foreignId('hotel_id')
+            //     ->nullable()
+            //     ->constrained('hotels')
+            //     ->nullOnDelete();
 
 
             $table->enum('tour_level', [
@@ -55,6 +55,7 @@ return new class extends Migration
 
             $table->string('seo_title')->nullable();
             $table->text('seo_description')->nullable();
+            $table->softDeletes();
             
 
             $table->timestamps();

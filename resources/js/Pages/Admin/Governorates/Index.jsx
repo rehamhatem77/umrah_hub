@@ -74,7 +74,9 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
         if (selectedGovernorates.includes(form.data.name)) { toast.error('هذه المحافظة موجودة مسبقًا'); return; }
 
         form.post(route('governorates.store'), {
-            onSuccess: () => { toast.success('تمت إضافة المحافظة بنجاح'); form.reset(); setAddSelect(null); setFrontendErrors({}); },
+            onSuccess: () => {
+                //  toast.success('تمت إضافة المحافظة بنجاح'); 
+                 form.reset(); setAddSelect(null); setFrontendErrors({}); },
             onError: () => toast.error('حدث خطأ أثناء الإضافة'),
         });
     };
@@ -92,7 +94,9 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
             toast.error('هذه المحافظة موجودة مسبقًا'); return;
         }
         form.put(route('governorates.update', form.data.id), {
-            onSuccess: () => { toast.success('تم تحديث المحافظة بنجاح'); setEditModal(false); setEditSelect(null); form.reset(); },
+            onSuccess: () => { 
+                // toast.success('تم تحديث المحافظة بنجاح'); 
+                setEditModal(false); setEditSelect(null); form.reset(); },
             onError: () => toast.error('حدث خطأ أثناء التحديث'),
         });
     };
@@ -100,7 +104,9 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
     const openDelete = (id) => { setSelectedId(id); setDeleteModal(true); };
     const destroy = () => {
         router.delete(route('governorates.destroy', selectedId), {
-            onSuccess: () => { toast.success('تم حذف المحافظة بنجاح'); setDeleteModal(false); },
+            onSuccess: () => { 
+                // toast.success('تم حذف المحافظة بنجاح'); 
+                setDeleteModal(false); },
             onError: () => toast.error('فشل حذف المحافظة'),
         });
     };
@@ -112,7 +118,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
 
     return (
         <AuthenticatedLayout>
-            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="space-y-3 px-2 sm:px-4">
+            <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
                 {/* BREADCRUMBS */}
                 <div className="flex items-center gap-1 text-sm text-gray-500">

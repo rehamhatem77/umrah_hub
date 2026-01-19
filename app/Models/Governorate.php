@@ -13,8 +13,12 @@ class Governorate extends Model
 
     ];
 
+    // public function offers()
+    // {
+    //     return $this->hasMany(Offer::class);
+    // }
     public function offers()
     {
-        return $this->hasMany(Offer::class);
+        return $this->belongsToMany(Offer::class);
     }
 }

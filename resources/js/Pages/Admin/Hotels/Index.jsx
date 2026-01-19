@@ -43,18 +43,19 @@ export default function Index({ hotels, filters }) {
     };
 
     const openDelete = (hotel) => {
-        // if (company.offers_count > 0) {
-        //     toast.error('لا يمكن حذف شركة مرتبطة بعروض');
-        //     return;
-        // }
+      
         setSelectedHotel(hotel);
         setDeleteModal(true);
     };
 
     const destroy = () => {
+          if (selectedHotel.offers_count > 0) {
+            toast.error('لا يمكن حذف فندق مرتبط بعروض');
+            return;
+        }
         router.delete(route('hotels.destroy', selectedHotel.id), {
             onSuccess: () => {
-                toast.success('تم نقل الفندق إلى سلة المحذوفات');
+                // toast.success('تم نقل الفندق إلى سلة المحذوفات');
                 setDeleteModal(false);
             },
         });
@@ -62,9 +63,9 @@ export default function Index({ hotels, filters }) {
     return (
         <AuthenticatedLayout>
 
-            <div className=" px-2 sm:px-4 space-y-4">
+            <div className=" px-3 sm:px-6 space-y-6">
 
-                {/* Breadcrumb */}
+             
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <button
                         onClick={() => router.get(route('dashboard'))}

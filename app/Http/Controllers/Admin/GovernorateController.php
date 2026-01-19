@@ -90,6 +90,9 @@ $query = Governorate::query();
 
     public function destroy(Governorate $governorate)
     {
+         if ($governorate->offers()->count() > 0) {
+            return back()->withErrors(['error' => 'لا يمكن حذف المحافظة لأنها مرتبطة بعروض سفر.']);
+        }
         $governorate->delete();
         return back();
     }

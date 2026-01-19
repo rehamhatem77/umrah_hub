@@ -19,24 +19,38 @@ class UpdateOfferRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
+    protected function prepareForValidation()
+{
+    $this->merge([
+        'whatsapp_number' => $this->whatsapp_number ?? '01111111111',
+    ]);
+}
+
     public function rules(): array
     {
         return [
             //
+            'offer_code' => 'required|string|max:100|unique:offers,offer_code,' . $this->offer->id,
             'title' => 'required|string|max:255',
             'slug'  => 'nullable|string|max:255',
 
-            'governorate_id' => 'required|exists:governorates,id',
+
             'trip_type_id'   => 'required|exists:trip_types,id',
-            'company_id'     => 'nullable|exists:tour_companies,id',
-            'hotel_id'       => 'nullable|exists:hotels,id',
+            'company_id'     => 'required|exists:tour_companies,id',
+
+            'governorates' => 'required|array',
+            'governorates.*' => 'exists:governorates,id',
+
+            'hotels' => 'required|array',
+            'hotels.*' => 'exists:hotels,id',
 
             'duration_days' => 'required|integer|min:1',
             'program'       => 'required|string',
 
             'price' => 'required|numeric|min:0',
 
-            'airline' => 'nullable|string|max:255',
+            'airline' => 'required|string|max:255',
 
             'tour_level' => 'required|in:economical,standard,luxury,vip',
 
@@ -50,10 +64,10 @@ class UpdateOfferRequest extends FormRequest
 
             'available_places' => 'required|integer|min:0',
 
-            'whatsapp_number' => 'required|string|max:20',
+            'whatsapp_number' => 'nullable|string|max:20',
 
-            'seo_title'       => 'nullable|string|max:255',
-            'seo_description' => 'nullable|string',
+            'seo_title'       => 'required|string|max:255',
+            'seo_description' => 'required|string',
 
             'features'   => 'nullable|array',
             'features.*' => 'exists:features,id',

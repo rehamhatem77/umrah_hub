@@ -13,9 +13,12 @@ import {
 import { MdOutlineHotel, MdOutlineCategory } from "react-icons/md";
 import { FaRegBuilding, FaMapLocationDot } from "react-icons/fa6";
 import { FaRegCommentDots } from "react-icons/fa";
+import { LuPackagePlus } from "react-icons/lu";
+
 
 import { BsStars } from "react-icons/bs";
 import SidebarContent from '@/Components/Sidebar';
+import FlashToast from '@/Components/FlashToast';
 
 export default function AuthenticatedLayout({ children }) {
     const user = usePage().props.auth.user;
@@ -44,7 +47,8 @@ export default function AuthenticatedLayout({ children }) {
         { name: 'المحافظات', icon: <FaMapLocationDot />, path: '/admin/governorates' },
         { name: 'شركات السياحة', icon: <FaRegBuilding />, path: '/admin/tour-companies' },
         { name: 'الفنادق', icon: <MdOutlineHotel />, path: '/admin/hotels' },
-        // { name: 'أنواع الرحلات ', icon: <MdOutlineCategory />, path: '/admin/trip-types' },
+        { name: 'أنواع الرحلات ', icon: <MdOutlineCategory />, path: '/admin/trip-types' },
+        { name: 'المميزات', icon: <LuPackagePlus />, path: '/admin/features' },
         { name: 'التقييمات', icon: <FiStar />, path: '/admin/testimonials' },
         // { name: 'المستخدمون', icon: <FiUsers />, path: '#' },
         { name: 'الإعدادات', icon: <FiSettings />, path: '#' },
@@ -79,7 +83,7 @@ export default function AuthenticatedLayout({ children }) {
     );
 
     return (
-        <div className="min-h-screen flex bg-gray-100" dir="rtl">
+        <div className="max-h-screen flex bg-gray-100 overflow-hidden " dir="rtl">
 
             {sidebarOpen && isMobile && (
                 <div
@@ -109,7 +113,7 @@ export default function AuthenticatedLayout({ children }) {
                 />
             </aside>
 
-=            <div className="flex-1 flex flex-col lg:ml-0">
+            <div className="flex-1 flex flex-col lg:ml-0">
                 <Header
                     user={user}
                     sidebarOpen={sidebarOpen}
@@ -117,7 +121,8 @@ export default function AuthenticatedLayout({ children }) {
                     isMobile={isMobile}
                 />
 
-                <main className="p-6 flex-1 bg-gray-50">
+                <main className="p-6 flex-1 bg-gray-50 scrollbar-hide h-[calc(100vh-80px)] overflow-y-auto  ">
+                     <FlashToast />
                     {children}
                 </main>
             </div>

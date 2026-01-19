@@ -52,7 +52,7 @@ export default function Index({ testimonials, filters }) {
     const destroy = () => {
         router.delete(route('testimonials.destroy', selectedTestimonial.id), {
             onSuccess: () => {
-                toast.success('تم نقل التقييم الي سلة المحذوفات بنجاح');
+                // toast.success('تم نقل التقييم الي سلة المحذوفات بنجاح');
                 setDeleteModal(false);
             },
             onError: () => {
@@ -75,7 +75,7 @@ export default function Index({ testimonials, filters }) {
                 variants={pageMotion}
                 initial="hidden"
                 animate="visible"
-                className="space-y-5 px-2 sm:px-4"
+                className="px-3 sm:px-6 space-y-6"
             >
                 {/* BREADCRUMB */}
                 <div className="flex items-center gap-1 text-sm text-gray-500">
