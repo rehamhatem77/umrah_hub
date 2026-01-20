@@ -19,48 +19,7 @@ use Inertia\Inertia;
 
 class OfferController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     $offers = Offer::with(['governorates', 'tripType', 'company', 'hotels', 'features', 'images'])
-    //         ->when($request->governorate_id, fn ($q) =>
-    //             $q->where('governorate_id', $request->governorate_id)
-    //         )
-    //         ->when($request->trip_type_id, fn ($q) =>
-    //             $q->where('trip_type_id', $request->trip_type_id)
-    //         )
-    //         ->when($request->status && $request->status !== 'all', fn ($q) =>
-    //             $q->where('is_active', $request->status === 'active')
-    //         )
-    //         ->when($request->search, fn ($q) =>
-    //             $q->where(function ($sub) use ($request) {
-    //                 $sub->where('offer_code', 'like', "%{$request->search}%")
-    //                     ->orWhereHas('governorate', fn ($g) =>
-    //                         $g->where('name', 'like', "%{$request->search}%")
-    //                     );
-    //             })
-    //         )
-    //         ->latest()
-    //         ->paginate(20)
-    //         ->withQueryString();
-
-    //     return Inertia::render('Admin/Offers/Index', [
-    //         'offers'       => $offers,
-    //         'filters'      => $request->only([
-    //             'governorate_id',
-    //             'trip_type_id',
-    //             'status',
-    //             'search'
-    //         ]),
-    //         'governorates' => Governorate::select('id', 'name')->get(),
-    //         'tripTypes'    => TripType::select('id', 'name')->get(),
-    //         'images'       => OfferImage::all(),
-    //         'features'     => Feature::all(),
-    //         'companies'    => TourCompany::select('id', 'name')->get(),
-    //         'hotels'       => Hotel::select('id', 'name')->get(),
-
-
-    //     ]);
-    // }
+   
 
     public function index(Request $request)
     {
@@ -132,12 +91,12 @@ class OfferController extends Controller
             ->latest()
             ->paginate(20)
             ->withQueryString();
-$counts = [
-    'all' => Offer::count(),
-    'active' => Offer::where('is_active', true)->count(),
-    'inactive' => Offer::where('is_active', false)->count(),
-    'expired' => Offer::whereDate('end_date', '<', now())->count(),
-];
+        $counts = [
+            'all' => Offer::count(),
+            'active' => Offer::where('is_active', true)->count(),
+            'inactive' => Offer::where('is_active', false)->count(),
+            'expired' => Offer::whereDate('end_date', '<', now())->count(),
+        ];
         return Inertia::render('Admin/Offers/Index', [
             'offers'       => $offers,
             'filters'      => $request->only(['governorate_id', 'trip_type_id', 'company_id', 'hotel_id', 'status', 'search']),
@@ -166,32 +125,31 @@ $counts = [
 
     public function store(StoreOfferRequest $request)
     {
-       
+
 
         try {
-             $data = $request->validated();
-        $data['slug'] = $this->generateUniqueSlug($data['title']);
+            $data = $request->validated();
+            $data['slug'] = $this->generateUniqueSlug($data['title']);
 
-        $offer = Offer::create($data);
+            $offer = Offer::create($data);
 
-        $offer->features()->sync($request->features ?? []);
-        $offer->governorates()->sync($request->governorates ?? []);
-        $offer->hotels()->sync($request->hotels ?? []);
+            $offer->features()->sync($request->features ?? []);
+            $offer->governorates()->sync($request->governorates ?? []);
+            $offer->hotels()->sync($request->hotels ?? []);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('offers', 'public');
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $index => $image) {
+                    $path = $image->store('offers', 'public');
 
-                $offer->images()->create([
-                    'image_path' => $path,
-                    'is_main'    => $index === ($request->is_main_image ?? 0),
-                    'sort_order' => $index,
-                ]);
+                    $offer->images()->create([
+                        'image_path' => $path,
+                        'is_main'    => $index === ($request->is_main_image ?? 0),
+                        'sort_order' => $index,
+                    ]);
+                }
             }
-        }
-
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'حدث خطأ أثناء إنشاء الباقة: ' ]);
+            return back()->withErrors(['error' => 'حدث خطأ أثناء إنشاء الباقة: ']);
         }
 
         return redirect()
@@ -216,30 +174,30 @@ $counts = [
 
     public function update(UpdateOfferRequest $request, Offer $offer)
     {
-       
+
 
         try {
-             $data = $request->validated();
-        $data['slug'] = $this->generateUniqueSlug($data['title']);
+            $data = $request->validated();
+            $data['slug'] = $this->generateUniqueSlug($data['title']);
 
-        $offer->update($data);
-        $offer->features()->sync($request->features ?? []);
-        $offer->governorates()->sync($request->governorates ?? []);
-        $offer->hotels()->sync($request->hotels ?? []);
+            $offer->update($data);
+            $offer->features()->sync($request->features ?? []);
+            $offer->governorates()->sync($request->governorates ?? []);
+            $offer->hotels()->sync($request->hotels ?? []);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('offers', 'public');
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $index => $image) {
+                    $path = $image->store('offers', 'public');
 
-                $offer->images()->create([
-                    'image_path' => $path,
-                    'is_main'    => false,
-                    'sort_order' => $offer->images()->count() + $index,
-                ]);
+                    $offer->images()->create([
+                        'image_path' => $path,
+                        'is_main'    => false,
+                        'sort_order' => $offer->images()->count() + $index,
+                    ]);
+                }
             }
-        }
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'حدث خطأ أثناء تحديث الباقة: ' ]);
+            return back()->withErrors(['error' => 'حدث خطأ أثناء تحديث الباقة: ']);
         }
 
         return redirect()
@@ -250,13 +208,13 @@ $counts = [
     public function destroy(Offer $offer)
     {
 
-        $offer->images()->delete(); 
-    
-        $offer->delete();  
+        $offer->images()->delete();
+
+        $offer->delete();
 
         return redirect()
             ->route('admin.offers.index')
-            ->with('success','تم نقل الباقة إلى سلة المهملات');
+            ->with('success', 'تم نقل الباقة إلى سلة المهملات');
     }
 
     public function toggleFlag(Request $request, Offer $offer)
@@ -284,7 +242,7 @@ $counts = [
 
     public function deleteImage(OfferImage $image)
     {
-        
+
         $image->delete();
 
         return back()->with('success', 'تم حذف الصورة');
@@ -311,92 +269,89 @@ $counts = [
         return response()->json(['success' => true]);
     }
 
-   public function show($id)
-{
-    $offer = Offer::withTrashed()
-        ->with([
-            'governorates',
-            'hotels',
-            'tripType',
-            'company',
-            'features',
-            'images' => fn ($q) => $q->withTrashed(),
-        ])
-        ->findOrFail($id);
+    public function show($id)
+    {
+        $offer = Offer::withTrashed()
+            ->with([
+                'governorates',
+                'hotels',
+                'tripType',
+                'company',
+                'features',
+                'images' => fn($q) => $q->withTrashed(),
+            ])
+            ->findOrFail($id);
 
-    return Inertia::render('Admin/Offers/Show', [
-        'offer' => $offer,
-    ]);
-}
-
-
-
-
-
-public function trash(Request $request)
-{
-    $offers = Offer::onlyTrashed()
-    ->with([
-        'governorates',
-        'tripType',
-        'company',
-        'hotels',
-        'features',
-        'images' => fn ($q) => $q->withTrashed(),
-    ])
-        ->when($request->search, function($q) use ($request) {
-            $q->where('title', 'like', "%{$request->search}%")
-              ->orWhere('offer_code', 'like', "%{$request->search}%");
-        })
-        ->paginate(12)
-        ->withQueryString();
-
-    return Inertia::render('Admin/Offers/Trash', [
-        'offers' => $offers,
-    ]);
-}
-
-public function restore($id)
-{
-    $offer = Offer::onlyTrashed()->findOrFail($id);
-
-    $offer->restore();
-    $offer->images()->withTrashed()->restore();
-
-    return redirect()
-        ->route('admin.offers.trash')
-        ->with('success', 'تم استعادة الباقة بنجاح');
-}
-
-
-public function forceDelete($id)
-{
-    $offer = Offer::onlyTrashed()
-        ->with([
-            'images' => fn ($q) => $q->withTrashed(),
-            'features',
-            'governorates',
-            'hotels',
-        ])
-        ->findOrFail($id);
-
-    foreach ($offer->images as $image) {
-        Storage::disk('public')->delete($image->image_path);
-        $image->forceDelete();
+        return Inertia::render('Admin/Offers/Show', [
+            'offer' => $offer,
+        ]);
     }
 
-    $offer->features()->detach();
-    $offer->governorates()->detach();
-    $offer->hotels()->detach();
-
-    $offer->forceDelete();
-
-    return redirect()
-        ->route('admin.offers.trash')
-        ->with('success', 'تم حذف الباقة نهائياً');
-}
 
 
 
 
+    public function trash(Request $request)
+    {
+        $offers = Offer::onlyTrashed()
+            ->with([
+                'governorates',
+                'tripType',
+                'company',
+                'hotels',
+                'features',
+                'images' => fn($q) => $q->withTrashed(),
+            ])
+            ->when($request->search, function ($q) use ($request) {
+                $q->where('title', 'like', "%{$request->search}%")
+                    ->orWhere('offer_code', 'like', "%{$request->search}%");
+            })
+            ->paginate(12)
+            ->withQueryString();
+
+        return Inertia::render('Admin/Offers/Trash', [
+            'offers' => $offers,
+            'filters' => $request->only(['search']),
+        ]);
+    }
+
+    public function restore($id)
+    {
+        $offer = Offer::onlyTrashed()->findOrFail($id);
+
+        $offer->restore();
+        $offer->images()->withTrashed()->restore();
+
+        return redirect()
+            ->route('admin.offers.trash')
+            ->with('success', 'تم استعادة الباقة بنجاح');
+    }
+
+
+    public function forceDelete($id)
+    {
+        $offer = Offer::onlyTrashed()
+            ->with([
+                'images' => fn($q) => $q->withTrashed(),
+                'features',
+                'governorates',
+                'hotels',
+            ])
+            ->findOrFail($id);
+
+        foreach ($offer->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+            $image->forceDelete();
+        }
+
+        $offer->features()->detach();
+        $offer->governorates()->detach();
+        $offer->hotels()->detach();
+
+        $offer->forceDelete();
+
+        return redirect()
+            ->route('admin.offers.trash')
+            ->with('success', 'تم حذف الباقة نهائياً');
+    }
 }

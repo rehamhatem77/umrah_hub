@@ -11,21 +11,25 @@ import {
     FiBriefcase,
     FiHome,
     FiLayers,
-    FiRefreshCw
+    FiRefreshCw,
+    FiTablet,
+    FiStar,
+    FiTrendingUp
 } from 'react-icons/fi';
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { MdOutlineCategory, MdOutlineHotel } from 'react-icons/md';
 import { FaPlaneDeparture, FaRegBuilding } from 'react-icons/fa';
 import { TbMoneybag } from "react-icons/tb";
 import { LuPackagePlus } from 'react-icons/lu';
+import { router, usePage } from '@inertiajs/react';
+
 
 function formatExactDateArabic(dateString) {
     if (!dateString) return '';
 
     const date = new Date(dateString);
-    
+
 
 
     return new Intl.DateTimeFormat('ar-EG', {
@@ -73,11 +77,14 @@ function toArabicNumbers(number) {
 }
 
 
-export default function OfferCard({ offer }) {
+export default function OfferCard({ offer, handleDeleteClick, onToggleSpecial,
+    onTogglePopular, }) {
     const images = offer.images ?? [];
     const [current, setCurrent] = useState(0);
     const isTrash = offer.deleted_at !== null;
-
+    const { url } = usePage();
+    const isSpecialOffersPage = url.includes('/admin/special-offers');
+    const isPopularPage = url.includes('/admin/popular-offers');
     return (
         <motion.div
             whileHover={{ y: -4 }}
@@ -117,9 +124,9 @@ export default function OfferCard({ offer }) {
                 </span>
 
 
-                <div className="absolute top-3 left-3 flex gap-1">
+                {/* <div className="absolute top-3 left-3 flex gap-1">
                     {offer.is_special_offer && (
-                        <span className="badge bg-purple-600 text-white shadow">
+                        <span className="badge bg-blue-600 text-white shadow">
                             عرض خاص
                         </span>
                     )}
@@ -133,7 +140,44 @@ export default function OfferCard({ offer }) {
                             شائع
                         </span>
                     )}
+                </div> */}
+
+
+                <div className="absolute top-3 left-3 flex gap-1">
+                    {isSpecialOffersPage && offer.is_special_offer && (
+                        <span className="badge bg-blue-600 text-white shadow">
+                            عرض خاص
+                        </span>
+                    )}
+
+                    {isPopularPage && offer.is_popular && (
+                        <span className="badge bg-orange-600 text-white shadow">
+                            شائع
+                        </span>
+                    )}
+
+                    {/* باقي الصفحات تظهر كل البادجات */}
+                    {!isSpecialOffersPage && !isPopularPage && (
+                        <>
+                            {offer.is_special_offer && (
+                                <span className="badge bg-blue-600 text-white shadow">
+                                    عرض خاص
+                                </span>
+                            )}
+                            {offer.is_featured && (
+                                <span className="badge bg-blue-600 text-white shadow">
+                                    مميز
+                                </span>
+                            )}
+                            {offer.is_popular && (
+                                <span className="badge bg-orange-600 text-white shadow">
+                                    شائع
+                                </span>
+                            )}
+                        </>
+                    )}
                 </div>
+
 
 
                 <span className="absolute bottom-3 right-3 text-xs bg-black/60 text-white px-3 py-1 rounded-lg backdrop-blur">
@@ -230,24 +274,45 @@ export default function OfferCard({ offer }) {
 
                     <div className="flex gap-1 transition">
                         <IconBtn
-                            icon={<FiEye />}
+                            icon={<FiEye size={14} color='blue' />}
                             title="عرض التفاصيل"
                             onClick={() =>
                                 router.get(route('admin.offers.show', offer.id))
                             }
                         />
-                        {isTrash ? (
+
+
+
+                        {isTrash && (
                             <IconBtn
-                                icon={<FiRefreshCw />}
-                                title="استعادة العرض"
+                                icon={<FiRefreshCw size={14} color='green-500' />}
+                                title="استعادة الباقة"
                                 onClick={() =>
                                     router.put(route('admin.offers.restore', offer.id))
                                 }
                             />
-                        ) : (
+                        )}
+
+                        {!isTrash && isSpecialOffersPage && (
                             <IconBtn
-                                icon={<FiEdit2 />}
-                                title="تعديل العرض"
+                                icon={<FiStar className="text-yellow-500" size={14} />}
+                                title={offer.is_special_offer ? "إلغاء العرض الخاص" : "تعيين عرض خاص"}
+                                onClick={() => onToggleSpecial?.(offer)}
+                            />
+                        )}
+
+                        {!isTrash && isPopularPage && (
+                            <IconBtn
+                                icon={<FiTrendingUp className="text-orange-500" size={14} />}
+                                title={offer.is_popular ? "إلغاء الشائع" : "تعيين كعرض شائع"}
+                                onClick={() => onTogglePopular?.(offer)}
+                            />
+                        )}
+
+                        {!isTrash && !isSpecialOffersPage && !isPopularPage && (
+                            <IconBtn
+                                icon={<FiEdit2 size={14} />}
+                                title="تعديل الباقة"
                                 onClick={() =>
                                     router.get(route('admin.offers.edit', offer.id))
                                 }
@@ -255,33 +320,28 @@ export default function OfferCard({ offer }) {
                         )}
 
 
-                        {router.url !== route('admin.offers.trash') ? (
-                            <IconBtn
-                                icon={<FiTrash2 />}
-                                danger
-                                title="حذف العرض"
-                                onClick={() =>
-                                    router.delete(
-                                        route('admin.offers.destroy', offer.id),
-                                        { preserveScroll: true }
-                                    )
-                                }
-                            />
-                        ) :
-                            <IconBtn
-                                icon={<FiTrash2 />}
-                                danger
-                                title="حذف العرض نهائياً"
-                                onClick={() =>
-                                    router.delete(
-                                        route('admin.offers.forceDelete', offer.id),
-                                        { preserveScroll: true }
-                                    )
-                                }
-                            />
-                        }
 
-
+                        {!isSpecialOffersPage && !isPopularPage && (
+                            !isTrash ? (
+                                <IconBtn
+                                    icon={<FiTrash2 size={14} />}
+                                    danger
+                                    title="حذف الباقة"
+                                    onClick={() =>
+                                        handleDeleteClick(offer.id)
+                                    }
+                                />
+                            ) : (
+                                <IconBtn
+                                    icon={<FiTrash2 size={14} />}
+                                    danger
+                                    title="حذف الباقة نهائياً"
+                                    onClick={() =>
+                                        handleDeleteClick(offer.id)
+                                    }
+                                />
+                            )
+                        )}
                     </div>
                 </div>
 
@@ -317,10 +377,11 @@ function Stat({ icon, value, highlight }) {
     );
 }
 
-function IconBtn({ icon, onClick, danger }) {
+function IconBtn({ icon, onClick, danger, title }) {
     return (
         <button
             onClick={onClick}
+            title={title}
             className={`p-2 rounded-lg transition ${danger
                 ? 'text-red-600 hover:bg-red-50'
                 : 'text-gray-600 hover:bg-gray-100'

@@ -84,8 +84,6 @@ export default function Edit({
         price: offer?.price || '',
         airline: offer?.airline || '',
         program: offer?.program || '',
-        // start_date: offer?.start_date || '',
-        // end_date: offer?.end_date || '',
         start_date: offer?.start_date
             ? offer.start_date.slice(0, 10)
             : '',
@@ -299,6 +297,21 @@ export default function Edit({
             },
         });
     };
+
+//     const toggleStatus = (field, value) => {
+//     form.setData(field, value);
+
+//     router.put(
+//         route('admin.offers.toggle-flag', offer.id),
+//         { [field]: value },
+//         {
+//             preserveScroll: true,
+//             onSuccess: () => toast.success('تم تحديث الحالة'),
+//             onError: () => toast.error('فشل تحديث الحالة'),
+//         }
+//     );
+// };
+
 
     return (
         <AuthenticatedLayout>
@@ -667,7 +680,7 @@ export default function Edit({
                         <div className="card p-6 space-y-4">
                             <h3 className="font-bold text-sm">حالة الباقة</h3>
                             <Switch label="نشط" checked={form.data.is_active} onChange={v => form.setData('is_active', v)} />
-                            <Switch label="عرض مميز" checked={form.data.is_featured} onChange={v => form.setData('is_featured', v)} />
+                            {/* <Switch label="عرض مميز" checked={form.data.is_featured} onChange={v => form.setData('is_featured', v)} /> */}
                             <Switch label="عرض خاص" checked={form.data.is_special_offer} onChange={v => form.setData('is_special_offer', v)} />
                             <Switch label="شائع" checked={form.data.is_popular} onChange={v => form.setData('is_popular', v)} />
                         </div>

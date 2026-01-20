@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\GovernorateController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\TourCompanyController;
 use App\Http\Controllers\Admin\HotelController;
+use App\Http\Controllers\Admin\PopularOffers;
+use App\Http\Controllers\Admin\SpecialOffer;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
 use App\Http\Controllers\ProfileController;
@@ -22,11 +25,13 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth','admin.only')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -59,6 +64,21 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
             ->name('images.main');
         Route::post('{offer}/images/reorder', [OfferController::class, 'reorderImages'])
             ->name('images.reorder');
+    });
+
+     Route::prefix('admin/special-offers')->name('admin.special-offers.')->group(function () {
+        Route::get('/', [SpecialOffer::class, 'index'])->name('index');
+        Route::patch('/{offer}/toggle-special', [SpecialOffer::class, 'toggleFlag'])
+    ->name('toggle-flag');
+
+
+    });
+     Route::prefix('admin/popular-offers')->name('admin.popular-offers.')->group(function () {
+        Route::get('/', [PopularOffers::class, 'index'])->name('index');
+         Route::patch('/{offer}/toggle-popular', [PopularOffers::class, 'toggleFlag'])
+    ->name('popular-flag');
+
+
     });
 
     Route::prefix('admin')->group(function () {

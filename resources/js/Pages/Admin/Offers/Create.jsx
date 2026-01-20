@@ -777,13 +777,13 @@ export default function Create({
                                     form.setData('is_active', v)
                                 }
                             />
-                            <Switch
+                            {/* <Switch
                                 label="عرض مميز"
                                 checked={form.data.is_featured}
                                 onChange={v =>
                                     form.setData('is_featured', v)
                                 }
-                            />
+                            /> */}
                             <Switch
                                 label="عرض خاص"
                                 checked={form.data.is_special_offer}

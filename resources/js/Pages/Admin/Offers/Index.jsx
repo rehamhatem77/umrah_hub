@@ -14,12 +14,14 @@ import {
   FiEye,
   FiChevronLeft,
   FiSearch,
-  FiGift
+  FiGift,
+  FiAlertTriangle
 } from 'react-icons/fi';
 import Select from 'react-select';
 import { TbRestore } from "react-icons/tb";
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { MdOutlineCategory, MdOutlineHotel } from 'react-icons/md';
+import Modal from '@/Components/Modal';
 
 
 
@@ -40,8 +42,13 @@ export default function Index({ offers, filters, governorates = [],
     company_id: filters?.company_id || null,
     hotel_id: filters?.hotel_id || null,
     status: filters?.status || 'all',
+    search: filters?.search || null,
   });
   const noOptionsMessage = () => 'لا توجد خيارات متاحة';
+  const [deleteModal, setDeleteModal] = useState(false);
+const [selectedOfferId, setSelectedOfferId] = useState(null);
+
+
 
   const selectStyles = {
     control: (base, state) => ({
@@ -136,6 +143,27 @@ export default function Index({ offers, filters, governorates = [],
     setFilterState(resetState);
     applyFilters(resetState);
   };
+
+  const openDeleteModal = (offerId) => {
+     setSelectedOfferId(offerId);
+    setDeleteModal(true);
+  }
+
+const handleDeleteClick = () => {
+  if (!selectedOfferId) return;
+
+  router.delete(
+    route('admin.offers.destroy', selectedOfferId),
+    {
+      preserveScroll: true,
+      onSuccess: () => {
+        setDeleteModal(false);
+        setSelectedOfferId(null);
+      }
+    }
+  );
+};
+
 
 
 
@@ -391,7 +419,7 @@ export default function Index({ offers, filters, governorates = [],
         {offers?.data?.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {offers.data.map(offer => (
-              <OfferCard key={offer.id} offer={offer} />
+              <OfferCard key={offer.id} offer={offer} handleDeleteClick={openDeleteModal} />
             ))}
           </div>
         )}
@@ -426,6 +454,20 @@ export default function Index({ offers, filters, governorates = [],
             })}
           </div>
         )}
+
+
+
+
+         <Modal show={deleteModal} title="تأكيد الحذف" onClose={() => setDeleteModal(false)}>
+                            <div className="text-center space-y-3">
+                                <FiAlertTriangle className="text-3xl mx-auto text-red-500" />
+                                <p>هل أنت متأكد من حذف هذه الباقة؟</p>
+                                <div className="flex gap-2">
+                                    <button onClick={() => setDeleteModal(false)} className="btn-secondary flex-1">إلغاء</button>
+                                    <button onClick={handleDeleteClick} className="btn-danger flex-1">حذف</button>
+                                </div>
+                            </div>
+                        </Modal>
       </div>
     </AuthenticatedLayout>
   );

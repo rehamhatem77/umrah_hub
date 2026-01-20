@@ -42,8 +42,8 @@ export default function AuthenticatedLayout({ children }) {
     const dashboardLinks = [
         { name: 'لوحة التحكم', icon: <FiGrid />, path: '/dashboard' },
         { name: 'الباقات', icon: <FiGift />, path: '/admin/offers' },
-        { name: 'العروض المميزة', icon: <BsStars />, path: '#' },
-        { name: 'الرحلات الأكثر طلبا ', icon: <FiTrendingUp />, path: '#' },
+        { name: 'العروض المميزة', icon: <BsStars />, path: '/admin/special-offers' },
+        { name: 'الرحلات الأكثر طلبا ', icon: <FiTrendingUp />, path: '/admin/popular-offers' },
         { name: 'المحافظات', icon: <FaMapLocationDot />, path: '/admin/governorates' },
         { name: 'شركات السياحة', icon: <FaRegBuilding />, path: '/admin/tour-companies' },
         { name: 'الفنادق', icon: <MdOutlineHotel />, path: '/admin/hotels' },

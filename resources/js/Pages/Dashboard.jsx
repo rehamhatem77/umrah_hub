@@ -1,165 +1,216 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import {
+    FiGift,
+    FiTrendingUp,
+    FiStar,
+    FiUsers,
+    FiClock,
+    FiMapPin,
+    FiGrid
+} from 'react-icons/fi';
+import { MdOutlineHotel, MdOutlineCategory } from 'react-icons/md';
 
-export default function Dashboard() {
+export default function Dashboard({
+    kpis,
+    lifecycle,
+    latestOffers,
+    expiringOffers,
+    offersByTripType,
+    offersByCompany,
+    offersByGovernorate
+}) {
+
+
+    const toArabicNumber = (value) => {
+        if (value === null || value === undefined) return '٠';
+        return value.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+    };
+
+
     return (
         <AuthenticatedLayout>
             <Head title="لوحة التحكم" />
 
-            <div dir="rtl" className="py-8 px-6 max-w-7xl mx-auto space-y-8">
-
-                {/* Page Title */}
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-800">
-                        نظرة عامة
+            <div className="px-3 sm:px-6 space-y-8">
+                <div>
+                    <h1 className="text-xl font-bold flex items-center gap-2">
+                        <FiGrid className="text-[var(--app-primary)]" />
+                        لوحة التحكم 
                     </h1>
+                    <p className="text-slate-500 text-sm mt-1">
+                        نظرة شاملة على أداء المنصة، الباقات، والمخاطر التشغيلية
+                    </p>
                 </div>
 
-                {/* Quick Actions */}
-                <section>
-                    <h2 className="text-sm font-bold text-gray-500 mb-4">
-                        ⚡ إجراءات سريعة
-                    </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Kpi title="إجمالي الباقات" value={toArabicNumber(kpis.offers.total)} icon={<FiGift />} />
+                    <Kpi title="نشطة" value={toArabicNumber(kpis.offers.active)} icon={<FiTrendingUp />} />
+                    <Kpi danger title="منتهية" value={toArabicNumber(kpis.offers.expired)} icon={<FiClock />} />
+                    <Kpi title="مميزة" value={toArabicNumber(kpis.offers.special)} icon={<FiStar />} />
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Kpi title="شركات سياحة" value={toArabicNumber(kpis.entities.companies)} icon={<FiUsers />} />
+                    <Kpi title="فنادق" value={toArabicNumber(kpis.entities.hotels)} icon={<MdOutlineHotel />} />
+                    <Kpi title="أنواع رحلات" value={toArabicNumber(kpis.entities.tripTypes)} icon={<MdOutlineCategory />} />
+                    <Kpi title="محافظات" value={toArabicNumber(kpis.entities.governorates)} icon={<FiMapPin />} />
+                </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <ActionButton primary label="إضافة عرض جديد" />
-                        <ActionButton label="تحديث رقم WhatsApp" />
-                        <ActionButton label="تحميل التقارير" />
-                        <ActionButton label="إرسال تنبيه" />
-                    </div>
-                </section>
 
-                {/* Stats Cards */}
-                <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatCard title="إجمالي العروض" value="١,٢٤٠" trend="+12%" />
-                    <StatCard title="العروض المميزة" value="٨٥" trend="+5%" />
-                    <StatCard title="معدل التحويل" value="١٨٪" trend="-2%" negative />
-                    <StatCard
-                        title="نقرات WhatsApp"
-                        value="٣,٥٠٠"
-                        highlight
-                    />
-                </section>
+                <div className="grid lg:grid-cols-3 gap-6">
 
-                {/* Chart + Latest Offers */}
-                <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Chart */}
-                    <div className="lg:col-span-2 bg-white rounded-2xl border shadow-sm">
-                        <div className="p-6 border-b flex justify-between items-center">
-                            <div>
-                                <h3 className="font-bold">حركة المرور الشهرية</h3>
-                                <p className="text-xs text-gray-500">
-                                    تحليل الزيارات للعروض
-                                </p>
-                            </div>
-                            <div className="flex bg-gray-100 rounded-lg p-1 text-xs font-bold">
-                                <button className="px-3 py-1 rounded-md bg-white shadow text-emerald-700">
-                                    شهري
-                                </button>
-                                <button className="px-3 py-1 rounded-md text-gray-500">
-                                    سنوي
-                                </button>
-                            </div>
+                    <Card title="أحدث الباقات">
+                        {latestOffers.map(o => (
+                            <Row
+                                key={o.id}
+                                title={o.title}
+                                status={o.is_active ? 'نشط' : 'غير نشط'}
+                                onClick={() => router.get(route('admin.offers.show', o.id))}
+                            />
+                        ))}
+                    </Card>
+
+                    <Card title="تنتهي قريبًا" danger>
+                        {expiringOffers.map(o => (
+                            <Row
+                                key={o.id}
+                                title={o.title}
+                                status={o.end_date}
+                                danger
+                            />
+                        ))}
+                    </Card>
+
+
+                    <Card title="التوزيع حسب نوع الرحلة">
+                        {offersByTripType.map(t => (
+                            <DistributionRow
+                                key={t.id}
+                                label={t.name}
+                                count={t.offers_count}
+                            />
+                        ))}
+                    </Card>
+
+                    <Card title="دورة حياة الباقات">
+                        <div className="p-4 space-y-2 text-sm">
+                            <p>
+                                📆 متوسط مدة الباقة:
+                                <span className="font-bold"> {toArabicNumber(lifecycle.avgDuration)} يوم</span>
+                            </p>
+                            <p>
+                                ⏳ باقات قريبة الانتهاء:
+                                <span className="font-bold text-red-600">
+                                    {' '}{toArabicNumber(lifecycle.expiringSoon)}
+                                </span>
+                            </p>
+                            <p className="text-slate-500">
+                                هذا المؤشر يساعد على تحسين تخطيط العروض المستقبلية.
+                            </p>
                         </div>
+                    </Card>
 
-                        {/* Chart Placeholder */}
-                        <div className="p-8">
-                            <div className="h-56 flex items-end gap-4">
-                                {[40, 60, 55, 35, 50, 25, 30].map((h, i) => (
-                                    <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                                        <div
-                                            className="w-full rounded-t-lg bg-gradient-to-t from-emerald-700 to-emerald-400"
-                                            style={{ height: `${h}%` }}
-                                        />
-                                        <span className="text-[10px] text-gray-500">
-                                            {['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو'][i]}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Latest Offers */}
-                    <div className="bg-white rounded-2xl border shadow-sm overflow-hidden">
-                        <div className="p-6 border-b flex justify-between items-center">
-                            <h3 className="font-bold">أحدث العروض</h3>
-                            <button className="text-xs font-bold text-emerald-700">
-                                عرض الكل
-                            </button>
-                        </div>
+                    <Card title="أكثر شركات السياحة نشاطًا">
+                        {offersByCompany.map(c => (
+                            <DistributionRow
+                                key={c.id}
+                                label={c.name}
+                                count={c.offers_count}
+                            />
+                        ))}
+                    </Card>
 
-                        <ul className="divide-y">
-                            <OfferItem title="عمرة النصف من شعبان" status="نشط" />
-                            <OfferItem title="حج بري اقتصادي" status="مراجعة" />
-                            <OfferItem title="عمرة شهر رمضان" status="نشط" />
-                            <OfferItem title="باقة كبار الشخصيات" status="مسودة" />
-                        </ul>
-                    </div>
-                </section>
+
+                    <Card title="التوزيع حسب المحافظات">
+                        {offersByGovernorate.map(g => (
+                            <DistributionRow
+                                key={g.id}
+                                label={g.name}
+                                count={g.offers_count}
+                            />
+                        ))}
+                    </Card>
+
+
+                </div>
             </div>
         </AuthenticatedLayout>
     );
 }
 
-/* ================= Components ================= */
 
-function ActionButton({ label, primary }) {
+function Kpi({ title, value, icon, danger }) {
     return (
-        <button
-            className={`rounded-xl py-3 text-sm font-bold transition
-            ${primary
-                ? 'bg-emerald-700 text-white hover:bg-emerald-800'
-                : 'bg-white border hover:bg-gray-50'
-            }`}
-        >
-            {label}
-        </button>
-    );
-}
-
-function StatCard({ title, value, trend, negative, highlight }) {
-    return (
-        <div
-            className={`rounded-2xl p-6 border shadow-sm
-            ${highlight ? 'bg-emerald-700 text-white' : 'bg-white'}`}
-        >
-            <p className={`text-xs font-bold mb-2 ${highlight ? 'text-white/70' : 'text-gray-500'}`}>
-                {title}
-            </p>
-
-            <div className="flex items-center justify-between">
-                <span className="text-3xl font-black">{value}</span>
-
-                {trend && (
-                    <span
-                        className={`text-xs font-bold px-2 py-1 rounded
-                        ${negative
-                            ? 'bg-red-50 text-red-600'
-                            : 'bg-green-50 text-green-600'
-                        }`}
-                    >
-                        {trend}
-                    </span>
-                )}
+        <div className={`bg-white border rounded-xl p-4 flex justify-between items-center
+      ${danger && 'border-red-200'}`}>
+            <div>
+                <p className="text-xs text-slate-500 font-bold">{title}</p>
+                <p className="text-2xl font-black">{value}</p>
+            </div>
+            <div className={`text-2xl ${danger ? 'text-red-500' : 'text-[var(--app-primary)]'}`}>
+                {icon}
             </div>
         </div>
     );
 }
 
-function OfferItem({ title, status }) {
-    const statusStyles = {
-        'نشط': 'bg-green-50 text-green-700',
-        'مراجعة': 'bg-amber-50 text-amber-700',
-        'مسودة': 'bg-gray-100 text-gray-600',
-    };
-
+function AlertCard({ title, value, danger, action }) {
     return (
-        <li className="p-4 hover:bg-gray-50 flex justify-between items-center">
-            <span className="font-bold text-sm">{title}</span>
-            <span className={`text-[10px] font-bold px-2 py-1 rounded ${statusStyles[status]}`}>
+        <div className={`p-4 rounded-xl border flex justify-between items-center
+      ${danger ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'}`}>
+            <div>
+                <p className="font-bold">{title}</p>
+                <p className="text-sm text-slate-600">عدد: {value}</p>
+            </div>
+            <button onClick={action} className="btn-primary text-sm">
+                عرض
+            </button>
+        </div>
+    );
+}
+
+function Card({ title, children, danger }) {
+    return (
+        <div className="bg-white border border-slate-200 rounded-xl">
+            <div className={`p-4 border-b font-bold ${danger && 'text-red-600'}`}>
+                {title}
+            </div>
+            <div className="divide-y">{children}</div>
+        </div>
+    );
+}
+
+function Row({ title, status, danger, onClick }) {
+    return (
+        <div onClick={onClick}
+            className="p-4 hover:bg-slate-50 cursor-pointer flex justify-between">
+            <span>{title}</span>
+            <span className={`text-xs font-bold px-2 py-1 rounded
+        ${danger ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-600'}`}>
                 {status}
             </span>
-        </li>
+        </div>
+    );
+}
+
+function DistributionRow({ label, count }) {
+     const toArabicNumber = (value) => {
+        if (value === null || value === undefined) return '٠';
+        return value.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+    };
+    return (
+        <div className="p-3">
+            <div className="flex justify-between text-sm font-bold mb-1">
+                <span>{label}</span>
+                <span>{toArabicNumber(count)}</span>
+            </div>
+            <div className="h-2 bg-slate-100 rounded">
+                <div
+                    className="h-2 bg-[var(--app-primary)] rounded"
+                    style={{ width: `${Math.min(count * 5, 100)}%` }}
+                />
+            </div>
+        </div>
     );
 }
