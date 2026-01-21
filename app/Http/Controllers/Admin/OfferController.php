@@ -394,4 +394,42 @@ class OfferController extends Controller
     }
 }
 
+
+public function search(Request $request)
+{
+    $q = $request->get('q');
+
+    if (!$q) {
+        return response()->json([]);
+    }
+
+    $offers = Offer::select('id', 'title', 'offer_code', 'slug')
+        ->where('offer_code', 'like', "%{$q}%")
+        ->orWhere('title', 'like', "%{$q}%")
+        ->limit(5)
+        ->get()
+        ->map(fn ($o) => [
+            'type' => 'offer',
+            'label' => "{$o->offer_code} - {$o->title}",
+            'url' => route('admin.offers.show', $o->id),
+        ]);
+
+    $governorates = Governorate::select('id', 'name')
+        ->where('name', 'like', "%{$q}%")
+        ->limit(5)
+        ->get()
+        ->map(fn ($g) => [
+            'type' => 'governorate',
+            'label' => $g->name,
+            'url' => route('admin.offers.index', [
+                'governorate_id' => $g->id
+            ]),
+        ]);
+
+    return response()->json(
+        $offers->merge($governorates)->values()
+    );
+}
+
+
 }

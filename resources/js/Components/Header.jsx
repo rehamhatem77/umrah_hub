@@ -6,6 +6,27 @@ export default function Header() {
     const user = usePage().props.auth.user;
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        if (query.length < 2) {
+            setResults([]);
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            fetch(route('admin.search', { q: query }))
+                .then(res => res.json())
+                .then(data => {
+                    setResults(data);
+                    setOpen(true);
+                });
+        }, 300);
+
+        return () => clearTimeout(timeout);
+    }, [query]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -18,8 +39,8 @@ export default function Header() {
     }, []);
 
     const menuItems = [
-        { label: 'الملف الشخصي', icon: <FiUser />, href: '#' },
-        { label: 'الإعدادات', icon: <FiSettings />, href: '#' },
+        // { label: 'الملف الشخصي', icon: <FiUser />, href: '#' },
+        // { label: 'الإعدادات', icon: <FiSettings />, href: '#' },
         { label: 'تسجيل الخروج', icon: <FiLogOut />, href: route('logout'), method: 'post', isButton: true },
     ];
 
@@ -32,17 +53,49 @@ export default function Header() {
                     <FiSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
                     <input
                         type="text"
-                        placeholder="ابحث عن كود عرض، محافظة..."
+                        placeholder="ابحث عن كود باقة"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
                         className="w-full pr-10 pl-4 py-3 bg-gray-100 border-none rounded-lg
                                    focus:ring-2 focus:ring-[var(--app-primary)] focus:ring-offset-1
                                    focus:bg-white text-sm transition-all outline-none shadow-sm hover:bg-white h-12"
                     />
+
+                    {open && query.length > 0 && (
+                        <div className="absolute mt-2 w-full bg-white border rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+                            {results.length > 0 ? (
+                                results.map((item, i) => (
+                                    <Link
+                                        key={i}
+                                        href={item.url}
+                                        className="block px-4 py-2 text-sm hover:bg-gray-100"
+                                        onClick={() => {
+                                            setOpen(false);
+                                            setQuery('');
+                                        }}
+                                    >
+                                        <span className="text-xs text-gray-400 mr-2">
+                                            {item.type === 'offer' ? '🎁  باقة ' : '📍 محافظة'}
+                                        </span>
+                                        {item.label}
+                                    </Link>
+                                ))
+                            ) : (
+                                <div className="px-4 py-2 text-sm text-gray-500">
+                                    لا توجد نتائج
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+
+
                 </div>
             </div>
 
             <div className="flex items-center gap-3 relative">
 
-                <button
+                {/* <button
                     className="relative flex items-center justify-center w-12 h-12 rounded-lg
                                bg-gray-100 text-gray-600 hover:bg-gray-200 transition-transform duration-150
                                active:scale-95"
@@ -50,7 +103,7 @@ export default function Header() {
                 >
                     <FiBell size={22} />
                     <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                </button>
+                </button> */}
 
                 <div className="h-6 w-px bg-gray-200 mx-1"></div>
 
