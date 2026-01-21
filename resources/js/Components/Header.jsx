@@ -40,7 +40,7 @@ export default function Header() {
 
     const menuItems = [
         // { label: 'الملف الشخصي', icon: <FiUser />, href: '#' },
-        // { label: 'الإعدادات', icon: <FiSettings />, href: '#' },
+        { label: 'الإعدادات', icon: <FiSettings />, href: '/users' },
         { label: 'تسجيل الخروج', icon: <FiLogOut />, href: route('logout'), method: 'post', isButton: true },
     ];
 
