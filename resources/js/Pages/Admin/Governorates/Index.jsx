@@ -81,25 +81,25 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
         });
     };
 
-    const openEdit = (gov) => {
-        const option = { label: gov.name, value: gov.name };
-        form.setData({ name: gov.name, id: gov.id });
-        setEditSelect(option);
-        setEditModal(true);
-    };
+    // const openEdit = (gov) => {
+    //     const option = { label: gov.name, value: gov.name };
+    //     form.setData({ name: gov.name, id: gov.id });
+    //     setEditSelect(option);
+    //     setEditModal(true);
+    // };
 
-    const update = (e) => {
-        e.preventDefault();
-        if (selectedGovernorates.includes(form.data.name) && form.data.name !== editSelect?.value) {
-            toast.error('هذه المحافظة موجودة مسبقًا'); return;
-        }
-        form.put(route('governorates.update', form.data.id), {
-            onSuccess: () => { 
-                // toast.success('تم تحديث المحافظة بنجاح'); 
-                setEditModal(false); setEditSelect(null); form.reset(); },
-            onError: () => toast.error('حدث خطأ أثناء التحديث'),
-        });
-    };
+    // const update = (e) => {
+    //     e.preventDefault();
+    //     if (selectedGovernorates.includes(form.data.name) && form.data.name !== editSelect?.value) {
+    //         toast.error('هذه المحافظة موجودة مسبقًا'); return;
+    //     }
+    //     form.put(route('governorates.update', form.data.id), {
+    //         onSuccess: () => { 
+    //             // toast.success('تم تحديث المحافظة بنجاح'); 
+    //             setEditModal(false); setEditSelect(null); form.reset(); },
+    //         onError: () => toast.error('حدث خطأ أثناء التحديث'),
+    //     });
+    // };
 
     const openDelete = (id) => { setSelectedId(id); setDeleteModal(true); };
     const destroy = () => {
@@ -120,7 +120,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
         <AuthenticatedLayout>
             <motion.div variants={pageMotion} initial="hidden" animate="visible" className="px-3 sm:px-6 space-y-6">
 
-                {/* BREADCRUMBS */}
+          
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <span>لوحة التحكم</span>
                     <FiChevronLeft />
@@ -131,7 +131,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
 
                     <h1 className="text-lg sm:text-xl font-bold">إدارة المحافظات</h1>
                 </div>
-                {/* ADD */}
+               
                 <motion.div variants={cardMotion} className="card p-3">
                     <h2 className="text-md font-semibold mb-2 flex items-center gap-2"><FiPlus /> إضافة محافظة</h2>
                     <form onSubmit={submit} className="flex gap-2 items-start">
@@ -153,7 +153,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
                     </form>
                 </motion.div>
 
-                {/* SEARCH */}
+           
                 <div className="flex items-center gap-2">
                     <FiSearch className="text-gray-400" />
                     <input
@@ -165,7 +165,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
                     />
                 </div>
 
-                {/* TABLE */}
+          
                 <div className="card p-0 overflow-hidden">
                     <table className="table text-sm">
                         <thead>
@@ -184,7 +184,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
                                             <td className="flex items-center gap-2 font-medium"><FiMapPin className="text-[var(--app-primary)]" /> {gov.name}</td>
                                             <td className="text-center">
                                                 <div className="flex justify-center gap-3">
-                                                    <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.9 }} onClick={() => openEdit(gov)} className="text-[var(--app-primary)]"><FiEdit2 size={20} /></motion.button>
+                                                    {/* <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.9 }} onClick={() => openEdit(gov)} className="text-[var(--app-primary)]"><FiEdit2 size={20} /></motion.button> */}
                                                     <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.9 }} onClick={() => openDelete(gov.id)} className="text-red-600"><FiTrash2 size={20} /></motion.button>
                                                 </div>
                                             </td>
@@ -198,7 +198,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
                     </table>
                 </div>
 
-                {/* PAGINATION */}
+              
                 {governorates.links && (
                     <div className="flex justify-center gap-1 flex-wrap text-sm">
                         {governorates.links.map((link, idx) => {
@@ -230,7 +230,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
 
 
                 {/* EDIT MODAL */}
-                <Modal show={editModal} title="تعديل المحافظة" onClose={() => setEditModal(false)}>
+                {/* <Modal show={editModal} title="تعديل المحافظة" onClose={() => setEditModal(false)}>
                     <motion.form initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 180, damping: 20 }} onSubmit={update} className="space-y-2">
                         <Select
                             isRtl
@@ -242,7 +242,7 @@ export default function Index({ governorates, egyptGovernorates, filters }) {
                         />
                         <button className="btn-primary w-full py-2 text-sm">حفظ</button>
                     </motion.form>
-                </Modal>
+                </Modal> */}
 
                 {/* DELETE MODAL */}
                 <Modal show={deleteModal} title="تأكيد الحذف" onClose={() => setDeleteModal(false)}>

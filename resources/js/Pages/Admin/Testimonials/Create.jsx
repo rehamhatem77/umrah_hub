@@ -168,7 +168,7 @@ export default function Create() {
                     </div>
 
                     <div className="flex justify-end gap-2 pt-4">
-                        <button type="button" onClick={() => router.get(route('testimonial.index'))} className="btn-secondary">
+                        <button type="button" onClick={() => router.get(route('testimonials.index'))} className="btn-secondary">
                             إلغاء
                         </button>
                         <button type="submit" className="btn-primary flex items-center gap-2" disabled={form.processing}>

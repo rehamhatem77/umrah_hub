@@ -32,13 +32,17 @@ class FeatureController extends Controller
             'icon' => 'nullable|string',
         ]);
 
+        try {
         Feature::create([
             'name' => $request->name,
             'icon' => $request->icon,
-           
         ]);
 
         return back()->with('success', 'تمت إضافة الميزة بنجاح');
+
+    } catch (\Throwable $e) {
+        return back()->with('error', 'حدث خطأ أثناء إضافة الميزة');
+    }
     }
 
     public function update(Request $request, Feature $feature)
@@ -47,6 +51,7 @@ class FeatureController extends Controller
             'name' => 'required|string|max:255|unique:features,name,' . $feature->id,
             'icon' => 'nullable|string',
         ]);
+        try{
 
         $feature->update([
             'name' => $request->name,
@@ -55,12 +60,26 @@ class FeatureController extends Controller
         ]);
 
         return back()->with('success', 'تم تحديث الميزة بنجاح');
+        }
+        catch (\Throwable $e) {
+        return back()->with('error', 'حدث خطأ أثناء تحديث الميزة');
+    }
     }
 
-    public function destroy(Feature $feature)
-    {
+   public function destroy(Feature $feature)
+{
+    try {
+        if ($feature->offers()->exists()) {
+            return back()->with('error', 'لا يمكن حذف الميزة لأنها مرتبطة بعروض');
+        }
+
         $feature->delete();
 
         return back()->with('success', 'تم حذف الميزة');
+
+    } catch (\Throwable $e) {
+        return back()->with('error', 'حدث خطأ أثناء حذف الميزة');
     }
+}
+
 }

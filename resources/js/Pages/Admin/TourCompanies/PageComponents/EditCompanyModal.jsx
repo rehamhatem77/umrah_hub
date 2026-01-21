@@ -52,7 +52,7 @@ const noOptionsMessage = ({ inputValue }) => {
         if (Object.keys(errors).length > 0) return;
 
         onSubmit(e);
-        toast.success('تم تعديل بيانات الشركة بنجاح');
+        // toast.success('تم تعديل بيانات الشركة بنجاح');
     };
 
     return (

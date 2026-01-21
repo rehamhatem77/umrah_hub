@@ -54,7 +54,7 @@ const noOptionsMessage = ({ inputValue }) => {
 
         onSubmit(e);
 
-        toast.success('تمت إضافة الشركة بنجاح');
+        // toast.success('تمت إضافة الشركة بنجاح');
     };
 
     return (

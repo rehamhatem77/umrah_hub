@@ -56,7 +56,7 @@ export default function Index({ features, filters }) {
        
         form.post(route('features.store'), {
             onSuccess: () => {
-                toast.success('تمت إضافة الميزة');
+                // toast.success('تمت إضافة الميزة');
                 form.reset();
             },
             onError: () => toast.error('فشل إضافة الميزة'),
@@ -77,7 +77,7 @@ export default function Index({ features, filters }) {
         e.preventDefault();
         form.put(route('features.update', form.data.id), {
             onSuccess: () => {
-                toast.success('تم تحديث الميزة');
+                // toast.success('تم تحديث الميزة');
                 setEditModal(false);
                 form.reset();
             },
@@ -94,7 +94,7 @@ export default function Index({ features, filters }) {
     const destroy = () => {
         router.delete(route('features.destroy', selected.id), {
             onSuccess: () => {
-                toast.success('تم حذف الميزة');
+                // toast.success('تم حذف الميزة');
                 setDeleteModal(false);
             },
             onError: () => toast.error('فشل حذف الميزة'),

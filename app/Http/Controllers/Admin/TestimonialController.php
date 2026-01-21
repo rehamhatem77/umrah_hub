@@ -37,9 +37,14 @@ class TestimonialController extends Controller
             'comment'=>'required',
             'is_active'=>'boolean'
         ]);
-
-        Testimonial::create($data);
+        try{
+            Testimonial::create($data);
         return redirect()->route('testimonials.create')->with('success','تم إضافة التقييم');
+        }catch (\Throwable $e){
+            return redirect()->route('testimonials.create')->with('error','حدث خطأ أثناء إضافة التقييم');
+        }
+
+        
     }
 
     public function edit(Testimonial $testimonial)
@@ -51,6 +56,7 @@ class TestimonialController extends Controller
 
     public function update(Request $request, Testimonial $testimonial)
     {
+        try{
         $testimonial->update($request->validate([
             'rating'=>'integer|min:1|max:5',
             'comment'=>'required',
@@ -59,10 +65,16 @@ class TestimonialController extends Controller
         ]));
 
         return redirect()->route('testimonials.index')->with('success','تم تحديث التقييم');
+        }catch(\Throwable $e){
+
+        return redirect()->route('testimonials.index')->with('error','حدث خطأ أثناء تحديث التقييم');
+
+        }
     }
 
     public function destroy($id, Request $request)
     {
+        try{
         $testimonial = Testimonial::withTrashed()->findOrFail($id);
        if ($request->boolean('force')) {
 
@@ -72,8 +84,10 @@ class TestimonialController extends Controller
     $testimonial->delete();
     return back()->with('success', 'تم حذف التقييم بنجاح');
     }
-
-
+     catch(\Throwable $e){
+         return back()->with('error', 'حدث خطأ أثناء حذف التقييم بنجاح');
+    }
+    }
   public function show($id)
     {
         $testimonial = Testimonial::withTrashed()->findOrFail($id);
@@ -101,9 +115,13 @@ class TestimonialController extends Controller
 }
     public function restore($id)
 {
+    try{
     $testimonial = Testimonial::onlyTrashed()->findOrFail($id);
     $testimonial->restore();
 
     return back()->with('success', 'تم استعادة التقييم بنجاح');
+    }catch(\Throwable $e){
+        return back()->with('error', 'حدث خطأ أثناء استعادة التقييم بنجاح');
+    }
 }
 }

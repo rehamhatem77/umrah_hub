@@ -62,14 +62,19 @@ class HotelController extends Controller
 
         $data['slug'] = Str::slug($data['name']);
 
-        if (Hotel::withTrashed()->where('name', $data['name'])->exists()) {
-            return back()->with('error', 'يوجد فندق بنفس الاسم، يرجى اختيار اسم مختلف');
+        try {
+            if (Hotel::withTrashed()->where('name', $data['name'])->exists()) {
+                return back()->with('error', 'يوجد فندق بنفس الاسم، يرجى اختيار اسم مختلف');
+            }
+
+            Hotel::create($data);
+
+            return redirect()
+                ->route('hotels.create')
+                ->with('success', 'تم إضافة الفندق بنجاح');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'حدث خطأ أثناء إضافة الفندق');
         }
-
-        Hotel::create($data);
-
-        return redirect()->route('hotels.create')
-            ->with('success', 'تم إضافة الفندق بنجاح');
     }
 
     private function generateUniqueSlug(string $name): string
@@ -86,11 +91,6 @@ class HotelController extends Controller
         return $slug;
     }
 
-
-
-
-
-
     public function edit(Hotel $hotel)
     {
         return Inertia::render('Admin/Hotels/Edit', [
@@ -100,42 +100,44 @@ class HotelController extends Controller
 
     public function update(HotelRequest $request, Hotel $hotel)
     {
-        $hotel->update($request->validated());
+        try {
+            $hotel->update($request->validated());
 
-        return redirect()->route('hotels.index')
-            ->with('success', 'تم تعديل بيانات الفندق بنجاح');
+            return redirect()
+                ->route('hotels.index')
+                ->with('success', 'تم تعديل بيانات الفندق بنجاح');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'حدث خطأ أثناء تعديل بيانات الفندق');
+        }
     }
 
 
     public function destroy(Request $request, $id)
     {
+        try {
+            $hotel = Hotel::withTrashed()->findOrFail($id);
 
-        $hotel = Hotel::withTrashed()->findOrFail($id);
-
-
-        if ($request->boolean('force')) {
-
-            if ($hotel->offers()->count() > 0) {
+            if ($hotel->offers()->exists()) {
                 return redirect()
                     ->route('hotels.index')
-                    ->withErrors(['error' => 'لا يمكن حذف الفندق لأنه مرتبط بعروض سفر.']);
+                    ->with('error', 'لا يمكن حذف الفندق لأنه مرتبط بعروض سفر.');
             }
-            $hotel->forceDelete();
 
-            return redirect()
-                ->route('hotels.trash')
-                ->with('success', 'تم حذف الفندق نهائيًا');
-        }
+            if ($request->boolean('force')) {
+                $hotel->forceDelete();
 
-        if ($hotel->offers()->count() > 0) {
-            return redirect()
-                ->route('hotels.index')
-                ->withErrors(['error' => 'لا يمكن حذف الفندق لأنه مرتبط بعروض سفر.']);
-        } else {
+                return redirect()
+                    ->route('hotels.trash')
+                    ->with('success', 'تم حذف الفندق نهائيًا');
+            }
+
             $hotel->delete();
+
             return redirect()
                 ->route('hotels.index')
                 ->with('success', 'تم نقل الفندق إلى سلة المحذوفات');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'حدث خطأ أثناء حذف الفندق');
         }
     }
 
@@ -150,9 +152,13 @@ class HotelController extends Controller
 
     public function restore($id)
     {
-        $hotel = Hotel::withTrashed()->findOrFail($id);
-        $hotel->restore();
+        try {
+            $hotel = Hotel::withTrashed()->findOrFail($id);
+            $hotel->restore();
 
-        return redirect()->back()->with('success', 'تم استعادة الفندق بنجاح');
+            return back()->with('success', 'تم استعادة الفندق بنجاح');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'حدث خطأ أثناء استعادة الفندق');
+        }
     }
 }

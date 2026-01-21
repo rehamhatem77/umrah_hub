@@ -45,20 +45,20 @@ class GovernorateController extends Controller
 
     public function index(Request $request)
     {
-$query = Governorate::query();
-    if ($request->has('search') && $request->search) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
+        $query = Governorate::query();
+        if ($request->has('search') && $request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-    // Paginate results
-    $governorates = $query->latest()->paginate(10)->withQueryString();
+        // Paginate results
+        $governorates = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Governorates/Index', [
             'governorates' => $governorates,
             'egyptGovernorates' => $this->egyptGovernorates,
             'filters' => [
-            'search' => $request->search ?? '',
-        ],
+                'search' => $request->search ?? '',
+            ],
         ]);
     }
 
@@ -70,30 +70,53 @@ $query = Governorate::query();
 
         $data['slug'] = Str::slug($data['name']);
 
-        Governorate::create($data);
+        try {
+            Governorate::create($data);
 
-        return back()->with('success','تم إضافة المحافظة بنجاح');
+            return back()->with('success', 'تم إضافة المحافظة بنجاح');
+        } catch (\Throwable $e) {
+
+
+            return back()->with('error', 'حدث خطأ أثناء إضافة المحافظة');
+        }
     }
 
-    public function update(Request $request, Governorate $governorate)
-    {
-        $data = $request->validate([
-            'name' => 'required|string|in:' . implode(',', $this->egyptGovernorates),
-        ]);
+    // public function update(Request $request, Governorate $governorate)
+    // {
+    //     $data = $request->validate([
+    //         'name' => 'required|string|in:' . implode(',', $this->egyptGovernorates),
+    //     ]);
 
-        $data['slug'] = Str::slug($data['name']);
+    //     $data['slug'] = Str::slug($data['name']);
 
-        $governorate->update($data);
+    //     try {
+    //         $governorate->update($data);
 
-        return back();
-    }
+    //         return back()->with('success', 'تم تحديث المحافظة بنجاح');
+    //     } catch (\Throwable $e) {
+
+
+    //         return back()->with('error', 'حدث خطأ أثناء تحديث المحافظة');
+    //     }
+    // }
 
     public function destroy(Governorate $governorate)
     {
-         if ($governorate->offers()->count() > 0) {
-            return back()->withErrors(['error' => 'لا يمكن حذف المحافظة لأنها مرتبطة بعروض سفر.']);
+        try {
+            if ($governorate->offers()->exists()) {
+                return back()->with(
+                    'error',
+                    'لا يمكن حذف المحافظة لأنها مرتبطة بعروض سفر.'
+                );
+            }
+
+            $governorate->delete();
+
+            return back()->with('success', 'تم حذف المحافظة بنجاح');
+        } catch (\Throwable $e) {
+
+
+            return back()->with('error', 'حدث خطأ أثناء حذف المحافظة');
         }
-        $governorate->delete();
-        return back();
     }
 }

@@ -13,6 +13,7 @@ use App\Models\OfferImage;
 use App\Models\TourCompany;
 use App\Models\TripType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -128,6 +129,7 @@ class OfferController extends Controller
 
 
         try {
+             DB::beginTransaction();
             $data = $request->validated();
             $data['slug'] = $this->generateUniqueSlug($data['title']);
 
@@ -148,13 +150,17 @@ class OfferController extends Controller
                     ]);
                 }
             }
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'حدث خطأ أثناء إنشاء الباقة: ']);
-        }
-
-        return redirect()
+             DB::commit();
+              return redirect()
             ->route('admin.offers.index')
             ->with('success', 'تم إنشاء الباقة بنجاح');
+
+        } catch (\Throwable  $e) {
+             DB::rollBack();
+            return back()->with('error', 'حدث خطأ أثناء إنشاء الباقة: ');
+        }
+
+       
     }
 
     public function edit(Offer $offer)
@@ -177,6 +183,7 @@ class OfferController extends Controller
 
 
         try {
+            DB::beginTransaction();
             $data = $request->validated();
             $data['slug'] = $this->generateUniqueSlug($data['title']);
 
@@ -196,26 +203,38 @@ class OfferController extends Controller
                     ]);
                 }
             }
-        } catch (\Exception $e) {
+             DB::commit();
+             return redirect()
+            ->route('admin.offers.index')
+            ->with('success', 'تم تحديث الباقة بنجاح');
+        } catch (\Throwable  $e) {
+            DB::rollBack();
             return back()->withErrors(['error' => 'حدث خطأ أثناء تحديث الباقة: ']);
         }
 
-        return redirect()
-            ->route('admin.offers.index')
-            ->with('success', 'تم تحديث الباقة بنجاح');
+       
     }
 
-    public function destroy(Offer $offer)
-    {
+   public function destroy(Offer $offer)
+{
+    try {
+        DB::beginTransaction();
 
         $offer->images()->delete();
-
         $offer->delete();
+
+        DB::commit();
 
         return redirect()
             ->route('admin.offers.index')
             ->with('success', 'تم نقل الباقة إلى سلة المهملات');
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return back()->with('error', 'حدث خطأ أثناء حذف الباقة');
     }
+}
+
 
     public function toggleFlag(Request $request, Offer $offer)
     {
@@ -315,21 +334,34 @@ class OfferController extends Controller
         ]);
     }
 
-    public function restore($id)
-    {
-        $offer = Offer::onlyTrashed()->findOrFail($id);
+  public function restore($id)
+{
+    try {
+        DB::beginTransaction();
 
+        $offer = Offer::onlyTrashed()->findOrFail($id);
         $offer->restore();
         $offer->images()->withTrashed()->restore();
+
+        DB::commit();
 
         return redirect()
             ->route('admin.offers.trash')
             ->with('success', 'تم استعادة الباقة بنجاح');
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return back()->with('error', 'حدث خطأ أثناء الاستعادة');
     }
+}
 
 
-    public function forceDelete($id)
-    {
+
+   public function forceDelete($id)
+{
+    try {
+        DB::beginTransaction();
+
         $offer = Offer::onlyTrashed()
             ->with([
                 'images' => fn($q) => $q->withTrashed(),
@@ -350,8 +382,16 @@ class OfferController extends Controller
 
         $offer->forceDelete();
 
+        DB::commit();
+
         return redirect()
             ->route('admin.offers.trash')
             ->with('success', 'تم حذف الباقة نهائياً');
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return back()->with('error', 'حدث خطأ أثناء الحذف النهائي');
     }
+}
+
 }

@@ -49,14 +49,22 @@ class TourCompanyController extends Controller
 
     public function store(StoreTourCompanyRequest $request)
     {
-        TourCompany::create($request->validated());
-        return back()->with('success', 'تم إضافة شركة جديدة بنجاح');
+        try {
+            TourCompany::create($request->validated());
+            return back()->with('success', 'تم إضافة شركة جديدة بنجاح');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'حدث خطأ أثناء إضافة شركة جديدة');
+        }
     }
 
     public function update(UpdateTourCompanyRequest $request, TourCompany $tourCompany)
     {
-        $tourCompany->update($request->validated());
-        return back()->with('success', 'تم تحديث بيانات الشركة بنجاح');
+        try {
+            $tourCompany->update($request->validated());
+            return back()->with('success', 'تم تحديث بيانات الشركة بنجاح');
+        } catch (\Throwable $e) {
+            return back()->with('errpr', 'حدث خطأ أثناء تحديث بيانات الشركة');
+        }
     }
 
     // public function destroy(TourCompany $tourCompany)
@@ -73,21 +81,28 @@ class TourCompanyController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $company = TourCompany::withTrashed()->findOrFail($id);
+        try {
+            $company = TourCompany::withTrashed()->findOrFail($id);
 
-        //  if ($company->offers()->count() > 0) {
-        //     return back()->withErrors(['error' => 'لا يمكن حذف الشركة لأنها مرتبطة بعروض سفر.']);
-        // }
-        if ($request->boolean('force')) {
-            if ($company->offers()->count() > 0) {
-                return back()->withErrors(['error' => 'لا يمكن حذف الشركة لأنها مرتبطة بعروض سفر.']);
+            //  if ($company->offers()->count() > 0) {
+            //     return back()->withErrors(['error' => 'لا يمكن حذف الشركة لأنها مرتبطة بعروض سفر.']);
+            // }
+            if ($request->boolean('force')) {
+                if ($company->offers()->count() > 0) {
+                    return redirect()->route('tour-companies.index')->with(['error' => 'لا يمكن حذف الشركة لأنها مرتبطة بعروض سفر.']);
+                }
+                $company->forceDelete();
+                return back()->with('success', 'تم حذف الشركة نهائياً');
             }
-            $company->forceDelete();
-            return back()->with('success', 'تم حذف الشركة نهائياً');
-        }
+            if ($company->offers()->count() > 0) {
+                return back()->with(['error' => 'لا يمكن حذف الشركة لأنها مرتبطة بعروض سفر.']);
+            }
 
-        $company->delete();
-        return back()->with('success', 'تم حذف الشركة بنجاح');
+            $company->delete();
+            return back()->with('success', 'تم حذف الشركة بنجاح');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'حدث خطأ أثناء حذف الشركة');
+        }
     }
 
 
@@ -99,7 +114,7 @@ class TourCompanyController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-         if ($request->governorate_id) {
+        if ($request->governorate_id) {
             $query->whereJsonContains('governorate_ids', (int) $request->governorate_id);
         }
         $companies = $query->latest()->paginate(10)->withQueryString();
@@ -120,20 +135,24 @@ class TourCompanyController extends Controller
             ],
         ]);
     }
-public function show($id)
+    public function show($id)
     {
         $company = TourCompany::withTrashed()->findOrFail($id);
 
-        $governorates= $company->governorates->map(fn($g) => ['id' => $g->id, 'name' => $g->name]);
-       return response()->json($company);
+        $governorates = $company->governorates->map(fn($g) => ['id' => $g->id, 'name' => $g->name]);
+        return response()->json($company);
     }
 
 
     public function restore($id)
     {
-        $company = TourCompany::onlyTrashed()->findOrFail($id);
-        $company->restore();
+        try {
+            $company = TourCompany::onlyTrashed()->findOrFail($id);
+            $company->restore();
 
-        return back()->with('success', 'تم استعادة الشركة بنجاح');
+            return back()->with('success', 'تم استعادة الشركة بنجاح');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'حدث خطأ أثناء استعادة الشركة ');
+        }
     }
 }

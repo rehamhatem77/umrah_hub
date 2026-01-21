@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class HotelRequest extends FormRequest
 {
@@ -26,7 +27,8 @@ public function rules(): array
             'required',
             'string',
             'max:255',
-            'unique:hotels,name'
+            Rule::unique('hotels', 'name')
+                ->ignore($this->hotel?->id)
         ],
 
         'city' => ['required', 'in:مكة,المدينة المنورة'],
