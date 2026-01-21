@@ -32,15 +32,18 @@ Route::get('/', function () {
 Route::middleware('auth','admin.only')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+     Route::get('/users', [DashboardController::class, 'users'])->name('users.index');
+    Route::post('/users', [DashboardController::class, 'addUserAdmin'])->name('users.store');
+    Route::put('/users/{user}', [DashboardController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}', [DashboardController::class, 'deleteUser'])->name('users.destroy');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/admin/search', [OfferController::class, 'search'])
-    ->name('admin.search');
-
+    
 });
 
-//admin routes
+
 Route::middleware(['auth', 'admin.only'])->group(function () {
     Route::prefix('admin/offers')->name('admin.offers.')->group(function () {
 

@@ -157,7 +157,8 @@ class OfferController extends Controller
 
         } catch (\Throwable  $e) {
              DB::rollBack();
-            return back()->with('error', 'حدث خطأ أثناء إنشاء الباقة: ');
+            //  \Log::error($e);
+            return back()->with('error', 'حدث خطأ أثناء إنشاء الباقة');
         }
 
        
@@ -185,7 +186,7 @@ class OfferController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->validated();
-            $data['slug'] = $this->generateUniqueSlug($data['title']);
+            // $data['slug'] = $this->generateUniqueSlug($data['title']);
 
             $offer->update($data);
             $offer->features()->sync($request->features ?? []);
@@ -251,13 +252,19 @@ class OfferController extends Controller
         return back()->with('success', 'تم تحديث الحالة');
     }
 
-    private function generateUniqueSlug(string $title): string
-    {
-        $slug  = Str::slug($title);
-        $count = Offer::where('slug', 'like', "{$slug}%")->count();
-
-        return $count ? "{$slug}-" . ($count + 1) : $slug;
+   private function generateUniqueSlug(string $title): string
+{
+    $slug = Str::slug($title); 
+    $originalSlug = $slug;
+    $counter = 1;
+    while (Offer::where('slug', $slug)->exists()) {
+        $slug = $originalSlug . '-' . $counter;
+        $counter++;
     }
+
+    return $slug;
+}
+
 
     public function deleteImage(OfferImage $image)
     {

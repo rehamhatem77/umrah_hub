@@ -9,7 +9,9 @@ use App\Models\Offer;
 use App\Models\Testimonial;
 use App\Models\TourCompany;
 use App\Models\TripType;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -28,7 +30,6 @@ public function index()
 
     return Inertia::render('Dashboard', [
 
-        /* ================= KPIs ================= */
         'kpis' => [
             'offers' => [
                 'total' => $totalOffers,
@@ -47,7 +48,6 @@ public function index()
             ],
         ],
 
-        /* ================= Lifecycle ================= */
         'lifecycle' => [
             'expiringSoon' => Offer::whereBetween('end_date', [now(), now()->addDays(7)])
                 ->count(),
@@ -58,13 +58,11 @@ public function index()
             ),
         ],
 
-        /* ================= Lists ================= */
         'latestOffers' => Offer::latest()->take(6)->get(),
 
         'expiringOffers' => Offer::whereBetween('end_date', [now(), now()->addDays(7)])
             ->take(6)->get(),
 
-        /* ================= Distribution ================= */
         'offersByTripType' => TripType::withCount('offers')->get(),
         'offersByCompany' => TourCompany::withCount('offers')
             ->orderByDesc('offers_count')
@@ -78,5 +76,55 @@ public function index()
     ]);
 }
 
+
+
+    public function users(Request $request)
+    {
+        $search = $request->input('search');
+
+        $users = User::when($search, fn($q) => $q->where('name', 'like', "%{$search}%")
+                                                ->orWhere('email', 'like', "%{$search}%"))
+                     ->orderBy('created_at', 'desc')
+                     ->paginate(10)
+                     ->withQueryString();
+
+        return Inertia::render('Admin/Settings/Index', [
+            'users' => $users,
+            'filters' => $request->only('search'),
+        ]);
+    }
+
+    public function addUserAdmin(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+        $data['role'] = 'admin';
+        $data['password'] = Hash::make($data['password']);
+
+        
+
+        User::create($data);
+        return redirect()->back()->with('success', 'تمت إضافة المستخدم بنجاح');
+    }
+
+    // public function updateUser(Request $request, User $user)
+    // {
+    //     $data = $request->validate([
+    //         'name' => 'sometimes|required|string|max:255',
+    //         'role' => 'sometimes|required|in:user,admin',
+    //     ]);
+
+    //     $user->update($data);
+
+    //     return redirect()->back()->with('success', 'تم تحديث بيانات المستخدم');
+    // }
+    public function deleteUser(User $user)
+    {
+        $user->delete();
+        return redirect()->back()->with('success', 'تم حذف المستخدم');
+    }
 
 }

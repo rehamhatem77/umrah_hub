@@ -33,7 +33,7 @@ class UpdateOfferRequest extends FormRequest
             //
             'offer_code' => 'required|string|max:100|unique:offers,offer_code,' . $this->offer->id,
             'title' => 'required|string|max:255',
-            'slug'  => 'nullable|string|max:255',
+            'slug'  => 'nullable|string|max:255'. $this->offer->id,
 
 
             'trip_type_id'   => 'required|exists:trip_types,id',

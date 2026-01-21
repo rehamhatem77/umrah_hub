@@ -51,7 +51,7 @@ export default function AuthenticatedLayout({ children }) {
         { name: 'المميزات', icon: <LuPackagePlus />, path: '/admin/features' },
         { name: 'التقييمات', icon: <FiStar />, path: '/admin/testimonials' },
         // { name: 'المستخدمون', icon: <FiUsers />, path: '#' },
-        { name: 'الإعدادات', icon: <FiSettings />, path: '#' },
+        { name: 'الإعدادات', icon: <FiSettings />, path: '/users' },
     ];
 
      const sitePages = [
