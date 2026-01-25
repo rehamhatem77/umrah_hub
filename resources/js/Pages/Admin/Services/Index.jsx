@@ -24,7 +24,7 @@ import { LuPackagePlus } from 'react-icons/lu';
 const pageMotion = { hidden: { opacity: 0, y: 5 }, visible: { opacity: 1, y: 0 } };
 const rowMotion = { hidden: { opacity: 0, y: 2 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0 } };
 
-export default function Index({ features, filters }) {
+export default function Index({ services, filters }) {
     const [editModal, setEditModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [selected, setSelected] = useState(null);
@@ -34,6 +34,7 @@ export default function Index({ features, filters }) {
 
     const form = useForm({
         name: '',
+        description:'',
         icon: '',
         id: null,
     });
@@ -46,65 +47,69 @@ export default function Index({ features, filters }) {
         setIconModal(false);
     };
 
-    const selectedFeatures = features.data.map(f => f.name);
+    const selectedServices = services.data.map(f => f.name);
     
     const submit = (e) => {
          e.preventDefault();
-         if (!form.data.name) { setFrontendErrors({ name: 'اسم الميزة مطلوب' }); return; }
-        if (selectedFeatures.includes(form.data.name)) { toast.error('هذه الميزة موجودة مسبقًا'); return; }
+         if (!form.data.name) { setFrontendErrors({ name: 'اسم الخدمة مطلوب' }); return; }
+          if (!form.data.description) { setFrontendErrors({ description: 'وصف الخدمة مطلوب' }); return; }
+           if (!form.data.icon) { setFrontendErrors({ icon: 'أيقونة الخدمة مطلوب' }); return; }
+        if (selectedServices.includes(form.data.name)) { toast.error('هذه الخدمة موجودة مسبقًا'); return; }
 
        
-        form.post(route('features.store'), {
+        form.post(route('services.store'), {
             onSuccess: () => {
-                // toast.success('تمت إضافة الميزة');
+                // toast.success('تمت إضافة الخدمة');
                 form.reset();
             },
-            onError: () => toast.error('فشل إضافة الميزة'),
+            onError: () => toast.error('فشل إضافة الخدمة'),
         });
     };
 
 
-    const openEdit = (feature) => {
+    const openEdit = (service) => {
         form.setData({
-            id: feature.id,
-            name: feature.name,
-            icon: feature.icon || '',
+            id: service.id,
+            name: service.name,
+            description: service.description,
+
+            icon: service.icon || '',
         });
         setEditModal(true);
     };
 
     const update = (e) => {
         e.preventDefault();
-        form.put(route('features.update', form.data.id), {
+        form.put(route('services.update', form.data.id), {
             onSuccess: () => {
-                // toast.success('تم تحديث الميزة');
+                // toast.success('تم تحديث الخدمة');
                 setEditModal(false);
                 form.reset();
             },
-            onError: () => toast.error('فشل تحديث الميزة'),
+            onError: () => toast.error('فشل تحديث الخدمة'),
         });
     };
 
 
-    const openDelete = (feature) => {
-        setSelected(feature);
+    const openDelete = (service) => {
+        setSelected(service);
         setDeleteModal(true);
     };
 
     const destroy = () => {
-        router.delete(route('features.destroy', selected.id), {
+        router.delete(route('services.destroy', selected.id), {
             onSuccess: () => {
-                // toast.success('تم حذف الميزة');
+                // toast.success('تم حذف الخدمة');
                 setDeleteModal(false);
             },
-            onError: () => toast.error('فشل حذف الميزة'),
+            onError: () => toast.error('فشل حذف الخدمة'),
         });
     };
 
 
     const handleSearch = (e) => {
         setSearch(e.target.value);
-        router.get(route('features.index'), { search: e.target.value }, {
+        router.get(route('services.index'), { search: e.target.value }, {
             preserveState: true,
             replace: true
         });
@@ -117,43 +122,58 @@ export default function Index({ features, filters }) {
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <span>لوحة التحكم</span>
                     <FiChevronLeft />
-                    <span className="text-[var(--app-primary)] font-medium">المميزات</span>
+                    <span className="text-[var(--app-primary)] font-medium">الخدمات</span>
                 </div>
 
                 <div className="flex items-center gap-2">
                     <LuPackagePlus className="text-2xl text-[var(--app-primary)]" />
-                    <h1 className="text-xl font-bold">إدارة المميزات</h1>
+                    <h1 className="text-xl font-bold">إدارة الخدمات</h1>
                 </div>
 
                 <div className="card p-4">
                     <h2 className="font-semibold mb-2 flex items-center gap-2">
-                        <FiPlus /> إضافة ميزة
+                        <FiPlus /> إضافة خدمة
                     </h2>
-                    <form onSubmit={submit} className="flex gap-2 items-center">
+                    <form onSubmit={submit} className=" gap-2 items-center">
                         <input
                             className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
-                            placeholder="اسم الميزة"
+                            placeholder="اسم الخدمة"
                             value={form.data.name}
                             onChange={e => form.setData('name', e.target.value)}
                         />
                         <InputError message={frontendErrors.name} />
+                         <input
+                            className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
+                            placeholder="وصف الخدمة"
+                            value={form.data.description}
+                            onChange={e => form.setData('description', e.target.value)}
+                        />
+                        <InputError message={frontendErrors.description} />
+
+                        <div className='flex gap-2 items-center mt-3'>
 
                         <button
                             type="button"
                             onClick={() => setIconModal(true)}
-                            className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:border-[var(--app-primary)] transition min-w-[140px]"
+                            className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:border-[var(--app-primary)] transition min-w-[300px]"
                         >
                             {form.data.icon
                                 ? React.createElement(getIconComponent(form.data.icon), { size: 18 })
-                                : <LuPackagePlus size={18} />}
+                                : <FaIcons.FaHandsHelping size={18} />}
                             <span className="text-sm text-gray-700">
                                 {form.data.icon ? 'تغيير الأيقونة' : 'اختر أيقونة'}
                             </span>
                         </button>
 
-                        <button className="btn-primary px-4">
+                        <button className="btn-primary px-4" title='أضف الخدمة'>
+                            <div className='flex gap-2 items-center'>
+
                             <FiPlus />
+                            اضافة الخدمة
+                            </div>
                         </button>
+                        </div>
+                        <InputError message={frontendErrors.icon} />
                     </form>
 
                     {form.data.icon && (
@@ -171,7 +191,7 @@ export default function Index({ features, filters }) {
                     <input
                         value={search}
                         onChange={handleSearch}
-                        placeholder="ابحث عن ميزة"
+                        placeholder="ابحث عن خدمة"
                         className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
 
                     />
@@ -189,22 +209,22 @@ export default function Index({ features, filters }) {
                         </thead>
                         <tbody>
                             <AnimatePresence>
-                                {features.data.length ? (
-                                    features.data.map(feature => (
-                                        <motion.tr key={feature.id} variants={rowMotion} initial="hidden" animate="visible" exit="exit">
-                                            <td>{feature.id}</td>
-                                            <td className="font-medium">{feature.name}</td>
+                                {services.data.length ? (
+                                    services.data.map(service => (
+                                        <motion.tr key={service.id} variants={rowMotion} initial="hidden" animate="visible" exit="exit">
+                                            <td>{service.id}</td>
+                                            <td className="font-medium">{service.name}</td>
                                             <td>
-                                                {feature.icon && getIconComponent(feature.icon)
-                                                    ? React.createElement(getIconComponent(feature.icon), { size: 18 })
+                                                {service.icon && getIconComponent(service.icon)
+                                                    ? React.createElement(getIconComponent(service.icon), { size: 18 })
                                                     : <span className="text-gray-400">—</span>}
                                             </td>
                                             <td className="text-center">
                                                 <div className="flex justify-center gap-3">
-                                                    <button onClick={() => openEdit(feature)} className="text-[var(--app-primary)]">
+                                                    <button onClick={() => openEdit(service)} className="text-[var(--app-primary)]">
                                                         <FiEdit2 size={18} />
                                                     </button>
-                                                    <button onClick={() => openDelete(feature)} className="text-red-600">
+                                                    <button onClick={() => openDelete(service)} className="text-red-600">
                                                         <FiTrash2 size={18} />
                                                     </button>
                                                 </div>
@@ -214,7 +234,7 @@ export default function Index({ features, filters }) {
                                 ) : (
                                     <tr>
                                         <td colSpan="4" className="text-center py-4 text-gray-500">
-                                            لا توجد مميزات
+                                            لا توجد خدمات
                                         </td>
                                     </tr>
                                 )}
@@ -224,9 +244,9 @@ export default function Index({ features, filters }) {
                 </div>
 
 
-                {features.links && (
+                {services.links && (
                     <div className="flex justify-center gap-1 flex-wrap text-sm">
-                        {features.links.map((link, idx) => {
+                        {services.links.map((link, idx) => {
                             let label = '';
                             const toArabicNumbers = (num) => {
                                 const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -254,13 +274,18 @@ export default function Index({ features, filters }) {
                 )}
 
 
-                {/* EDIT MODAL */}
-                <Modal show={editModal} title="تعديل الميزة" onClose={() => setEditModal(false)}>
+             
+                <Modal show={editModal} title="تعديل الخدمة" onClose={() => setEditModal(false)}>
                     <form onSubmit={update} className="space-y-2">
                         <input
-                            className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
+                        className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
                             value={form.data.name}
                             onChange={e => form.setData('name', e.target.value)}
+                        />
+                        <input
+                        className="input flex-1 py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
+                            value={form.data.description}
+                            onChange={e => form.setData('description', e.target.value)}
                         />
 
                         <button
@@ -276,22 +301,17 @@ export default function Index({ features, filters }) {
                             </span>
                         </button>
 
-                        {/* {form.data.icon && (
-                            <div className="flex items-center gap-2 text-sm mt-2">
-                                {React.createElement(getIconComponent(form.data.icon), { size: 18 })}
-                                <span>{form.data.icon}</span>
-                            </div>
-                        )} */}
+
 
                         <button className="btn-primary w-full">حفظ</button>
                     </form>
                 </Modal>
 
-                {/* DELETE MODAL */}
+          
                 <Modal show={deleteModal} title="تأكيد الحذف" onClose={() => setDeleteModal(false)}>
                     <div className="text-center space-y-3">
                         <FiAlertTriangle className="text-3xl mx-auto text-red-500" />
-                        <p>هل أنت متأكد من حذف هذه الميزة؟</p>
+                        <p>هل أنت متأكد من حذف هذه الخدمة؟</p>
                         <div className="flex gap-2">
                             <button onClick={() => setDeleteModal(false)} className="btn-secondary flex-1">إلغاء</button>
                             <button onClick={destroy} className="btn-danger flex-1">حذف</button>

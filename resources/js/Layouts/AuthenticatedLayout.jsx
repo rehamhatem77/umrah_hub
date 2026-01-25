@@ -12,7 +12,7 @@ import {
 } from "react-icons/fi";
 import { MdOutlineHotel, MdOutlineCategory } from "react-icons/md";
 import { FaRegBuilding, FaMapLocationDot } from "react-icons/fa6";
-import { FaRegCommentDots } from "react-icons/fa";
+import { FaHandsHelping, FaRegCommentDots } from "react-icons/fa";
 import { LuPackagePlus } from "react-icons/lu";
 
 
@@ -50,7 +50,7 @@ export default function AuthenticatedLayout({ children }) {
         { name: 'أنواع الرحلات ', icon: <MdOutlineCategory />, path: '/admin/trip-types' },
         { name: 'المميزات', icon: <LuPackagePlus />, path: '/admin/features' },
         { name: 'التقييمات', icon: <FiStar />, path: '/admin/testimonials' },
-        // { name: 'المستخدمون', icon: <FiUsers />, path: '#' },
+        { name: 'الخدمات', icon: <FaHandsHelping />, path: '/admin/services' },
         { name: 'الإعدادات', icon: <FiSettings />, path: '/users' },
     ];
 

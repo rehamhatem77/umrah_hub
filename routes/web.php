@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\TourCompanyController;
 use App\Http\Controllers\Admin\HotelController;
 use App\Http\Controllers\Admin\PopularOffers;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SpecialOffer;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
@@ -91,6 +92,7 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
         Route::resource('governorates', GovernorateController::class);
         Route::resource('trip-types', TripTypeController::class);
         Route::resource('features', FeatureController::class);
+         Route::resource('services', ServiceController::class);
 
 
         Route::get('/tour-companies', [TourCompanyController::class, 'index'])->name('tour-companies.index');

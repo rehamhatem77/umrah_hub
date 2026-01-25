@@ -4,13 +4,15 @@ import {
     FiCheckCircle, FiShield, FiHeart, FiWifi, FiCoffee, FiPhone,
     FiShoppingCart,
     FiUmbrella,
-    FiGift
+    FiGift,
 } from 'react-icons/fi';
+
+
 import {
     FaKaaba, FaMosque, FaPlaneDeparture, FaPlaneArrival,
     FaBus, FaHotel, FaConciergeBell, FaUserFriends, FaPrayingHands,
     FaSuitcaseRolling,
-    FaSwimmer
+    FaSwimmer,FaPlane
 } from 'react-icons/fa';
 import { FaCarSide, FaPassport, FaUmbrellaBeach, FaUtensils } from 'react-icons/fa6';
 
@@ -44,6 +46,8 @@ export const umrahHajjIcons = [
     { icon: FaUtensils, label: 'مطاعم' },
     { icon: FaPassport, label: 'جواز سفر' },
     { icon: FaCarSide, label: 'نقل خاص' },
+    { icon: FaPlane, label: 'حجز طيران' },
+    { icon: FaBus, label: 'نقل ومواصلات' },
 ];
 
 export default function IconPicker({ show, onClose, onSelect }) {

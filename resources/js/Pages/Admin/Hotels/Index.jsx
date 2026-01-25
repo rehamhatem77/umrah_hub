@@ -81,7 +81,6 @@ export default function Index({ hotels, filters }) {
                     </span>
                 </div>
 
-                {/* Header + Add Button */}
                 <div className="flex justify-between items-center">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                         <MdOutlineHotel className="text-2xl text-[var(--app-primary)]" />
