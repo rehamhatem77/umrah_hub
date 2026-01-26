@@ -1,0 +1,9 @@
+.radius-icon {
+    border-radius: 50%;
+    background: #17cf541a;
+}
+
+.square-icon {
+    border-radius: 5px;
+    background: #17cf541a;
+}
