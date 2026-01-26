@@ -11,15 +11,15 @@ import Testimonials from "./Site/Home/Testimonials";
 import Footer from "@/Components/Footer";
 import SiteLayout from "@/Layouts/SiteLayout";
 
-export default function Home() {
+export default function Home({services, specialOffers, packages, popularOffers, testimonials}) {
 
     return (
     <SiteLayout title="Umrah Hub - الصفحة الرئيسية">
       <Hero/>
-      <Services/>
-      <SpecialPackages/>
-      <AllPackages/>
-      <Testimonials/>
+      <Services services={services}/>
+      <SpecialPackages specialPackages={specialOffers} />
+      <AllPackages  packages={packages}/>
+      <Testimonials testimonials={testimonials}/>
       
     </SiteLayout>
   );

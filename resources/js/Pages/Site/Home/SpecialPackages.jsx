@@ -1,40 +1,9 @@
 import PackageCard from "@/Components/PackageCard";
+import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import { motion } from "framer-motion";
 import { FiMapPin, FiClock, FiUsers } from "react-icons/fi";
 
-export default function SpecialPackages() {
-    const packages = [
-        {
-            title: "رحلة العائلة الروحانية",
-            location: "مكة المكرمة والمدينة المنورة",
-            type: "عائلة",
-            days: 14,
-            price: 12500,
-            image:
-                "https://images.unsplash.com/photo-1589308078054-8326b3f6e4a8",
-            badge: "⭐ 5 نجوم",
-        },
-        {
-            title: "باقة العمرة السريعة",
-            location: "مكة المكرمة",
-            type: "4 أشخاص",
-            days: 7,
-            price: 3200,
-            image:
-                "https://images.unsplash.com/photo-1608138278209-6e8b3c5c4e7d",
-            badge: "الأكثر طلبًا",
-        },
-        {
-            title: "باقة النخبة الشاملة",
-            location: "المدينة المنورة",
-            type: "شخصين",
-            days: 10,
-            price: 7650,
-            image:
-                "https://images.unsplash.com/photo-1549640376-98f8c3f1c1a1",
-            badge: "خصم 10%",
-        },
-    ];
+export default function SpecialPackages({ specialPackages }) {
 
     return (
         <section className="py-20 px-4 bg-[#fafafa]">
@@ -68,43 +37,70 @@ export default function SpecialPackages() {
                     href="/packages"
                     className=" btn-primary group flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--app-primary)] bg-[var(--app-primary)] text-white text-sm font-semibold transition"
                 >
-                    عرض الكل
+                    عرض كل المميز
                     <span className="group-hover:-translate-x-1 transition">←</span>
                 </a>
             </div>
 
-            <motion.div
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: false, amount: 0.2 }}
-                variants={{
-                    show: { transition: { staggerChildren: 0.15 } },
-                }}
-                className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-                {packages.map((pkg, index) => (
-                    <motion.div
-                        key={index}
-                        variants={{
-                            hidden: { opacity: 0, y: 40 },
-                            show: { opacity: 1, y: 0 },
-                        }}
-                        whileHover={{ y: -6 }}
-                        className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all"
-                    >
+            {Array.isArray(specialPackages) && specialPackages.length > 0 ? (
+                <motion.div
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: false, amount: 0.2 }}
+                    variants={{
+                        show: { transition: { staggerChildren: 0.15 } },
+                    }}
+                    className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                    {specialPackages.map((pkg) => (
+                        <motion.div
+                            key={pkg.id}
+                            variants={{
+                                hidden: { opacity: 0, y: 40 },
+                                show: { opacity: 1, y: 0 },
+                            }}
+                            whileHover={{ y: -6 }}
+                            className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all"
+                        >
+                            <PackageCard
+                                title={pkg.title}
+                                offerCode={pkg.offer_code}
+                                price={toArabicNumbers(pkg.price)}
+                                days={
+                                    toArabicNumbers(pkg.duration_days) +
+                                    (pkg.duration_days !== 14? " أيام":" يوم")
+                                }
+                                image={
+                                    pkg.images?.length
+                                        ? `/storage/${pkg.images[0].image_path}`
+                                        : "/images/placeholder.jpg"
+                                }
+                                location={
+                                    pkg.hotels?.length
+                                        ? pkg.hotels.map(h => h.city).join(" - ")
+                                        : "مكة المكرمة"
+                                }
+                                badge="مميز"
+                                type={
+                                    toArabicNumbers(pkg.available_places) +
+                                    (pkg.available_places <= 10 ? " مقاعد" : " مقعد")
+                                }
+                            />
+                        </motion.div>
+                    ))}
+                </motion.div>
+            ) : (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-6xl mx-auto py-20 text-center"
+                >
+                    <p className="text-gray-400 text-lg font-semibold">
+                        لا توجد عروض متاحة حالياً
+                    </p>
+                </motion.div>
+            )}
 
-                        <PackageCard
-                            title={pkg.title}
-                            image={pkg.image}
-                            price={pkg.price}
-                            badge={pkg.badge}
-                            location={pkg.location}
-                            days={pkg.days}
-                            type={pkg.type}
-                        />
-                    </motion.div>
-                ))}
-            </motion.div>
         </section>
     );
 }
