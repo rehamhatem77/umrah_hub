@@ -1,33 +1,19 @@
 import { FaBus, FaPlane, FaHotel, FaPassport } from "react-icons/fa";
 import { motion } from "framer-motion";
+import * as FaIcons from "react-icons/fa";
+import * as FiIcons from "react-icons/fi";
+import * as Fa6Icons from "react-icons/fa6";
 
-export default function Services() {
-    const services = [
-        {
-            title: "استخراج التأشيرة",
-            desc: "إنهاء جميع إجراءات التأشيرة بسرعة وسهولة",
-            icon: <FaPassport />,
-            gradient: "from-green-500 to-emerald-600",
-        },
-        {
-            title: "حجوزات فنادق",
-            desc: "فنادق مختارة بعناية بالقرب من الحرم",
-            icon: <FaHotel />,
-            gradient: "from-blue-500 to-indigo-600",
-        },
-        {
-            title: "حجز طيران",
-            desc: "عروض طيران مضمونة بأسعار تنافسية",
-            icon: <FaPlane />,
-            gradient: "from-purple-500 to-fuchsia-600",
-        },
-        {
-            title: "نقل ومواصلات",
-            desc: "تنقلات مريحة وآمنة بين المدن المقدسة",
-            icon: <FaBus />,
-            gradient: "from-orange-500 to-amber-600",
-        },
-    ];
+export default function Services({ services }) {
+
+    const getIconComponent = (iconName) => {
+        return (
+            FaIcons[iconName] ||
+            FiIcons[iconName] ||
+            Fa6Icons[iconName] ||
+            null
+        );
+    };
 
     const containerVariants = {
         hidden: {},
@@ -88,33 +74,40 @@ export default function Services() {
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: false, amount: 0.2 }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-4"
+                    className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-4"
                 >
-                    {services.map((service, index) => (
+                    {Array.isArray(services) && services.map((service) => (
+
+
                         <motion.div
-                            key={index}
+                            key={service.id}
                             variants={cardVariants}
                             whileHover={{ y: -6 }}
                             className="group bg-white/90 backdrop-blur-md border border-gray-100 rounded-2xl p-7 shadow-sm hover:shadow-xl transition-all duration-300"
                         >
-                        
+
                             <div className="relative mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+                                <div className="absolute inset-0 rounded-full bg-[var(--app-primary)]/20 blur-md" />
+
                                 <div
-                                    className={`absolute inset-0 rounded-full bg-gradient-to-br ${service.gradient} opacity-20 blur-md`}
-                                />
-                                <div
-                                    className={`relative w-14 h-14 rounded-full bg-gradient-to-br ${service.gradient} text-white flex items-center justify-center text-xl 
-                  group-hover:scale-110 transition-transform duration-300 shadow-md`}
+                                    className="relative w-14 h-14 rounded-full bg-[var(--app-primary)] text-white
+        flex items-center justify-center text-xl
+        group-hover:scale-110 transition-transform duration-300 shadow-md"
                                 >
-                                    {service.icon}
+                                    {(() => {
+                                        const Icon = getIconComponent(service.icon);
+                                        return Icon ? <Icon /> : null;
+                                    })()}
+
                                 </div>
                             </div>
 
+
                             <h3 className="text-base font-bold text-gray-800 mb-1">
-                                {service.title}
+                                {service.name}
                             </h3>
                             <p className="text-gray-500 text-sm leading-relaxed">
-                                {service.desc}
+                                {service.description}
                             </p>
                         </motion.div>
                     ))}

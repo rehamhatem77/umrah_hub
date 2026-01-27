@@ -193,17 +193,37 @@ class OfferController extends Controller
             $offer->governorates()->sync($request->governorates ?? []);
             $offer->hotels()->sync($request->hotels ?? []);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $index => $image) {
-                    $path = $image->store('offers', 'public');
+            if ($request->filled('deleted_images')) {
+            $imagesToDelete = OfferImage::whereIn('id', $request->deleted_images)
+                ->where('offer_id', $offer->id)
+                ->get();
 
-                    $offer->images()->create([
-                        'image_path' => $path,
-                        'is_main'    => false,
-                        'sort_order' => $offer->images()->count() + $index,
-                    ]);
-                }
+            foreach ($imagesToDelete as $img) {
+                Storage::disk('public')->delete($img->image_path);
+                $img->forceDelete();
             }
+        }
+                if ($request->hasFile('images')) {
+            $currentMaxOrder = $offer->images()->max('sort_order') ?? 0;
+
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('offers', 'public');
+
+                $offer->images()->create([
+                    'image_path' => $path,
+                    'is_main'    => false,
+                    'sort_order' => $currentMaxOrder + $index + 1,
+                ]);
+            }
+        }
+         if ($request->filled('main_image_id')) {
+            $offer->images()->update(['is_main' => false]);
+
+            OfferImage::where('id', $request->main_image_id)
+                ->where('offer_id', $offer->id)
+                ->update(['is_main' => true]);
+        }
+
              DB::commit();
              return redirect()
             ->route('admin.offers.index')

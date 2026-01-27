@@ -75,6 +75,13 @@ class UpdateOfferRequest extends FormRequest
             'images'   => 'nullable|array',
             'images.*' => 'image|max:2048', 
             'is_main_image' => 'nullable|integer',
+
+
+
+            'deleted_images'   => ['nullable', 'array'],
+        'deleted_images.*' => ['integer', 'exists:offer_images,id'],
+
+        'main_image_id'    => ['nullable', 'integer', 'exists:offer_images,id'],
         ];
     }
 }

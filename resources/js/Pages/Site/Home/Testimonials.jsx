@@ -3,16 +3,7 @@ import { FiUser, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
-export default function Testimonials() {
-    const testimonials = [
-        { name: "أحمد محمد", rating: 5, comment: "تجربة ممتازة جدًا، التنظيم كان رائع والخدمة فوق المتوقع." },
-        { name: "سارة علي", rating: 4, comment: "رحلة مريحة وفنادق ممتازة، فقط كان هناك تأخير بسيط." },
-        { name: "محمود حسن", rating: 5, comment: "أفضل شركة تعاملت معها في رحلات العمرة." },
-        { name: "عبدالله يوسف", rating: 5, comment: "تنظيم احترافي ودعم متواصل طوال الرحلة." },
-        { name: "منى خالد", rating: 4, comment: "تجربة روحانية جميلة وخدمة راقية." },
-        { name: "يوسف سامي", rating: 5, comment: "أنصح بها بشدة، تعامل سريع وواضح." },
-    ];
-
+export default function Testimonials({ testimonials }) {
     const visible = 3;
     const cardWidth = 340;
     const gap = 24;
@@ -68,30 +59,35 @@ export default function Testimonials() {
                 viewport={{ once: false, amount: 0.2 }}
                 className="relative max-w-6xl mx-auto px-4">
 
-                <button
-                    onClick={() => setIndex((i) => Math.min(i + 1, maxIndex))}
-                    disabled={index === maxIndex}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-20
+
+                {testimonials.length >= 3 && (
+
+
+                    <button
+                        onClick={() => setIndex((i) => Math.min(i + 1, maxIndex))}
+                        disabled={index === maxIndex}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 z-20
           w-11 h-11 rounded-full bg-white shadow-lg
           flex items-center justify-center
           disabled:opacity-30"
-                >
-                    <FiChevronRight size={22} className="text-gray-800" />
-                </button>
+                    >
+                        <FiChevronRight size={22} className="text-gray-800" />
+                    </button>
 
-              
-                <button
-                    onClick={() => setIndex((i) => Math.max(i - 1, 0))}
-                    disabled={index === 0}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-20
+                )}
+                {testimonials.length >= 3 && (
+                    <button
+                        onClick={() => setIndex((i) => Math.max(i - 1, 0))}
+                        disabled={index === 0}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 z-20
           w-11 h-11 rounded-full bg-white shadow-lg
           flex items-center justify-center
           disabled:opacity-30"
-                >
-                    <FiChevronLeft size={22} className="text-gray-800" />
-                </button>
+                    >
+                        <FiChevronLeft size={22} className="text-gray-800" />
+                    </button>
 
-             
+                )}
                 <div className="overflow-hidden">
                     <motion.div
                         animate={{ x: index * step }}
@@ -118,15 +114,15 @@ export default function Testimonials() {
 
                                     <div>
                                         <h4 className="text-sm font-bold text-gray-900">
-                                            {item.name}
+                                            {item.customer_name}
                                         </h4>
                                         <div className="flex gap-1 mt-1">
                                             {[...Array(5)].map((_, j) => (
                                                 <FaStar
                                                     key={j}
                                                     className={`text-xs ${j < item.rating
-                                                            ? "text-yellow-400"
-                                                            : "text-gray-300"
+                                                        ? "text-yellow-400"
+                                                        : "text-gray-300"
                                                         }`}
                                                 />
                                             ))}

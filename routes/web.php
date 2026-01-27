@@ -13,18 +13,21 @@ use App\Http\Controllers\Admin\SpecialOffer;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Site\HomeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 Route::get('/about', function () {
     return Inertia::render('About', [
         'canLogin' => Route::has('login'),

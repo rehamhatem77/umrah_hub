@@ -103,6 +103,9 @@ export default function Edit({
 
         features: offer?.features?.map(f => f.id) || [],
         images: [],
+        deleted_images: [],
+        main_image_id: null,
+
         main_image: offer?.mainImage?.image_path ? `/storage/${offer.mainImage.image_path}` : null,
         is_main_image: offer?.images?.findIndex(i => i.is_main) ?? null,
     });
@@ -162,31 +165,24 @@ export default function Edit({
 
     useEffect(() => {
         if (offer?.images?.length) {
-            const validImages = offer.images.filter(img => img?.image_path);
-            setPreviewImages(
-                offer.images
-                    .filter(img => img?.image_path)
-                    .map(img => img.image_path.startsWith('http') ? img.image_path : `/storage/${img.image_path}`)
-            );
+            const images = offer.images
+                .filter(img => img?.image_path)
+                .map(img => ({
+                    id: img.id,
+                    src: img.image_path.startsWith('http')
+                        ? img.image_path
+                        : `/storage/${img.image_path}`,
+                    isNew: false,
+                    is_main: img.is_main,
+                }));
 
-            const mainIndex = validImages.findIndex(img => img.is_main);
-            form.setData('is_main_image', mainIndex >= 0 ? mainIndex : null);
+            setPreviewImages(images);
+
+            const mainImage = images.find(img => img.is_main);
+            form.setData('main_image_id', mainImage?.id ?? null);
         }
     }, [offer]);
 
-
-
-
-    // useEffect(() => {
-    //     if (offer?.hotel_id) {
-    //         const hotel = hotels.find(h => h.id === offer.hotel_id);
-    //         setSelectedHotel({
-    //             value: hotel.id,
-    //             label: hotel.name,
-    //             address_location: hotel.address_location
-    //         });
-    //     }
-    // }, [offer, hotels]);
 
     useEffect(() => {
         if (offer?.governorates?.length) {
@@ -232,25 +228,31 @@ export default function Edit({
 
         setPreviewImages(prev => [
             ...prev,
-            ...newFiles.map(file => URL.createObjectURL(file)),
+            ...newFiles.map(file => ({
+                id: null,
+                file,
+                src: URL.createObjectURL(file),
+                isNew: true,
+            })),
         ]);
+
 
         e.target.value = null;
     };
 
     const removeImage = (index) => {
-        const imgs = [...previewImages];
-        imgs.splice(index, 1);
-        setPreviewImages(imgs);
+        const img = previewImages[index];
 
-        const files = [...form.data.images];
-        files.splice(index, 1);
-        form.setData('images', files);
-
-        if (form.data.is_main_image === index) {
-            form.setData('is_main_image', null);
+        if (!img.isNew && img.id) {
+            form.setData('deleted_images', [
+                ...(form.data.deleted_images || []),
+                img.id,
+            ]);
         }
+
+        setPreviewImages(prev => prev.filter((_, i) => i !== index));
     };
+
 
     const validate = () => {
         const errors = {};
@@ -286,6 +288,7 @@ export default function Edit({
         e.preventDefault();
         if (!validate()) return;
 
+
         form.put(route('admin.offers.update', offer.id), {
             forceFormData: true,
             onSuccess: () => {
@@ -298,19 +301,6 @@ export default function Edit({
         });
     };
 
-//     const toggleStatus = (field, value) => {
-//     form.setData(field, value);
-
-//     router.put(
-//         route('admin.offers.toggle-flag', offer.id),
-//         { [field]: value },
-//         {
-//             preserveScroll: true,
-//             onSuccess: () => toast.success('تم تحديث الحالة'),
-//             onError: () => toast.error('فشل تحديث الحالة'),
-//         }
-//     );
-// };
 
 
     return (
@@ -605,22 +595,6 @@ export default function Edit({
                                     <InputError message={frontendErrors.hotels || form.errors.hotels} />
                                 </div>
 
-
-                                {/* <div>
-                                    <label className="label">المسافة من</label>
-                                    <input
-                                        className="input w-full bg-gray-100 cursor-not-allowed"
-                                        disabled
-                                        value={
-                                            selectedHotel?.address_location === 'مكة'
-                                                ? 'المسافة من الحرم المكي (الكعبة)'
-                                                : selectedHotel?.address_location === 'المدينة المنورة'
-                                                    ? 'المسافة من المسجد النبوي'
-                                                    : ''
-                                        }
-                                        placeholder="—"
-                                    />
-                                </div> */}
                             </div>
                         </div>
 
@@ -696,29 +670,33 @@ export default function Edit({
 
                             {previewImages.length > 0 && (
                                 <div className="grid grid-cols-3 gap-2 mt-4">
-                                    {previewImages.map((src, index) => (
-                                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
-                                            <img src={src} className="w-full h-full object-cover" />
+                                    {previewImages.map((img, index) => (
+    <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
+        <img src={img.src} className="w-full h-full object-cover" />
 
-                                            <button
-                                                type="button"
-                                                onClick={() => form.setData('is_main_image', index)}
-                                                className={`absolute top-1 left-1 p-1 rounded-full ${form.data.is_main_image === index || offer?.mainImage?.image_path? 'bg-yellow-400 text-white' : 'bg-white/80 text-gray-600'
-                                                    }`}
-                                                title="تعيين كصورة رئيسية"
-                                            >
-                                                <FaStar size={12} />
-                                            </button>
+        <button
+            type="button"
+            onClick={() => form.setData('main_image_id', img.id)}
+            className={`absolute top-1 left-1 p-1 rounded-full ${
+                form.data.main_image_id === img.id
+                    ? 'bg-yellow-400 text-white'
+                    : 'bg-white/80 text-gray-600'
+            }`}
+            title="تعيين كصورة رئيسية"
+        >
+            <FaStar size={12} />
+        </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImage(index)}
-                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    ))}
+        <button
+            type="button"
+            onClick={() => removeImage(index)}
+            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+        >
+            ✕
+        </button>
+    </div>
+))}
+
                                 </div>
                             )}
                         </div>
