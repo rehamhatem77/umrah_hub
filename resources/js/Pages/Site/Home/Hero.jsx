@@ -3,7 +3,7 @@ import Select from "react-select";
 import { FiCalendar, FiSearch } from "react-icons/fi";
 import { MdLocationCity, MdMoney } from "react-icons/md";
 
-export default function Hero() {
+export default function Hero({ homepage }) {
 
     const [destination, setDestination] = useState(null);
 
@@ -12,6 +12,10 @@ export default function Hero() {
         { value: "مكة", label: "مكة" },
         { value: "المدينة المنورة", label: "المدينة" },
     ];
+    const heroImage = homepage?.hero_image
+        ? `/storage/${homepage.hero_image}`
+        : "https://lh3.googleusercontent.com/aida-public/AB6AXuCFXzQrpUEXpe2s65VNeEgwhBiUCgmWuN10YMlBeWYRVJDa_wXpnalUUfg8iViHXeRRzEiudEFXzAtk3Yvr7v_TXwNtgXTzQcikkDr1t3R1pLuUpRj51QySe0XYxgrbrUzIBi9rQ6hE65q7EyVjgeZwx7qT7p8PgTi5s3FzeHX9fJ8IWzhKHQbV72pryb0vthAGcQl_1qJf-8v_6iMAYgSSC_HF8B_EleCYOj2bAQGosXFSSCKWRPOmpdw-OkIao7nJ_WkkHEfngUoT";
+
 
 
     const selectStyles = {
@@ -50,23 +54,26 @@ export default function Hero() {
 
             <div className="relative rounded-[32px] min-h-[480px] sm:min-h-[520px] flex items-center justify-center">
                 <img
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFXzQrpUEXpe2s65VNeEgwhBiUCgmWuN10YMlBeWYRVJDa_wXpnalUUfg8iViHXeRRzEiudEFXzAtk3Yvr7v_TXwNtgXTzQcikkDr1t3R1pLuUpRj51QySe0XYxgrbrUzIBi9rQ6hE65q7EyVjgeZwx7qT7p8PgTi5s3FzeHX9fJ8IWzhKHQbV72pryb0vthAGcQl_1qJf-8v_6iMAYgSSC_HF8B_EleCYOj2bAQGosXFSSCKWRPOmpdw-OkIao7nJ_WkkHEfngUoT"
-    className="absolute inset-0 w-full h-full object-cover rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"
+                    src={heroImage} className="absolute inset-0 w-full h-full object-cover rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"
                     alt="Kaaba"
                 />
 
 
-<div className="absolute inset-0 bg-black/55 rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"></div>
+                <div className="absolute inset-0 bg-black/55 rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"></div>
 
                 <div className="relative z-10 text-center max-w-3xl px-4">
-                    <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
+                    {/* <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
                         اعثر على باقة العمرة
                         <br />
                         المناسبة لك
+                    </h1> */}
+
+                    <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight line-clamp-2">
+                        {homepage?.hero_title || "اعثر على باقة العمرة المناسبة لك"}
                     </h1>
 
                     <p className="text-gray-200 text-sm sm:text-base lg:text-lg">
-                        قارن بين أفضل باقات العمرة واحجز بكل ثقة
+                        {homepage?.hero_description || "قارن بين أفضل باقات العمرة واحجز بكل ثقة"}
                     </p>
                 </div>
 

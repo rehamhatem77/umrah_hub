@@ -3,7 +3,7 @@ import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import { motion } from "framer-motion";
 import { FiMapPin, FiClock, FiUsers } from "react-icons/fi";
 
-export default function SpecialPackages({ specialPackages }) {
+export default function SpecialPackages({ specialPackages, title, description, buttonText  }) {
 
     return (
         <section className="py-20 px-4 bg-[#fafafa]">
@@ -17,7 +17,7 @@ export default function SpecialPackages({ specialPackages }) {
                         viewport={{ once: false, amount: 0.3 }}
                         transition={{ delay: 0.15 }}
                         className="text-2xl sm:text-3xl font-extrabold text-gray-800">
-                        باقات مميزة ومختارة
+                       {title || "باقات مميزة ومختارة"}
                     </motion.h2>
 
 
@@ -28,7 +28,7 @@ export default function SpecialPackages({ specialPackages }) {
                         transition={{ delay: 0.15 }}
                         className="text-gray-500 text-sm sm:text-base mb-10 max-w-lg mx-auto"
                     >
-                        أفضل العروض الحصرية لهذا الموسم
+                        {description || "أفضل العروض الحصرية لهذا الموسم"}
                     </motion.p>
 
                 </div>
@@ -37,7 +37,7 @@ export default function SpecialPackages({ specialPackages }) {
                     href="/packages"
                     className=" btn-primary group flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--app-primary)] bg-[var(--app-primary)] text-white text-sm font-semibold transition"
                 >
-                    عرض كل المميز
+                   {buttonText || "عرض كل المميز"}
                     <span className="group-hover:-translate-x-1 transition">←</span>
                 </a>
             </div>

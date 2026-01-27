@@ -4,7 +4,7 @@ import * as FaIcons from "react-icons/fa";
 import * as FiIcons from "react-icons/fi";
 import * as Fa6Icons from "react-icons/fa6";
 
-export default function Services({ services }) {
+export default function Services({ services , title, description}) {
 
     const getIconComponent = (iconName) => {
         return (
@@ -46,7 +46,7 @@ export default function Services({ services }) {
                     transition={{ duration: 0.5 }}
                     className="text-2xl sm:text-3xl font-extrabold text-gray-800"
                 >
-                    خدماتنا المميزة
+                   {title || "خدماتنا المميزة"}
                 </motion.h2>
 
                 <motion.div
@@ -65,7 +65,7 @@ export default function Services({ services }) {
                     transition={{ delay: 0.15 }}
                     className="text-gray-500 text-sm sm:text-base mb-10 max-w-lg mx-auto"
                 >
-                    كل ما تحتاجه لرحلة عمرة مريحة ومنظمة في مكان واحد
+                   {description || "كل ما تحتاجه لرحلة عمرة مريحة ومنظمة في مكان واحد"}
                 </motion.p>
 
 

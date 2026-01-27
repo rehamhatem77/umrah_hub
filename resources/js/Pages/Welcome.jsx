@@ -11,16 +11,27 @@ import Testimonials from "./Site/Home/Testimonials";
 import Footer from "@/Components/Footer";
 import SiteLayout from "@/Layouts/SiteLayout";
 
-export default function Home({services, specialOffers, packages, popularOffers, testimonials}) {
+export default function Home({ services, specialOffers, packages, homepage, testimonials }) {
 
-    return (
+  return (
     <SiteLayout title="Umrah Hub - الصفحة الرئيسية">
-      <Hero/>
-      <Services services={services}/>
-      <SpecialPackages specialPackages={specialOffers} />
-      <AllPackages  packages={packages}/>
-      <Testimonials testimonials={testimonials}/>
-      
+      <Hero homepage={homepage} />
+      <Services services={services} title={homepage.services_title} description={homepage.services_description} />
+      <SpecialPackages
+        specialPackages={specialOffers}
+        title={homepage.special_title}
+        description={homepage.special_description}
+        buttonText={homepage.special_button_text} />
+      <AllPackages packages={packages}
+        title={homepage.packages_title}
+        description={homepage.packages_description}
+        buttonText={homepage.packages_button_text}
+      />
+      <Testimonials testimonials={testimonials}
+        title={homepage.testimonials_title}
+        description={homepage.testimonials_description}
+      />
+
     </SiteLayout>
   );
 }

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useEffect, useState } from "react";
 
-export default function AllPackages({ packages }) {
+export default function AllPackages({ packages ,title, buttonText}) {
 
     const cardWidth = 235;
     const gap = 3;
@@ -41,7 +41,7 @@ export default function AllPackages({ packages }) {
                 className="max-w-6xl mx-auto mb-8"
             >
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
-                    تصفح جميع الباقات
+                   {title || "تصفح جميع الباقات"}
                 </h2>
             </motion.div>
 
@@ -122,7 +122,7 @@ export default function AllPackages({ packages }) {
 
             <div className="mt-12 flex justify-center">
                 <button className="px-6 py-2 rounded-full bg-[var(--app-primary)] text-white text-sm font-semibold transition">
-                    عرض جميع الباقات
+                    {buttonText || "عرض جميع الباقات"}
                 </button>
             </div>
         </section>
