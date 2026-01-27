@@ -3,7 +3,7 @@ import { FiUser, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
-export default function Testimonials({ testimonials }) {
+export default function Testimonials({ testimonials, title, description }) {
     const visible = 3;
     const cardWidth = 340;
     const gap = 24;
@@ -29,7 +29,7 @@ export default function Testimonials({ testimonials }) {
                     transition={{ duration: 0.5 }}
                     className="text-2xl sm:text-3xl font-extrabold text-gray-800"
                 >
-                    آراء عملائنا
+                    {title || "آراء عملائنا"}
                 </motion.h2>
 
                 <motion.div
@@ -46,7 +46,7 @@ export default function Testimonials({ testimonials }) {
                     transition={{ delay: 0.15 }}
                     className="text-gray-500 text-sm sm:text-base mb-10 max-w-lg mx-auto"
                 >
-                    تجارب حقيقية من عملائنا الكرام
+                    {description || "تجارب حقيقية من عملائنا الكرام"}
                 </motion.p>
 
             </div>
@@ -67,11 +67,11 @@ export default function Testimonials({ testimonials }) {
                         onClick={() => setIndex((i) => Math.min(i + 1, maxIndex))}
                         disabled={index === maxIndex}
                         className="absolute right-0 top-1/2 -translate-y-1/2 z-20
-          w-11 h-11 rounded-full bg-white shadow-lg
+          w-11 h-11 rounded-full bg-[var(--app-primary)] shadow-lg
           flex items-center justify-center
           disabled:opacity-30"
                     >
-                        <FiChevronRight size={22} className="text-gray-800" />
+                        <FiChevronRight size={22} className="text-white" />
                     </button>
 
                 )}
@@ -80,11 +80,11 @@ export default function Testimonials({ testimonials }) {
                         onClick={() => setIndex((i) => Math.max(i - 1, 0))}
                         disabled={index === 0}
                         className="absolute left-0 top-1/2 -translate-y-1/2 z-20
-          w-11 h-11 rounded-full bg-white shadow-lg
+          w-11 h-11 rounded-full bg-[var(--app-primary)] shadow-lg
           flex items-center justify-center
           disabled:opacity-30"
                     >
-                        <FiChevronLeft size={22} className="text-gray-800" />
+                        <FiChevronLeft size={22} className="text-white" />
                     </button>
 
                 )}

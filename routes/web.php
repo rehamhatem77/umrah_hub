@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminHomePageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\GovernorateController;
@@ -140,9 +141,16 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
 
         Route::get('/testimonials/trash', [TestimonialController::class, 'trash'])->name('testimonials.trash');
         Route::post('/testimonials/{id}/restore', [TestimonialController::class, 'restore'])->name('testimonials.restore');
-
-
         Route::get('/testimonials/{id}', [TestimonialController::class, 'show'])->name('testimonials.show');
+
+
+    Route::get('/homepage', [AdminHomepageController::class, 'index'])->name('admin.homepage.index');
+    Route::post('/homepage/hero', [AdminHomepageController::class, 'updateHero'])->name('admin.homepage.hero.update');
+    Route::delete('/homepage/hero/image', [AdminHomepageController::class, 'deleteHeroImage'])->name('admin.homepage.hero.image.delete');
+    Route::post('/homepage/services', [AdminHomepageController::class, 'updateServices'])->name('admin.homepage.services.update');
+    Route::post('/homepage/special', [AdminHomepageController::class, 'updateSpecial'])->name('admin.homepage.special.update');
+    Route::post('/homepage/packages', [AdminHomepageController::class, 'updatePackages'])->name('admin.homepage.packages.update');
+    Route::post('/homepage/testimonials', [AdminHomepageController::class, 'updateTestimonials'])->name('admin.homepage.testimonials.update');
     });
 });
 
