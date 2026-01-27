@@ -425,7 +425,7 @@ const handleDeleteClick = () => {
         )}
 
 
-
+{/* Pagination */}
         {offers?.data?.length > 0 && offers.links && (
           <div className="flex justify-center gap-1 flex-wrap text-sm">
             {offers.links.map((link, idx) => {

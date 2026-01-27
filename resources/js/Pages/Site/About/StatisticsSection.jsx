@@ -1,5 +1,7 @@
+import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
+
 
 const stats = [
   { value: 5000, label: "معتمر تم خدمتهم", prefix: "+" },
@@ -35,6 +37,7 @@ export default function StatisticsSection() {
                     end={stat.value}
                     duration={2.5}
                     separator=","
+                    formattingFn={(value) => toArabicNumbers(value)}
                   />
                 </h3>
                 <p className="text-gray-300 font-medium text-lg">
