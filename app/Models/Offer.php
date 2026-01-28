@@ -5,19 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Offer extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'offer_code','title','slug',
-       'trip_type_id','company_id',
-        'duration_days','price','airline','program',
-        
-        'tour_level','is_special_offer','is_featured','is_popular','is_active',
-        'start_date','end_date','available_places',
+        'offer_code',
+        'title',
+        'slug',
+        'trip_type_id',
+        'company_id',
+        'duration_days',
+        'price',
+        'airline',
+        'program',
+
+        'tour_level',
+        'is_special_offer',
+        'is_featured',
+        'is_popular',
+        'is_active',
+        'start_date',
+        'end_date',
+        'available_places',
         'whatsapp_number',
-        'seo_title','seo_description',
+        'seo_title',
+        'seo_description',
     ];
 
     protected $casts = [
@@ -35,7 +49,8 @@ class Offer extends Model
     // {
     //     return $this->belongsTo(Governorate::class);
     // }
-    public function governorates(){
+    public function governorates()
+    {
         return $this->belongsToMany(Governorate::class);
     }
 
@@ -58,23 +73,23 @@ class Offer extends Model
     {
         return $this->belongsToMany(Feature::class);
     }
-//     public function hotel()
-// {
-//     return $this->belongsTo(Hotel::class);
-// }
+    //     public function hotel()
+    // {
+    //     return $this->belongsTo(Hotel::class);
+    // }
 
-public function hotels()
+    public function hotels()
     {
         return $this->belongsToMany(Hotel::class);
     }
 
 
     public function mainImage()
-{
-    return $this->hasOne(OfferImage::class)
-        ->where('is_main', true)
-        ->whereNull('deleted_at');
-}
+    {
+        return $this->hasOne(OfferImage::class)
+            ->where('is_main', true)
+            ->whereNull('deleted_at');
+    }
 
 
     /* ================= Query Scopes ================= */
@@ -87,12 +102,33 @@ public function hotels()
     public function scopeAvailable(Builder $query)
     {
         return $query->where('available_places', '>', 0)
-                     ->whereDate('start_date', '>=', now());
+            ->whereDate('start_date', '>=', now());
     }
 
     public function scopeSpecial(Builder $query)
     {
         return $query->where('is_special_offer', true);
+    }
+
+
+    public function scopePopular($query)
+    {
+        return $query->where('is_popular', true);
+    }
+
+    public function scopeCheapest($query)
+    {
+        return $query->orderBy('price', 'asc');
+    }
+
+    public function scopeNearest($query)
+    {
+        return $query->orderBy('start_date', 'asc');
+    }
+
+    public function scopeRamadan($query)
+    {
+        return $query->where('title', 'like', '%رمضان%');
     }
 
     /* ================= Accessors ================= */
@@ -106,5 +142,43 @@ public function hotels()
             'vip'        => 'VIP',
             default      => '',
         };
+    }
+
+    public function getAverageHotelRatingAttribute(): float
+    {
+        if (!$this->relationLoaded('hotels')) {
+            return 0;
+        }
+
+        return round(
+            $this->hotels->avg('stars') ?? 0,
+            1
+        );
+    }
+
+    public function getMainImageUrlAttribute(): string
+    {
+        if ($this->relationLoaded('mainImage') && $this->mainImage) {
+            return Storage::url($this->mainImage->image_path);
+        }
+
+        if ($this->relationLoaded('images') && $this->images->first()) {
+            return Storage::url($this->images->first()->image_path);
+        }
+
+        return '/images/placeholder.jpg';
+    }
+
+    public function getLocationsAttribute(): array
+    {
+        if (!$this->relationLoaded('hotels')) {
+            return [];
+        }
+
+        return $this->hotels
+            ->pluck('city')
+            ->unique()
+            ->values()
+            ->toArray();
     }
 }

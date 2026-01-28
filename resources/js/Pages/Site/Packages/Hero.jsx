@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Select from "react-select";
-import { FiCalendar, FiSearch } from "react-icons/fi";
+import { FiCalendar, FiChevronLeft, FiSearch } from "react-icons/fi";
 import { MdLocationCity, MdMoney } from "react-icons/md";
 
 export default function Hero() {
@@ -10,9 +10,11 @@ export default function Hero() {
   <a className="text-[#63886f] hover:text-primary" href="#">
     الرئيسية
   </a>
-  <span className="material-symbols-outlined text-base text-[#dce5df] rotate-180">
+  {/* <span className="material-symbols-outlined text-base text-[#dce5df] rotate-180">
  /
-  </span>
+  </span> */}
+
+  <FiChevronLeft size={18} className="material-symbols-outlined text-base text-[#dce5df] " />
   <span className="text-[#111813] font-medium">جميع الباقات</span>
 </div>
 <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -25,7 +27,6 @@ export default function Hero() {
                         </p>
                     </div>
                     <div class="hidden md:block">
-                        {/* <span class="text-sm font-medium text-[#63886f] bg-white px-3 py-1 rounded-full border border-[#f0f4f2]">يتم عرض ١٢ من ٤٨ باقة</span> */}
         </div>
       </div>
 </>

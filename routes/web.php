@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\HomeController;
+use App\Http\Controllers\Site\PackagesPageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,9 +33,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', function () {
     return Inertia::render('About');
 });
-Route::get('/packages', function () {
-    return Inertia::render('Packages');
-});
+
+Route::get('/packages', [PackagesPageController::class, 'index'])->name('packages');
+
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');

@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Http\Controllers\Site;
+
+use App\Http\Controllers\Controller;
+use App\Models\Offer;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class PackagesPageController extends Controller
+{
+    //
+    public function index(Request $request)
+    {
+        $filter = $request->query('filter');
+
+        $offersQuery = Offer::query()
+            ->active()
+            ->whereDate('end_date', '>=', now())
+            ->with([
+                'hotels:id,name,city,stars',
+                'images:id,offer_id,image_path,is_main,sort_order',
+                'mainImage:id,offer_id,image_path',
+                'company:id',
+                'tripType:id,name',
+                'features:id,name,icon',
+            ]);
+
+             if ($request->filled(['price_from', 'price_to'])) {
+        $offersQuery->whereBetween('price', [
+            $request->price_from,
+            $request->price_to
+        ]);
+    }
+     if ($request->filled('date')) {
+        $offersQuery->whereDate('start_date', '>=', $request->date);
+    }
+    if ($request->filled('durations')) {
+        $offersQuery->whereIn(
+            'duration_days',
+            $this->mapDurations($request->durations)
+        );
+    }
+
+     if ($request->filled('stars')) {
+        $offersQuery->whereHas('hotels', function ($q) use ($request) {
+            $q->whereIn('stars', $request->stars);
+        });
+    }
+
+
+        // switch ($filter) {
+        //     case 'special':
+        //         $offersQuery->special();
+        //         break;
+        //     case 'popular':
+        //         $offersQuery->popular();
+        //         break;
+        //     case 'cheapest':
+        //         $offersQuery->cheapest();
+        //         break;
+        //     case 'nearest':
+        //         $offersQuery->nearest();
+        //         break;
+        //     case 'ramadan':
+        //         $offersQuery->ramadan();
+        //         break;
+        //     default:
+        //         $offersQuery->latest();
+        //         break;
+        // }
+
+        $offers = $offersQuery->paginate(6)->through(function ($offer) {
+            $offer->loadMissing('hotels');
+            return [
+                'id' => $offer->id,
+                'title' => $offer->title,
+                'offer_code' => $offer->offer_code,
+                'price' => $offer->price,
+                'duration_days' => $offer->duration_days,
+                'available_places' => $offer->available_places,
+                'start_date' => $offer->start_date,
+                'is_special_offer' => $offer->is_special_offer,
+                'is_popular' => $offer->is_popular,
+                'image' => $offer->main_image_url,
+                'locations' => $offer->locations,
+                'average_hotel_rating' => $offer->average_hotel_rating,
+                'hotels' => $offer->hotels->map(fn($hotel) => [
+                    'id' => $hotel->id,
+                    'name' => $hotel->name,
+                    'city' => $hotel->city,
+                    'stars' => $hotel->stars,
+                ])->values(),
+                'company' => $offer->company,
+                'trip_type' => $offer->tripType,
+                'features' => $offer->features,
+                
+            ];
+        });
+        $minPrice = $offersQuery->min('price');
+$maxPrice = $offersQuery->max('price');
+
+        return Inertia::render('Packages', [
+            'offers' => $offers,
+            'currentFilter' => $filter ?? '',
+            'priceRange' => [
+        'min' => $minPrice ?? 0,
+        'max' => $maxPrice ?? 10000,
+    ],
+        ]);
+    }
+
+    private function mapDurations(array $durations): array
+{
+    return collect($durations)
+        ->flatMap(function ($d) {
+            return match ($d) {
+                '7'  => [7],
+                '10'   => [10],
+                '14'  => [14],
+                default => [],
+            };
+        })
+        ->unique()
+        ->values()
+        ->toArray();
+}
+
+
+    
+}
