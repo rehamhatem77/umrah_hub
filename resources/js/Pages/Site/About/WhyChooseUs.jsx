@@ -102,28 +102,30 @@
 //     </section>
 //   );
 // }
+import { iconsMap } from "@/Components/IconPicker";
 import { motion } from "framer-motion";
 import { HiOutlineShieldCheck, HiOutlineSparkles, HiOutlineHeart } from "react-icons/hi";
 
-const features = [
-  {
-    icon: HiOutlineHeart,
-    title: "الروحانية أولاً",
-    text: "نهتم بالتفاصيل اللوجستية لنترك لك أنت العبادة والسكينة.",
-  },
-  {
-    icon: HiOutlineSparkles,
-    title: "اليسر والسهولة",
-    text: "نصمم تجربتك الرقمية لتكون سلسة وميسرة لكل حاج ومعتمر.",
-  },
-  {
-    icon: HiOutlineShieldCheck,
-    title: "النزاهة والشفافية",
-    text: "نلتزم بأعلى معايير الصدق في عرض الباقات والأسعار دون أي رسوم خفية.",
-  },
-];
 
-export default function WhyChooseUs() {
+
+export default function WhyChooseUs({data }) {
+    const features = [
+    {
+      title: data?.why_choose_us_card_one_title || "الروحانية أولاً",
+      text: data?.why_choose_us_card_one_description || "نهتم بالتفاصيل اللوجستية لنترك لك أنت العبادة والسكينة.",
+       icon: data?.why_choose_us_card_one_icon || "HiOutlineHeart",
+    },
+    {
+      title: data?.why_choose_us_card_two_title || "اليسر والسهولة",
+      text: data?.why_choose_us_card_two_description || "نصمم تجربتك الرقمية لتكون سلسة وميسرة لكل حاج ومعتمر.",
+      icon: data?.why_choose_us_card_two_icon || "HiOutlineSparkles",
+    },
+    {
+      title: data?.why_choose_us_card_three_title || "النزاهة والشفافية",
+      text: data?.why_choose_us_card_three_description || "نلتزم بأعلى معايير الصدق في عرض الباقات والأسعار دون أي رسوم خفية.",
+      icon: data?.why_choose_us_card_three_icon || "HiOutlineShieldCheck",
+    },
+  ];
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -134,14 +136,14 @@ export default function WhyChooseUs() {
       <div className="max-w-[1100px] mx-auto px-4">
         <div className="flex flex-col items-center mb-20">
           <h2 className="text-[28px] md:text-[32px] font-bold text-[#1B5E20]">
-            قيمنا الجوهرية
+              {data?.why_choose_us_title || "قيمنا الجوهرية"}
           </h2>
           <span className="mt-3 h-[2px] w-10 bg-[#D8B25A]" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-16 ">
 
           {features.map((item, index) => {
-            const Icon = item.icon;
+           const IconComponent = iconsMap[item.icon] || HiIcons.HiOutlineHeart;
 
             return (
               <motion.div
@@ -164,7 +166,7 @@ export default function WhyChooseUs() {
                 className="flex flex-col items-center text-center p-9 hover:bg-[#F5EFE54D] rounded-xl"
               >
                 <div className="mb-6 text-[#D8B25A]">
-                  <Icon size={44} />
+                  <IconComponent size={44} />
                 </div>
                 <h4 className="text-lg font-bold text-[#0E3B2F] mb-3">
                   {item.title}

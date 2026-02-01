@@ -19,7 +19,7 @@ export default function About({aboutUs }) {
   return (
     <SiteLayout title="Umrah Hub - عن الشركة ">
 
-      <Hero />
+      <Hero data={aboutUs} />
       <div className='row'>
         <div className="w-full bg-white">
           <div className="flex justify-center">
@@ -42,11 +42,11 @@ export default function About({aboutUs }) {
           </div>
         </div>
       </div>
-      <Introduction />
-      <VisionMissionSection />
-      <WhyChooseUs />
-      <StatisticsSection />
-      <CTASection />
+      <Introduction data={aboutUs} />
+      <VisionMissionSection data={aboutUs}/>
+      <WhyChooseUs data={aboutUs}/>
+      <StatisticsSection data={aboutUs} />
+      <CTASection data={aboutUs} />
 
     </SiteLayout>
   );

@@ -17,6 +17,20 @@ import {
 import { FaCarSide, FaPassport, FaUmbrellaBeach, FaUtensils } from 'react-icons/fa6';
 import { HiOutlineHeart, HiOutlineShieldCheck, HiOutlineSparkles } from 'react-icons/hi';
 
+
+import * as HiIcons from 'react-icons/hi';
+import * as FiIcons from 'react-icons/fi';
+import * as FaIcons from 'react-icons/fa';
+import * as Fa6Icons from 'react-icons/fa6';
+
+
+export const iconsMap = {
+  ...HiIcons,
+  ...FiIcons,
+  ...FaIcons,
+  ...Fa6Icons,
+};
+
 export const umrahHajjIcons = [
     { icon: FaKaaba, label: 'زيارة الحرم' },
     { icon: FaMosque, label: 'قريب من المسجد' },
