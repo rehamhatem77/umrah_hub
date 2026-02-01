@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AboutUsPageController;
 use App\Http\Controllers\Admin\AdminHomePageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FeatureController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Admin\SpecialOffer;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SIte\AboutUsController;
 use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\Site\PackagesPageController;
 use Illuminate\Foundation\Application;
@@ -30,8 +32,10 @@ use Inertia\Inertia;
 // });
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/about', function () {
-    return Inertia::render('About');
+Route::get('/about', [AboutUsController::class, 'index'])->name('about');
+
+Route::get('/contact', function () {
+    return Inertia::render('Site/ContactUs/ContactUs');
 });
 
 Route::get('/packages', [PackagesPageController::class, 'index'])->name('packages');
@@ -149,6 +153,10 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
     Route::post('/homepage/special', [AdminHomepageController::class, 'updateSpecial'])->name('admin.homepage.special.update');
     Route::post('/homepage/packages', [AdminHomepageController::class, 'updatePackages'])->name('admin.homepage.packages.update');
     Route::post('/homepage/testimonials', [AdminHomepageController::class, 'updateTestimonials'])->name('admin.homepage.testimonials.update');
+
+
+      Route::get('/about-us', [AboutUsPageController::class, 'index'])->name('about-us.index');
+    Route::post('/about-us/{section}', [AboutUsPageController::class, 'updateSection'])->name('about-us.section.update');
     });
 });
 

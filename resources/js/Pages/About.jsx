@@ -14,16 +14,39 @@ import CTASection from "./Site/About/CTASection";
 import Footer from "@/Components/Footer";
 import SiteLayout from "@/Layouts/SiteLayout";
 
-export default function About() {
+export default function About({aboutUs }) {
 
-    return (
+  return (
     <SiteLayout title="Umrah Hub - عن الشركة ">
-      <Hero/>
-      <Introduction/>
-      <VisionMissionSection/>
-      <WhyChooseUs/>
-      <StatisticsSection/>
-      <CTASection/>
+
+      <Hero />
+      <div className='row'>
+        <div className="w-full bg-white">
+          <div className="flex justify-center">
+            <div className="w-full max-w-[1440px] px-4 md:px-10 lg:px-40">
+              <div className="flex flex-wrap gap-2 py-4">
+                <a
+                  className="text-gray-500 hover:text-primary text-sm font-medium leading-normal"
+                  href="/"
+                >
+                  الرئيسية
+                </a>
+                <span className="text-gray-400 text-sm font-medium leading-normal">
+                  /
+                </span>
+                <span className="text-[#111813] text-sm font-medium leading-normal">
+                  من نحن
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Introduction />
+      <VisionMissionSection />
+      <WhyChooseUs />
+      <StatisticsSection />
+      <CTASection />
 
     </SiteLayout>
   );

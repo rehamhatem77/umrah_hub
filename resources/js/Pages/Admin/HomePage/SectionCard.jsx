@@ -1,3 +1,5 @@
+import { umrahHajjIcons } from "@/Components/IconPicker";
+import React from "react";
 import { FiEdit, FiPlus } from "react-icons/fi";
 
 export default function SectionCard ({ title, fieldsData, onOpen }) {
@@ -20,7 +22,61 @@ const fieldLabels = {
     packages_button_text: "نص زر الباقات",
     testimonials_title: "عنوان آراء العملاء",
     testimonials_description: "وصف آراء العملاء",
+
+
+    seo_title: "عنوان SEO",
+    seo_description: "وصف SEO",
+    seo_keywords: "كلمات مفتاحية SEO",
+
+    hero_title: "عنوان الهيرو",
+    hero_badge_title: "شعار الهيرو",
+    hero_description: "وصف الهيرو",
+    hero_image: "صورة الهيرو",
+
+    intro_title: "عنوان المقدمة",
+    intro_description: "وصف المقدمة",
+    intro_badge: "شعار المقدمة",
+    intro_image: "صورة المقدمة",
+  intro_description_long: "وصف طويل للمقدمة",
+    intro_badge_sub: "ملحق شعار المقدمة",
+
+    vision_mission_title: "عنوان الرؤية والرسالة",
+    vision_mission_description: "وصف الرؤية والرسالة",
+    mission_title: "عنوان الرسالة",
+    mission_description: "وصف الرسالة",
+    vision_title: "عنوان الرؤية",
+    vision_description: "وصف الرؤية",
+
+    why_choose_us_title: "لماذا اخترنا",
+    why_choose_us_card_one_title: "عنوان البطاقة الأولى",
+    why_choose_us_card_two_title: "عنوان البطاقة الثانية",
+    why_choose_us_card_three_title: "عنوان البطاقة الثالثة",
+    why_choose_us_card_one_description: "وصف البطاقة الأولى",
+    why_choose_us_card_two_description: "وصف البطاقة الثانية",
+    why_choose_us_card_three_description: "وصف البطاقة الثالثة",
+    why_choose_us_card_one_icon: "أيقونة البطاقة الأولى",
+    why_choose_us_card_two_icon: "أيقونة البطاقة الثانية",
+    why_choose_us_card_three_icon: "أيقونة البطاقة الثالثة",
+
+    statistic_one_number: "رقم الإحصاء الأول",
+    statistic_two_number: "رقم الإحصاء الثاني",
+    statistic_three_number: "رقم الإحصاء الثالث",
+    statistic_one_desc: "وصف الإحصاء الأول",
+    statistic_two_desc: "وصف الإحصاء الثاني",
+    statistic_three_desc: "وصف الإحصاء الثالث",
+    statistic_one_prefix: "بادئة الإحصاء الأول",
+    statistic_two_prefix: "بادئة الإحصاء الثاني",
+    statistic_three_prefix: "بادئة الإحصاء الثالث",
+
+    action_title: "عنوان الإجراء",
+    action_desc: "وصف الإجراء",
+    action_btn_txt: "نص زر الإجراء",
+
 };
+ const iconMap = {};
+umrahHajjIcons.forEach(({ icon: Icon }) => {
+  iconMap[Icon.name] = Icon;
+});
     return (
         <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
             <div className="flex items-center justify-between mb-4">
@@ -47,15 +103,23 @@ const fieldLabels = {
                     </div>
                 )}
 
-
-                <div className="flex-1 flex flex-col gap-2">
+                 <div className="flex-1 flex flex-col gap-2" >
                     {textFields.length > 0 ? (
-                        textFields.map(([key, value]) => (
-                            <p key={key} className="text-gray-700 text-sm">
-                                <span className="font-semibold">{fieldLabels[key]}: </span>
-                                <span>{value}</span>
-                            </p>
-                        ))
+                        textFields.map(([key, value]) => {
+                            const isIcon = key.includes("icon") && value; 
+                            return (
+                                <p key={key} className="text-gray-700 text-sm flex gap-2">
+                                    <span className="font-semibold">{fieldLabels[key]}: </span>
+                                    {isIcon ? (
+                                        <>
+                                            {React.createElement(iconMap[value] || null, { className: "text-[var(--app-primary)] text-xl" })}
+                                        </>
+                                    ) : (
+                                        <span>{value}</span>
+                                    )}
+                                </p>
+                            );
+                        })
                     ) : (
                         <p className="text-sm text-gray-500 italic">لا توجد بيانات حالياً لهذا القسم</p>
                     )}

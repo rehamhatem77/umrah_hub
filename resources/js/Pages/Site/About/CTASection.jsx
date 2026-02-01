@@ -7,24 +7,29 @@ export default function CTASection() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.7 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.4 }}
+
         >
             <div className="flex justify-center">
                 <div className="w-full max-w-[960px] px-4">
                     <motion.div
-                   
                         className="bg-gradient-to-r from-[#17cf54]/10 to-[#17cf54]/20 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-primary/20"
-                        initial={{ y: 60, opacity: 0 }}
-                        whileInView={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.7 }}
-                        viewport={{ once: true }}
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: false, amount: 0.4 }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 90,
+                            damping: 18
+                        }}
                     >
-                        {/* Text Content */}
+
                         <motion.div
                             className="flex flex-col gap-3 text-center md:text-right"
                             initial="hidden"
                             whileInView="show"
-                            viewport={{ once: true }}
+                            viewport={{ once: false, amount: 0.4 }}
+
                             variants={{
                                 hidden: {},
                                 show: { transition: { staggerChildren: 0.15 } },
@@ -55,24 +60,27 @@ export default function CTASection() {
                         </motion.div>
 
                         <motion.button
-                         style={{background:"#17cf54"}}
+                            style={{ background: "#17cf54" }}
                             onClick={() => Inertia.visit("/packages")}
-                            whileHover={{ scale: 1.08 }}
-                            whileTap={{ scale: 0.96 }}
                             animate={{
-                                boxShadow: [
-                                    "0 0 0px rgba(23,207,84,0.4)",
-                                    "0 0 25px rgba(23,207,84,0.6)",
-                                    "0 0 0px rgba(23,207,84,0.4)",
-                                ],
+                                scale: [1, 1.06, 1],
+                                y: [0, -4, 0],
                             }}
                             transition={{
-                                duration: 2.5,
+                                duration: 1.8,
                                 repeat: Infinity,
                                 ease: "easeInOut",
                             }}
-                            className="flex min-w-[160px] items-center justify-center rounded-lg h-12 px-6 bg-primary text-[#111813] text-base font-bold tracking-[0.015em]"
+                            whileHover={{
+                                scale: 1.08,
+                                transition: { duration: 0.2, ease: "easeOut" }
+                            }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex min-w-[160px] items-center justify-center rounded-lg h-12 px-6 text-[#111813] text-base font-bold tracking-[0.015em]"
                         >
+
+
+
                             احجز باقتك الآن
                         </motion.button>
                     </motion.div>

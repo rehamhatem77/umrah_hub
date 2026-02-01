@@ -12,15 +12,15 @@ const stats = [
 export default function StatisticsSection() {
   return (
     <motion.section
-      className="w-full bg-[#112116] text-white py-16"
+      className="w-full bg-[#fbf8f4] text-white py-16"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
+      viewport={{ once: false }}
     >
       <div className="flex justify-center">
         <div className="w-full max-w-[1200px] px-4 md:px-10 lg:px-40">
-          <div className="flex flex-col md:flex-row justify-around items-center gap-10 text-center">
+          <div className="flex flex-row flex-wrap justify-center md:justify-around items-center gap-6 text-center">
 
             {stats.map((stat, index) => (
               <motion.div
@@ -31,16 +31,28 @@ export default function StatisticsSection() {
                 viewport={{ once: true }}
                 className="flex flex-col items-center"
               >
-                <h3 className="text-5xl font-black text-primary mb-2" style={{color:"#17cf54"}}>
+                <h3 className="text-3xl md:text-5xl font-black text-[#1A4D2E] mb-2">
                   {stat.prefix}
                   <CountUp
+                    start={0}
                     end={stat.value}
                     duration={2.5}
-                    separator=","
                     formattingFn={(value) => toArabicNumbers(value)}
-                  />
+                  >
+                    {({ countUpRef, start, reset }) => (
+                      <motion.span
+                        ref={countUpRef}
+                        initial={false}
+                        whileInView={() => {
+                          reset();
+                          start();
+                        }}
+                        viewport={{ once: false, amount: 0.5 }}
+                      />
+                    )}
+                  </CountUp>
                 </h3>
-                <p className="text-gray-300 font-medium text-lg">
+                <p className="text-sm md:text-lg text-gray-400 font-medium">
                   {stat.label}
                 </p>
               </motion.div>

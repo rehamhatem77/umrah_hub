@@ -55,7 +55,7 @@ export default function HomeHeader() {
             <NavLink href="/" onClick={() => setMenuOpen(false)}>الرئيسية</NavLink>
             <NavLink href="/packages" onClick={() => setMenuOpen(false)}>الباقات</NavLink>
             <NavLink href="/about" onClick={() => setMenuOpen(false)}>من نحن</NavLink>
-            <NavLink href="/contact" onClick={() => setMenuOpen(false)}>اتصل بنا</NavLink>
+            <NavLink href="/contact" onClick={() => setMenuOpen(false)}>تواصل معنا</NavLink>
           </nav>
         </div>
       </div>
