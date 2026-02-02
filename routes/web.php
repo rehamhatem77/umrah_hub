@@ -37,6 +37,9 @@ Route::get('/about', [AboutUsController::class, 'index'])->name('about');
 Route::get('/contact', function () {
     return Inertia::render('Site/ContactUs/ContactUs');
 });
+Route::get('/packagedetails', function () {
+    return Inertia::render('PackageDetails');
+});
 
 Route::get('/packages', [PackagesPageController::class, 'index'])->name('packages');
 

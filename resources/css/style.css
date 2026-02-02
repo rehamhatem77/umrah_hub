@@ -7,3 +7,33 @@
     border-radius: 5px;
     background: #17cf541a;
 }
+
+.btn--primary {
+    background-color: #0f5132;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.btn--secondary {
+    background-color: #fff;
+    color: #0f5132;
+    border: #0f5132 1px solid;
+    border-radius: 5px;
+}
+
+.bg-accent-gold {
+    background: goldenrod
+}
+
+.bg-accent-green {
+    background: #0f5132;
+}
+
+.facility--item {
+    background-color: #f5efe5;
+    border-radius: 0.75rem;
+}
+
+.facility--item svg {
+    color: #0f5132;
+}
