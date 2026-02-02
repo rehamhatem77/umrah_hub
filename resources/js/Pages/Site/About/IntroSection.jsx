@@ -71,8 +71,8 @@ export default function IntroSection({data }) {
   };
   const image = data?.intro_image || defaultData.intro_image;
   const title = data?.intro_title || defaultData.intro_title;
-  const shortDesc = data?.intro_description || defaultData.intro_description;
-  const longDesc = data?.intro_intro_description_long || defaultData.intro_description_long;
+  const shortDesc = data?.intro_description || defaultData.intro_short_desc;
+  const longDesc = data?.intro_description_long || defaultData.intro_long_desc;
   const badge = data?.intro_badge || defaultData.intro_badge;
   const badgeSub = data?.intro_badge_sub || defaultData.intro_badge_sub;
 

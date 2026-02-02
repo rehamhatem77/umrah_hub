@@ -86,8 +86,18 @@ import { motion } from "framer-motion";
 import { CiFlag1 } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
-export default function VisionMissionSection() {
+export default function VisionMissionSection({data }) {
+ const mission = {
+    title: data?.mission_title || "رسالتنا",
+    description: data?.mission_description || "تسهيل إجراءات حجز العمرة من خلال التكنولوجيا الحديثة، وجعل الرحلة الروحانية في متناول الجميع، مع ضمان أعلى معايير الجودة والشفافية.",
+    icon: CiFlag1,
+  };
 
+  const vision = {
+    title: data?.vision_title || "رؤيتنا",
+    description: data?.vision_description || "أن نكون المنصة الرقمية الأولى عالميًا للمعتمرين، نربط القلوب بالأراضي المقدسة بكل يسر وسهولة، ونرتقي بمعايير خدمات العمرة الرقمية.",
+    icon: MdOutlineRemoveRedEye,
+  };
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -113,10 +123,10 @@ export default function VisionMissionSection() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="text-center mb-16">
           <h2 className="text-[#111813] text-4xl font-bold mb-4">
-            رؤيتنا ورسالتنا
+           {data?.vision_mission_title || "رؤيتنا ورسالتنا"}
           </h2>
           <p className="text-[#6B7280] text-lg">
-            نسعى للتميّز في خدمة قاصدي بيت الله الحرام
+            {data?.vision_mission_description || "نسعى للتميّز في خدمة قاصدي بيت الله الحرام"}
           </p>
         </div>
 
@@ -143,13 +153,11 @@ export default function VisionMissionSection() {
             </div>
 
             <h3 className="text-[#111813] text-2xl font-bold mb-4">
-              رسالتنا
+             {mission.title}
             </h3>
 
             <p className="text-[#6B7280] leading-[1.9] text-base max-w-[520px]">
-              تسهيل إجراءات حجز العمرة من خلال التكنولوجيا الحديثة،
-              وجعل الرحلة الروحانية في متناول الجميع، مع ضمان أعلى
-              معايير الجودة والشفافية.
+             {mission.description}
             </p>
           </motion.div>
 
@@ -176,13 +184,11 @@ export default function VisionMissionSection() {
             </div>
 
             <h3 className="text-[#111813] text-2xl font-bold mb-4">
-              رؤيتنا
+             {vision.title}
             </h3>
 
             <p className="text-[#6B7280] leading-[1.9] text-base max-w-[520px]">
-              أن نكون المنصة الرقمية الأولى عالميًا للمعتمرين،
-              نربط القلوب بالأراضي المقدسة بكل يسر وسهولة،
-              ونرتقي بمعايير خدمات العمرة الرقمية.
+                {vision.description}
             </p>
           </motion.div>
 

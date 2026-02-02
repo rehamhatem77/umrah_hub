@@ -2,14 +2,33 @@ import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
 
+export default function StatisticsSection({data}) {
+     const defaultStats = [
+    { number: 5000, label: "معتمر تم خدمتهم", prefix: "+" },
+    { number: 150, label: "فندق شريك", prefix: "+" },
+    { number: 10, label: "سنوات من الخبرة", prefix: "" },
+  ];
 
-const stats = [
-  { value: 5000, label: "معتمر تم خدمتهم", prefix: "+" },
-  { value: 150, label: "فندق شريك", prefix: "+" },
-  { value: 10, label: "سنوات من الخبرة", prefix: "" },
-];
 
-export default function StatisticsSection() {
+  const stats = data?.length
+    ? [
+        {
+          number: data[0]?.statistic_one_number,
+          label: data[0]?.statistic_one_desc,
+          prefix: data[0]?.statistic_one_prefix || "",
+        },
+        {
+          number: data[0]?.statistic_two_number,
+          label: data[0]?.statistic_two_desc,
+          prefix: data[0]?.statistic_two_prefix || "",
+        },
+        {
+          number: data[0]?.statistic_three_number,
+          label: data[0]?.statistic_three_desc,
+          prefix: data[0]?.statistic_three_prefix || "",
+        },
+      ]
+    : defaultStats;
   return (
     <motion.section
       className="w-full bg-[#fbf8f4] text-white py-16"
@@ -35,9 +54,9 @@ export default function StatisticsSection() {
                   {stat.prefix}
                   <CountUp
                     start={0}
-                    end={stat.value}
+                    end={stat.number}
                     duration={2.5}
-                    formattingFn={(value) => toArabicNumbers(value)}
+                    formattingFn={(number) => toArabicNumbers(number)}
                   >
                     {({ countUpRef, start, reset }) => (
                       <motion.span
