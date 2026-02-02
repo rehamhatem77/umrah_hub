@@ -21,7 +21,7 @@ export default function HomeHeader() {
           <NavLink href="/">الرئيسية</NavLink>
           <NavLink href="/packages">الباقات</NavLink>
           <NavLink href="/about">من نحن</NavLink>
-          <NavLink href="/contact">اتصل بنا</NavLink>
+          <NavLink href="/contact">تواصل معنا</NavLink>
         </nav>
 
       

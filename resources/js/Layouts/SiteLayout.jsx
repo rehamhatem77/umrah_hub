@@ -1,8 +1,10 @@
 import Footer from "@/Components/Footer";
+import WhatsAppButton from "@/Components/WhatsappButton";
 import HomeHeader from "@/Pages/Site/Home/HomeHeader";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 
 export default function SiteLayout({ children, title }) {
+  const { footer } = usePage().props;
   return (
     <>
       <Head title={title || "Umrah Hub"} />
@@ -17,7 +19,8 @@ export default function SiteLayout({ children, title }) {
           {children}
         </main>
 
-        <Footer />
+        <Footer footer={footer}/>
+          <WhatsAppButton />
       </div>
     </>
   );

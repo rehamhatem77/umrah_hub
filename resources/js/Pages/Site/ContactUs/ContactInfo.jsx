@@ -5,44 +5,55 @@ import {
   FiPhoneCall,
   FiMail,
   FiInstagram,
-  FiX
+  FiX,
+  FiFacebook
 } from "react-icons/fi";
 import ContactMap from "./ContactMap";
 
-export function ContactInfoSidebar() {
+export function ContactInfoSidebar({data}) {
+
+  const contactTitle = data?.contact_title || "بيانات التواصل";
+  const contactAddress = data?.contact_address || "شارع إبراهيم الخليل، مكة المكرمة المملكة العربية السعودية";
+  const workingHours = data?.working_hours || "يومياً من ٨ ص – ١٠ م";
+  const contactEmail = data?.contact_email || "لا توجد بيانات";
+  const contactPhone = data?.contact_phone || "لا توجد بيانات";
+  const contactLocation = data?.contact_location ;
+
+  const instaLink = data?.insta_link || "https://www.instagram.com";
+  const fbLink = data?.fb_link || "https://www.facebook.com";
+  const xLink = data?.x_link || "https://www.x.com";
+
   return (
     <motion.div
       className="lg:col-span-5 flex flex-col gap-8"
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial="hidden"
+      whileInView="visible"
       viewport={{ once: true }}
-      transition={{ delay: 0.1, duration: 0.6 }}
+      variants={{
+        visible: { transition: { staggerChildren: 0.15 } }
+      }}
     >
 
       <div className="bg-[#fbf8f4] rounded-2xl p-8 border border-[#e8ddcc] shadow-sm">
 
-        <h3 className="text-lg font-medium text-[#111813] mb-8 text-right">
-          بيانات التواصل
-        </h3>
+        <h3 className="text-lg font-medium text-[#111813] mb-8 text-right"> {contactTitle}</h3>
 
         <div className="flex flex-col gap-6">
           <InfoItem icon={<FiMapPin />} title="العنوان">
-            شارع إبراهيم الخليل، مكة المكرمة
-            <br />
-            المملكة العربية السعودية
+           {contactAddress}
           </InfoItem>
 
           <InfoItem icon={<FiPhoneCall />} title="خدمة العملاء">
             <span dir="ltr" className="block text-right">
-              +966 12 345 6789
+              {contactPhone}
             </span>
             <span className="text-sm text-[#8a847b]">
-              يومياً من ٨ ص – ١٠ م
+             {workingHours}
             </span>
           </InfoItem>
 
           <InfoItem icon={<FiMail />} title="البريد الإلكتروني">
-            info@umrahhub.com
+          {contactEmail}
           </InfoItem>
         </div>
 
@@ -54,13 +65,14 @@ export function ContactInfoSidebar() {
           </span>
 
           <div className="flex gap-3">
-            <SocialButton icon={<FiInstagram />} />
-            <SocialButton icon={<FiX />} />
+            <SocialButton icon={<FiInstagram />} link={instaLink} />
+            <SocialButton icon={<FiX />} link={xLink}/>
+            <SocialButton icon={<FiFacebook />} link={fbLink}/>
           </div>
         </div>
       </div>
 
-      <ContactMap />
+      <ContactMap location={contactLocation}/>
     </motion.div>
   );
 }
@@ -68,7 +80,11 @@ export function ContactInfoSidebar() {
 
 function InfoItem({ icon, title, children }) {
   return (
-    <div className="flex items-start gap-4">
+    <motion.div
+      whileHover={{ x: -4 }}
+      transition={{ duration: 0.25 }}
+      className="flex items-start gap-4"
+    >
       <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white border border-[#1f4d2b] text-[#1f4d2b]">
         {icon}
       </div>
@@ -81,15 +97,19 @@ function InfoItem({ icon, title, children }) {
           {children}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
-function SocialButton({ icon }) {
+function SocialButton({ icon ,link}) {
   return (
-    <div className="h-9 w-9 rounded-full bg-white border border-[#1f4d2b]
-    flex items-center justify-center text-[#1f4d2b] cursor-pointer hover:bg-[#1f4d2b] hover:text-white transition">
+     <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="h-9 w-9 rounded-full bg-white border border-[#1f4d2b] flex items-center justify-center text-[#1f4d2b] cursor-pointer hover:bg-[#1f4d2b] hover:text-white transition"
+    >
       {icon}
-    </div>
+    </a>
   );
 }

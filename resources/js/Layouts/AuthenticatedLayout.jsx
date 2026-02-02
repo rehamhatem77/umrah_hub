@@ -57,8 +57,8 @@ export default function AuthenticatedLayout({ children }) {
      const sitePages = [
         { name: 'الصفحة الرئيسية', icon: <FiHome />, path: '/admin/homepage' },
         { name: 'من نحن', icon: <FiBriefcase />, path: '/admin/about-us' },
-        { name: 'تواصل معنا', icon: <FiGlobe />, path: '#' },
-        // { name: 'اراء العملاء', icon: <FaRegCommentDots  />, path: '#' },
+        { name: 'تواصل معنا', icon: <FiGlobe />, path: '/admin/contact-us' },
+        { name: 'رسائل العملاء', icon: <FaRegCommentDots  />, path: '/admin/contact-messages' },
     ];
 
  

@@ -3,10 +3,10 @@ import { ContactInfoSidebar } from "./ContactInfo";
 import { ContactForm } from "./ContactForm";
 import ContactHero from "./ContactHero";
 
-export default function ContactUs() {
+export default function ContactUs({contactUs}) {
     return (
         <SiteLayout title="Umrah Hub - تواصل معنا">
-            <ContactHero />
+            <ContactHero data={contactUs}/>
             <div className=" row">
                 <div className="w-full ">
                     <div className="flex justify-center">
@@ -34,7 +34,7 @@ export default function ContactUs() {
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 pb-28 mt-16">
 
                     <ContactForm />
-                    <ContactInfoSidebar />
+                    <ContactInfoSidebar data={contactUs} />
 
                 </div>
             </div>

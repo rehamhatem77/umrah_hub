@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\AdminContactPage;
 use App\Models\Offer;
 use App\Observers\OfferObserver;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         'success' => session('success'),
         'error' => session('error'),
     ],
+    'footer' => fn () => AdminContactPage::first(),
     ]);
         Vite::prefetch(concurrency: 3);
     }

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AboutUsPageController;
 use App\Http\Controllers\Admin\AdminHomePageController;
+use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\ContactPagecontroller;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\GovernorateController;
@@ -16,6 +18,8 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SIte\AboutUsController;
+use App\Http\Controllers\Site\ContactController;
+use App\Http\Controllers\Site\FooterController;
 use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\Site\PackagesPageController;
 use Illuminate\Foundation\Application;
@@ -31,16 +35,13 @@ use Inertia\Inertia;
 //     ]);
 // });
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
 Route::get('/about', [AboutUsController::class, 'index'])->name('about');
+Route::get('/contact',[ContactController::class,'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
-Route::get('/contact', function () {
-    return Inertia::render('Site/ContactUs/ContactUs');
-});
 Route::get('/packagedetails', function () {
     return Inertia::render('PackageDetails');
 });
-
 Route::get('/packages', [PackagesPageController::class, 'index'])->name('packages');
 
 // Route::get('/dashboard', function () {
@@ -160,6 +161,16 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
 
       Route::get('/about-us', [AboutUsPageController::class, 'index'])->name('about-us.index');
     Route::post('/about-us/{section}', [AboutUsPageController::class, 'updateSection'])->name('about-us.section.update');
+
+     Route::get('/contact-us', [ContactPagecontroller::class, 'index'])->name('contact-us.index');
+    Route::post('/contact-us/{section}', [ContactPageController::class, 'updateSection'])->name('contact-us.section.update');
+
+        Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+    Route::get('/contact-messages/{id}', [ContactMessageController::class, 'show'])->name('contact-messages.show');
+    Route::delete('/contact-messages/{message}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+    
+  
+
     });
 });
 
