@@ -79,6 +79,7 @@ export default function SectionCard({ title, fieldsData, onOpen }) {
         contact_phone: "رقم الهاتف",
         contact_location: "رابط الموقع الجغرافي",
         working_hours: "ساعات العمل",
+        contact_wp:"رقم الواتساب",
 
         insta_link: "رابط إنستجرام",
         fb_link: "رابط فيسبوك",

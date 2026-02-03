@@ -24,6 +24,7 @@ class AdminContactPage extends Model
         'contact_address',
         'contact_email',
         'contact_phone',
+        'contact_wp',
         'working_hours',
         "contact_location",
 

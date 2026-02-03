@@ -21,6 +21,7 @@ const fieldLabels = {
     contact_email: "البريد الإلكتروني",
     contact_phone: "رقم الهاتف",
     working_hours: "ساعات العمل",
+    contact_wp:"رقم الواتساب",
     contact_location: "رابط الموقع الجغرافي",
 
     insta_link: "رابط إنستجرام",
@@ -51,6 +52,7 @@ export default function AdminContactUs({ contactPage }) {
                 "contact_address",
                 "contact_email",
                 "contact_phone",
+                "contact_wp" ,
                 "working_hours",
                 "contact_location",
             ],

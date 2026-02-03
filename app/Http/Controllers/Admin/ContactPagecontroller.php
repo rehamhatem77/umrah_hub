@@ -27,6 +27,7 @@ class ContactPagecontroller extends Controller
             'contact_address' => '',
             'contact_email' => '',
             'contact_phone' => '',
+            'contact_wp'=>'',
             'working_hours' => '',
             "contact_location"=>"",
 
@@ -71,6 +72,7 @@ class ContactPagecontroller extends Controller
                      'contact_location' => 'nullable|string',
                     'contact_email' => 'nullable|email|max:255',
                     'contact_phone' => 'nullable|string|max:50',
+                    'contact_wp' => 'nullable|string|max:50',
                     'working_hours' => 'nullable|string|max:255',
                     
                 ];

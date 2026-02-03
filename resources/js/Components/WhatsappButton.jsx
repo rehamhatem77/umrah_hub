@@ -4,8 +4,8 @@ import { usePage } from "@inertiajs/react";
 export default function WhatsAppButton() {
     const { footer } = usePage().props;
 
-    if (!footer?.contact_phone) return null;
-    const phone = footer?.contact_phone.replace(/\s+/g, "");
+    if (!footer?.contact_wp) return null;
+    const phone = footer?.contact_wp.replace(/\s+/g, "");
 
     return (
         <a

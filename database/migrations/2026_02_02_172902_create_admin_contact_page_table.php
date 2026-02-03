@@ -27,6 +27,7 @@ return new class extends Migration
             $table->text('contact_address')->nullable();
             $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
+             $table->string('contact_wp')->nullable();
             $table->string('working_hours')->nullable();
             $table->text('contact_location')->nullable();
 
