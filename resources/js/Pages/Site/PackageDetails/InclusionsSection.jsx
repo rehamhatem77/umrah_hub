@@ -1,20 +1,25 @@
 import { FiCheckCircle, FiCheck } from "react-icons/fi";
 import { MdCancel, MdClose } from "react-icons/md";
 
-export default function InclusionsSection({ included = [], excluded = [] }) {
- included = [
-  "تذاكر الطيران (ذهاب وعودة) على الخطوط السعودية",
-  "تأشيرة العمرة والتأمين الطبي",
-  "الاستقبال والتوديع في المطار",
-  "جميع التنقلات الداخلية بباصات حديثة",
-  "وجبتي الإفطار والسحور يومياً",
-];
+export default function InclusionsSection({ price_not_contain ,price_contain }) {
 
- excluded = [
-  "المصاريف الشخصية والهدايا",
-  "خدمات الغسيل والكي في الفندق",
-  "أي وجبات إضافية غير مذكورة",
-];  
+const included = price_contain
+    ? price_contain.split(",").map(item => item.trim()).filter(Boolean)
+    : [
+        "تذاكر الطيران (ذهاب وعودة) على الخطوط السعودية",
+        "تأشيرة العمرة والتأمين الطبي",
+        "الاستقبال والتوديع في المطار",
+        "جميع التنقلات الداخلية بباصات حديثة",
+        "وجبتي الإفطار والسحور يومياً",
+      ];
+
+  const excluded = price_not_contain
+    ? price_not_contain.split(",").map(item => item.trim()).filter(Boolean)
+    : [
+        "المصاريف الشخصية والهدايا",
+        "خدمات الغسيل والكي في الفندق",
+        "أي وجبات إضافية غير مذكورة",
+      ];  
 
 return (
     <div

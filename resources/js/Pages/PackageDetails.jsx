@@ -2,7 +2,7 @@ import "../../css/style.css";
 import { Head } from "@inertiajs/react";
 
 import HomeHeader from "./Site/Home/HomeHeader";
-import { FiAtSign, FiCalendar, FiSearch } from "react-icons/fi";
+import { FiAtSign, FiCalendar, FiChevronLeft, FiSearch } from "react-icons/fi";
 import { FaLocationPin } from "react-icons/fa6";
 import { MdLocationCity, MdMoney } from "react-icons/md";
 import Hero from "./Site/PackageDetails/Hero";
@@ -19,12 +19,12 @@ import InclusionsSection from "./Site/PackageDetails/InclusionsSection";
 import Footer from "@/Components/Footer";
 import SiteLayout from "@/Layouts/SiteLayout";
 
-export default function PackageDetails() {
+export default function PackageDetails({offer}) {
     return (
-        <SiteLayout title="Umrah Hub - عنوان الباقة">
-            <div class="layout-container flex flex-col min-h-screen">
-                <div class="flex-1 flex justify-center py-6 lg:py-10 px-4 sm:px-6 lg:px-8">
-                    <div class="flex flex-col max-w-7xl w-full gap-8">
+        <SiteLayout title={`Umrah Hub - ${offer.title}`}>
+            <div className="layout-container flex flex-col min-h-screen">
+                <div className="flex-1 flex justify-center py-6 lg:py-10 px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col max-w-7xl w-full gap-8">
                         <div className="row">
                             <div className="w-full bg-white">
                                 <div className="flex justify-center">
@@ -36,34 +36,31 @@ export default function PackageDetails() {
                                             >
                                                 الرئيسية
                                             </a>
-                                            <span className="text-gray-400 text-sm font-medium leading-normal">
-                                                /
-                                            </span>
-                                            <span className="text-gray-400 text-sm font-medium leading-normal">
-                                                باقات رمضان
-                                            </span>
-                                            <span className="text-gray-400 text-sm font-medium leading-normal">
-                                                /
-                                            </span>
+                                            <FiChevronLeft size={18} className="material-symbols-outlined text-base text-[#dce5df] " />
+                                            <a  className="text-gray-500 hover:text-primary text-sm font-medium leading-normal"
+                                                href="/packages">
+                                                الباقات
+                                            </a>
+                                             <FiChevronLeft size={18} className="material-symbols-outlined text-base text-[#dce5df] " />
                                             <span className="text-[#111813] text-sm font-medium leading-normal">
-                                                باقة العشر الأواخر المميزة
+                                               {offer.title}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <Hero />
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative">
-                            <div class="lg:col-span-8 flex flex-col gap-10">
-                                <PackageHeader />
-                                <OverviewSection />
-                                <ItinerarySection />
-                                <HotelsSection />
-                                <InclusionsSection />
+                        <Hero data={offer} />
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative">
+                            <div className="lg:col-span-8 flex flex-col gap-10">
+                                <PackageHeader data={offer} />
+                                <OverviewSection data={offer} />
+                                <ItinerarySection program={offer.program} />
+                                <HotelsSection hotels={offer.hotels}  />
+                                <InclusionsSection price_contain={offer.price_contain} price_not_contain={offer.price_not_contain} />
                             </div>
-                            <div class="lg:col-span-4 relative">
-                                <BookingCard />
+                            <div className="lg:col-span-4 relative">
+                                <BookingCard data={offer} />
                             </div>
                         </div>
 

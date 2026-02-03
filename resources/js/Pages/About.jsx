@@ -2,7 +2,7 @@ import '../../css/style.css';
 import { Head } from "@inertiajs/react";
 
 import HomeHeader from "./Site/Home/HomeHeader";
-import { FiAtSign, FiCalendar, FiSearch } from "react-icons/fi";
+import { FiAtSign, FiCalendar, FiChevronLeft, FiSearch } from "react-icons/fi";
 import { FaLocationPin } from "react-icons/fa6";
 import { MdLocationCity, MdMoney } from "react-icons/md";
 import Hero from "./Site/About/Hero";
@@ -31,9 +31,7 @@ export default function About({aboutUs }) {
                 >
                   الرئيسية
                 </a>
-                <span className="text-gray-400 text-sm font-medium leading-normal">
-                  /
-                </span>
+                 <FiChevronLeft size={18} className="material-symbols-outlined text-base text-[#dce5df] " />
                 <span className="text-[#111813] text-sm font-medium leading-normal">
                   من نحن
                 </span>

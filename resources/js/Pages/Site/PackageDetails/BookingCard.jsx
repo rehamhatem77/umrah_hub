@@ -1,8 +1,15 @@
  
+import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
+import { formatHijriDate } from "@/Components/Utils/HijriDate";
 import { FaCalendarAlt, FaArrowLeft, FaWhatsapp, FaShareAlt, FaHeart, FaHeadset, FaArrowRight } from "react-icons/fa";
 
 
 export default function BookingCard({data }) {
+
+  const startDateHijri = data?.start_date ? formatHijriDate(data.start_date) : "غير متوفر";
+  const endDateHijri = data?.end_date ? formatHijriDate(data.end_date) : "غير متوفر";
+// console.log("RAW:", data.start_date);
+// console.log("HIJRI:", formatHijriDate(data.start_date));
  
   return (
  <div className="sticky top-24 flex flex-col gap-4">
@@ -15,9 +22,9 @@ export default function BookingCard({data }) {
       <span className="text-text-muted text-sm">يبدأ السعر من</span>
       <div className="text-right">
         <span className="text-3xl font-bold font-heading text-text-dark">
-          ٤,٥٠٠
+          {toArabicNumbers(data.price)}
         </span>
-        <span className="text-sm font-medium text-text-muted"> ر.س / شخص</span>
+        <span className="text-sm font-medium text-text-muted"> ج.م / شخص</span>
       </div>
     </div>
 
@@ -29,7 +36,7 @@ export default function BookingCard({data }) {
           تاريخ الرحلة القادمة
         </span>
         <span className="text-sm font-bold text-text-dark">
-          ٢٠ رمضان - ٣٠ رمضان
+         {startDateHijri} - {endDateHijri}
         </span>
       </div>
     </div>

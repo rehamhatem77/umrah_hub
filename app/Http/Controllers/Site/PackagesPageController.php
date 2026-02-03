@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Offer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PackagesPageController extends Controller
@@ -139,19 +140,18 @@ class PackagesPageController extends Controller
             ->toArray();
     }
 
-    public function show(string $slug)
+public function show(string $slug)
 {
     $offer = Offer::active()
         ->whereDate('end_date', '>=', now())
         ->where('slug', $slug)
         ->with([
-            'hotels:id,name,city,stars',
+            'hotels:id,name,city,stars,distance_from_kaaba,distance_from_nabawi,address_location,features',
             'images:id,offer_id,image_path,is_main,sort_order',
             'mainImage:id,offer_id,image_path',
-            'company:id,name',
+            'company:id,company_code',
             'tripType:id,name',
             'features:id,name,icon',
-            // 'services:id,name,icon',
         ])
         ->firstOrFail();
 
@@ -162,25 +162,38 @@ class PackagesPageController extends Controller
             'slug' => $offer->slug,
             'offer_code' => $offer->offer_code,
             'price' => $offer->price,
+            'price_contain'=>$offer->price_contain,
+            'price_not_contain'=>$offer->price_not_contain,
             'duration_days' => $offer->duration_days,
             'available_places' => $offer->available_places,
             'start_date' => $offer->start_date,
             'end_date' => $offer->end_date,
             'is_special_offer' => $offer->is_special_offer,
             'is_popular' => $offer->is_popular,
-            'description' => $offer->description,
+            'desc' => $offer->desc,
+            'airline' => $offer->airline,
+            'program' => $offer->program,
+            'tour_level' => $offer->tour_level,
+            'tour_level_label' => $offer->tour_level_label,
             'image' => $offer->main_image_url,
-            'images' => $offer->images,
+            'images' => $offer->images->map(fn($img) => [
+                'id' => $img->id,
+                'image_path' => $img->image_path,
+                'is_main' => $img->is_main,
+                'sort_order' => $img->sort_order,
+                'url' => Storage::url($img->image_path),
+            ]),
             'locations' => $offer->locations,
             'number_of_rating_customers' => $offer->number_of_rating_customers,
+            'rating'=> $offer->rating,
             'average_hotel_rating' => $offer->average_hotel_rating,
             'hotels' => $offer->hotels,
             'company' => $offer->company,
             'trip_type' => $offer->tripType,
             'features' => $offer->features,
-            // 'services' => $offer->services,
         ]
     ]);
 }
+
 
 }

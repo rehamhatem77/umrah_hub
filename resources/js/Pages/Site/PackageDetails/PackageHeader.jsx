@@ -1,3 +1,4 @@
+import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import { useState, useEffect, useRef } from "react";
 import { FaStar, FaMapMarkerAlt } from "react-icons/fa";
 
@@ -8,7 +9,7 @@ const tabs = [
   { id: "inclusions", label: "الخدمات" },
 ];
 
-export default function PackageHeaderAnimatedTabs() {
+export default function PackageHeaderAnimatedTabs({ data }) {
   const [activeTab, setActiveTab] = useState("overview");
   const [underlineStyle, setUnderlineStyle] = useState({});
   const tabsRef = useRef([]);
@@ -72,30 +73,33 @@ export default function PackageHeaderAnimatedTabs() {
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2">
+                {data.is_special_offer && (
               <span className="bg-accent-gold/10 text-accent-gold text-xs font-bold px-2 py-1 rounded border border-accent-gold/20">
                 مميزة
               </span>
+                )}
               <span className="bg-primary text-text-muted text-xs font-bold px-2 py-1 rounded">
-                ١٠ أيام / ٩ ليالي
+                {toArabicNumbers( data.duration_days)} أيام / {toArabicNumbers( data.duration_days-1)} ليالي
               </span>
             </div>
 
             <h1 className="text-3xl md:text-4xl font-bold font-heading text-text-dark mb-3">
-              باقة العشر الأواخر المميزة - رمضان ١٤٤٥
+              {data.title}
             </h1>
 
             <div className="flex items-center gap-4 text-sm text-text-muted flex-wrap">
               <div className="flex items-center gap-1">
                 <FaStar className="text-accent-gold text-lg" />
-                <span className="text-text-dark font-bold">٤.٩</span>
-                <span>(١٢٠ تقييم)</span>
+                <span className="text-text-dark font-bold">{data.rating?data.rating:data.average_hotel_rating}</span>
+               
+                <span>({toArabicNumbers(data.number_of_rating_customers)} تقييم)</span>
               </div>
 
               <span className="w-1 h-1 rounded-full bg-gray-300" />
 
               <div className="flex items-center gap-1">
                 <FaMapMarkerAlt className="text-lg" />
-                <span>مكة المكرمة، المدينة المنورة</span>
+                <span>{ data.locations? data.locations.join("، "): "مكة المكرمة، المدينة المنورة"}</span>
               </div>
             </div>
           </div>

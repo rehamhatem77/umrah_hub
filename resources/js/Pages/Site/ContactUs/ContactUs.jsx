@@ -2,6 +2,7 @@ import SiteLayout from "@/Layouts/SiteLayout";
 import { ContactInfoSidebar } from "./ContactInfo";
 import { ContactForm } from "./ContactForm";
 import ContactHero from "./ContactHero";
+import { FiChevronLeft } from "react-icons/fi";
 
 export default function ContactUs({contactUs}) {
     return (
@@ -18,9 +19,7 @@ export default function ContactUs({contactUs}) {
                                 >
                                     الرئيسية
                                 </a>
-                                <span className="text-gray-400 text-sm font-medium leading-normal">
-                                    /
-                                </span>
+                                 <FiChevronLeft size={18} className="material-symbols-outlined text-base text-[#dce5df] " />
                                 <span className="text-[#111813] text-sm font-medium leading-normal">
                                     تواصل معنا 
                                 </span>
