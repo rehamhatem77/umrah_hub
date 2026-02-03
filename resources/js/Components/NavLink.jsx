@@ -2,7 +2,8 @@ import { Link, usePage } from '@inertiajs/react';
 
 export default function NavLink({ href, children }) {
   const { url } = usePage();
-  const isActive = url === href;
+  // const isActive = url === href;
+  const isActive = new RegExp(`^${href}(\/.*)?$`).test(url);
 
   return (
     <Link

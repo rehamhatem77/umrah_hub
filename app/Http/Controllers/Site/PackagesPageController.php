@@ -75,6 +75,7 @@ class PackagesPageController extends Controller
             return [
                 'id' => $offer->id,
                 'title' => $offer->title,
+                'slug' => $offer->slug,
                 'offer_code' => $offer->offer_code,
                 'price' => $offer->price,
                 'duration_days' => $offer->duration_days,
@@ -137,4 +138,49 @@ class PackagesPageController extends Controller
             ->values()
             ->toArray();
     }
+
+    public function show(string $slug)
+{
+    $offer = Offer::active()
+        ->whereDate('end_date', '>=', now())
+        ->where('slug', $slug)
+        ->with([
+            'hotels:id,name,city,stars',
+            'images:id,offer_id,image_path,is_main,sort_order',
+            'mainImage:id,offer_id,image_path',
+            'company:id,name',
+            'tripType:id,name',
+            'features:id,name,icon',
+            // 'services:id,name,icon',
+        ])
+        ->firstOrFail();
+
+    return Inertia::render('PackageDetails', [
+        'offer' => [
+            'id' => $offer->id,
+            'title' => $offer->title,
+            'slug' => $offer->slug,
+            'offer_code' => $offer->offer_code,
+            'price' => $offer->price,
+            'duration_days' => $offer->duration_days,
+            'available_places' => $offer->available_places,
+            'start_date' => $offer->start_date,
+            'end_date' => $offer->end_date,
+            'is_special_offer' => $offer->is_special_offer,
+            'is_popular' => $offer->is_popular,
+            'description' => $offer->description,
+            'image' => $offer->main_image_url,
+            'images' => $offer->images,
+            'locations' => $offer->locations,
+            'number_of_rating_customers' => $offer->number_of_rating_customers,
+            'average_hotel_rating' => $offer->average_hotel_rating,
+            'hotels' => $offer->hotels,
+            'company' => $offer->company,
+            'trip_type' => $offer->tripType,
+            'features' => $offer->features,
+            // 'services' => $offer->services,
+        ]
+    ]);
+}
+
 }

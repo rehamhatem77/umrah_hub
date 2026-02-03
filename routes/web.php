@@ -39,10 +39,14 @@ Route::get('/about', [AboutUsController::class, 'index'])->name('about');
 Route::get('/contact',[ContactController::class,'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
-Route::get('/packagedetails', function () {
-    return Inertia::render('PackageDetails');
-});
+
 Route::get('/packages', [PackagesPageController::class, 'index'])->name('packages');
+// Route::get('/packagedetails', function () {
+//     return Inertia::render('PackageDetails');
+// });
+Route::get('/packages/{slug}', [PackagesPageController::class, 'show'])->name('packages.show');
+
+
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

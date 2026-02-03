@@ -231,16 +231,49 @@ export default function Create({
         if (flash?.error) toast.error(flash.error);
     }, [flash]);
 
+    // const handleImages = (e) => {
+    //     const newFiles = Array.from(e.target.files);
+
+    //     const totalFiles = [...form.data.images, ...newFiles];
+    //     if (totalFiles.length > 10) {
+    //         toast.error('الحد الأقصى 10 صور');
+    //         return;
+    //     }
+
+    //     form.setData('images', totalFiles);
+
+    //     setPreviewImages(prev => [
+    //         ...prev,
+    //         ...newFiles.map(file => URL.createObjectURL(file))
+    //     ]);
+
+    //     e.target.value = null;
+    // };
     const handleImages = (e) => {
         const newFiles = Array.from(e.target.files);
 
-        const totalFiles = [...form.data.images, ...newFiles];
-        if (totalFiles.length > 10) {
-            toast.error('الحد الأقصى 10 صور');
+        const MAX_SIZE_KB = 2048;
+        const MAX_IMAGES = 10;
+
+        const errors = [];
+        if (form.data.images.length + newFiles.length > MAX_IMAGES) {
+            errors.push(`الحد الأقصى ${MAX_IMAGES} صور`);
+        }
+        newFiles.forEach((file, idx) => {
+            const sizeInKB = file.size / 1024;
+            if (sizeInKB > MAX_SIZE_KB) {
+                errors.push(`حجم الصورة رقم ${idx + 1} أكبر من ${MAX_SIZE_KB} كيلوبايت`);
+            }
+        });
+
+        if (errors.length) {
+            toast.error(errors.join('\n'));
+
+            e.target.value = null;
             return;
         }
 
-        form.setData('images', totalFiles);
+        form.setData('images', [...form.data.images, ...newFiles]);
 
         setPreviewImages(prev => [
             ...prev,
@@ -249,6 +282,7 @@ export default function Create({
 
         e.target.value = null;
     };
+
 
 
     const removeImage = (index) => {
@@ -320,7 +354,9 @@ export default function Create({
                 // toast.success('تم إضافة الباقة بنجاح');
                 router.get(route('admin.offers.index'))
             },
-            onError: () => { toast.error('حدثت أخطاء في الإدخال، يرجى المراجعة والتمحيص مرة أخرى'); },
+            onError: () => {
+            toast.error(`حدثت أخطاء في الإدخال، يرجى المراجعة والتمحيص مرة أخرى.`);
+            },
         });
     };
 
@@ -1062,6 +1098,7 @@ export default function Create({
                                 </span>
                                 <input
                                     multiple
+                                    accept="image/*"
                                     type="file"
                                     className="hidden"
                                     onChange={handleImages}

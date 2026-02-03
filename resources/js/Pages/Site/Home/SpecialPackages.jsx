@@ -34,7 +34,7 @@ export default function SpecialPackages({ specialPackages, title, description, b
                 </div>
 
                 <a
-                    href="/packages"
+                     href="/packages?filter=special"
                     className=" btn-primary group flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--app-primary)] bg-[var(--app-primary)] text-white text-sm font-semibold transition"
                 >
                    {buttonText || "عرض كل المميز"}
@@ -65,6 +65,7 @@ export default function SpecialPackages({ specialPackages, title, description, b
                             <PackageCard
                                 title={pkg.title}
                                 offerCode={pkg.offer_code}
+                                slug={pkg.slug}
                                 price={toArabicNumbers(pkg.price)}
                                 days={
                                     toArabicNumbers(pkg.duration_days) +

@@ -100,7 +100,7 @@ export default function Edit({
             ? offer.end_date.slice(0, 10)
             : '',
 
-        available_places: offer?.available_places || '',
+        available_places: offer?.available_places ?? '',
         whatsapp_number: offer?.whatsapp_number || '',
         tour_level: offer?.tour_level || '',
 
@@ -315,29 +315,71 @@ export default function Edit({
 
 
 
+    // const handleImages = (e) => {
+    //     const newFiles = Array.from(e.target.files);
+
+    //     if (previewImages.length + newFiles.length > 10) {
+    //         toast.error('الحد الأقصى 10 صور');
+    //         return;
+    //     }
+
+    //     form.setData('images', [...form.data.images, ...newFiles]);
+
+    //     setPreviewImages(prev => [
+    //         ...prev,
+    //         ...newFiles.map(file => ({
+    //             id: null,
+    //             file,
+    //             src: URL.createObjectURL(file),
+    //             isNew: true,
+    //         })),
+    //     ]);
+
+
+    //     e.target.value = null;
+    // };
+
     const handleImages = (e) => {
-        const newFiles = Array.from(e.target.files);
+    const newFiles = Array.from(e.target.files);
+    const MAX_IMAGES = 10; 
+    const MAX_SIZE_KB = 2048; 
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
-        if (previewImages.length + newFiles.length > 10) {
-            toast.error('الحد الأقصى 10 صور');
-            return;
+    const errors = [];
+
+    if (previewImages.length + newFiles.length > MAX_IMAGES) {
+        errors.push(`الحد الأقصى ${MAX_IMAGES} صور`);
+    }
+
+    newFiles.forEach((file, idx) => {
+        if (!allowedTypes.includes(file.type)) {
+            errors.push(`الصورة رقم ${idx + 1} يجب أن تكون بصيغة JPG, PNG أو WEBP`);
         }
+        const sizeInKB = file.size / 1024;
+        if (sizeInKB > MAX_SIZE_KB) {
+            errors.push(`حجم الصورة رقم ${idx + 1} أكبر من ${MAX_SIZE_KB} كيلوبايت`);
+        }
+    });
 
-        form.setData('images', [...form.data.images, ...newFiles]);
-
-        setPreviewImages(prev => [
-            ...prev,
-            ...newFiles.map(file => ({
-                id: null,
-                file,
-                src: URL.createObjectURL(file),
-                isNew: true,
-            })),
-        ]);
-
-
+    if (errors.length) {
+        toast.error(errors.join('\n'));
         e.target.value = null;
-    };
+        return;
+    }
+    form.setData('images', [...form.data.images, ...newFiles]);
+
+    setPreviewImages(prev => [
+        ...prev,
+        ...newFiles.map(file => ({
+            id: null,
+            file,
+            src: URL.createObjectURL(file),
+            isNew: true,
+        })),
+    ]);
+
+    e.target.value = null;
+};
 
     const removeImage = (index) => {
         const img = previewImages[index];
@@ -577,6 +619,7 @@ export default function Edit({
                                     <label className="label">عدد الأماكن المتاحة</label>
                                     <input
                                         type="number"
+                                        min={0}
                                         className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
                                         value={form.data.available_places}
                                         onChange={e => {
@@ -896,7 +939,7 @@ export default function Edit({
                             <label className="border-2 border-dashed rounded-xl p-6 flex flex-col items-center cursor-pointer hover:border-[var(--app-primary)] transition">
                                 <FiUpload size={28} />
                                 <span className="mt-2 text-xs text-gray-500">اسحب الصور أو اضغط للرفع</span>
-                                <input multiple type="file" className="hidden" onChange={handleImages} />
+                                <input multiple type="file" accept="image/*"  className="hidden" onChange={handleImages} />
                             </label>
 
                             {previewImages.length > 0 && (

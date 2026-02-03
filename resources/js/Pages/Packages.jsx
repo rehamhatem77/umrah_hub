@@ -1,5 +1,5 @@
 import "../../css/style.css";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 
 import BreadCrumb from "./Site/Packages/Hero";
 import PackagesGrid from "./Site/Packages/PackagesGrid";
@@ -10,6 +10,9 @@ import SiteLayout from "@/Layouts/SiteLayout";
 
 
 export default function Packages({offers ,priceRange ,durationCounts}) {
+     const { url } = usePage();
+       const params = new URLSearchParams(url.split("?")[1]);
+    const filter = params.get("filter"); 
     return (
         <SiteLayout title="Umrah Hub - الباقات">
             <div className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -19,6 +22,7 @@ export default function Packages({offers ,priceRange ,durationCounts}) {
                     <PackagesGrid
                         offers={offers}
                         currentFilter={offers.currentFilter}
+                        special={filter}
                     />
                 </div>
             </div>

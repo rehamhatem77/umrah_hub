@@ -268,7 +268,8 @@ class OfferController extends Controller
 
     private function generateUniqueSlug(string $title): string
     {
-        $slug = Str::slug($title);
+        // $slug = Str::slug($title);
+        $slug = str_replace(' ', '-', $title);
         $originalSlug = $slug;
         $counter = 1;
         while (Offer::where('slug', $slug)->exists()) {

@@ -13,16 +13,21 @@ const filters = [
   { label: "الأقرب موعداً", value: "nearest" },
 ];
 
-export default function PackagesGrid({ offers }) {
+export default function PackagesGrid({ offers, special }) {
   const [activeFilter, setActiveFilter] = useState("");
   const [filteredOffers, setFilteredOffers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
   const hasActiveFilters = activeFilter !== "";
-useEffect(() => {
-  setFilteredOffers(offers.data);
-}, [offers.data]);
+  useEffect(() => {
+    if (special) {
+      setActiveFilter(special);
+    }
+  }, []);
+  useEffect(() => {
+    setFilteredOffers(offers.data);
+  }, [offers.data]);
   useEffect(() => {
     let newOffers = [...offers.data];
 
@@ -68,10 +73,17 @@ useEffect(() => {
             {filters.map((f) => (
               <button
                 key={f.value}
-                onClick={() => setActiveFilter(f.value)}
+                onClick={() => {
+                  setActiveFilter(f.value);
+                  router.get(
+                    "/packages",
+                    {},
+                    { preserveState: true, replace: true }
+                  );
+                }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${activeFilter === f.value
-                    ? "btn-primary text-white shadow-sm ring-2 ring-green-600  ring-offset-2"
-                    : "bg-[#f6f8f6] text-[#111813] hover:bg-primary/10 hover:text-primary"
+                  ? "btn-primary text-white shadow-sm ring-2 ring-green-600  ring-offset-2"
+                  : "bg-[#f6f8f6] text-[#111813] hover:bg-primary/10 hover:text-primary"
                   }`}
               >
                 {f.label}
@@ -121,13 +133,14 @@ useEffect(() => {
                 transition={{ duration: 0.3 }}
                 className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all"
               >
+                <a href={pkg.slug? route("packages.show", pkg.slug) : ""} >
                 <AllPackagesCard
                   title={pkg.title}
                   offerCode={pkg.offer_code}
                   price={toArabicNumbers(pkg.price)}
                   date={pkg.start_date}
                   hotels={pkg.hotels}
-                
+
                   popularBadge={pkg.is_popular ? "أكثر طلباً" : ""}
                   location={
                     pkg.locations?.length
@@ -140,10 +153,11 @@ useEffect(() => {
                   }
                   image={pkg.image}
                   badge={pkg.is_special_offer ? "مميز" : ""}
-                  rating={pkg.rating? pkg.rating : pkg.average_hotel_rating}
-                  customers_rating={pkg.number_of_rating_customers?pkg.number_of_rating_customers :null}
+                  rating={pkg.rating ? pkg.rating : pkg.average_hotel_rating}
+                  customers_rating={pkg.number_of_rating_customers ? pkg.number_of_rating_customers : null}
                   availablePlaces={pkg.available_places}
                 />
+                </a>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -168,8 +182,8 @@ useEffect(() => {
                 key={idx}
                 onClick={() => setCurrentPage(idx + 1)}
                 className={`px-3 py-1 rounded border ${currentPage === idx + 1
-                    ? "bg-primary text-white"
-                    : "bg-white hover:bg-gray-100"
+                  ? "bg-primary text-white"
+                  : "bg-white hover:bg-gray-100"
                   }`}
               >
                 {idx + 1}
@@ -208,8 +222,8 @@ useEffect(() => {
                     router.get(link.url, {}, { preserveState: true, replace: true })
                   }
                   className={`px-2 py-1 rounded border ${link.active
-                      ? "bg-[var(--app-primary)] text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-100"
+                    ? "bg-[var(--app-primary)] text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-100"
                     }`}
                   disabled={!link.url}
                   dangerouslySetInnerHTML={{ __html: label }}

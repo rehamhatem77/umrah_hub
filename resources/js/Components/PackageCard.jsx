@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaMapMarked, FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { FaMapLocation, FaMapLocationDot } from "react-icons/fa6";
 
+
 export default function PackageCard({
   variant = "default",
   title,
@@ -14,6 +15,7 @@ export default function PackageCard({
   days,
   type,
   date,
+  slug,
 }) {
   const isCompact = variant === "compact";
 
@@ -118,7 +120,7 @@ export default function PackageCard({
               {/* <FiClock />  */}
               <span> {days}</span> </div>
             <div className="flex justify-between items-center">
-              <a href="#" className="text-xs text-green-600 font-medium">
+              <a href={slug? route("packages.show", slug) : ""} className="text-xs text-green-600 font-medium">
                 عرض التفاصيل
               </a>
               <span className="text-green-600 font-bold text-sm">
@@ -132,9 +134,9 @@ export default function PackageCard({
               {price.toLocaleString()} ج.م
             </span>
 
-            <button className="bg-green-100 text-green-700 px-5 py-2 rounded-xl text-sm font-bold hover:bg-green-200 transition">
+            <a href={slug? route("packages.show", slug) : ""} className="bg-green-100 text-green-700 px-5 py-2 rounded-xl text-sm font-bold hover:bg-green-200 transition">
               تفاصيل الباقة
-            </button>
+            </a>
           </div>
         )}
       </div>

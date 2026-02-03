@@ -103,6 +103,7 @@ export default function AllPackages({ packages ,title, buttonText}) {
                                 <PackageCard
                                     variant="compact"
                                     title={pkg.title}
+                                     slug={pkg.slug}
                                     image={
                                         pkg.images?.length
                                             ? `/storage/${pkg.images[0].image_path}`
@@ -121,9 +122,9 @@ export default function AllPackages({ packages ,title, buttonText}) {
             </div>
 
             <div className="mt-12 flex justify-center">
-                <button className="px-6 py-2 rounded-full bg-[var(--app-primary)] text-white text-sm font-semibold transition">
+                <a className="px-6 py-2 rounded-full bg-[var(--app-primary)] text-white text-sm font-semibold transition" href="/packages">
                     {buttonText || "عرض جميع الباقات"}
-                </button>
+                </a>
             </div>
         </section>
     );
