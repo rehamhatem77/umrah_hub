@@ -82,6 +82,16 @@ export default function ShowOffer({
                                     <input value={offer.offer_code} disabled className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed" />
                                 </div>
                             </div>
+                            <div>
+                                <label className="label">وصف مختصر</label>
+                                <textarea
+                                    value={offer.desc || '—'}
+                                    disabled
+                                    rows={3}
+                                    className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed"
+                                />
+                            </div>
+
 
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <div>
@@ -150,6 +160,53 @@ export default function ShowOffer({
                                     <input value={offer.airline} disabled className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed" />
                                 </div>
                             </div>
+
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="label flex items-center gap-1">
+                                        <FiStar /> التقييم
+                                    </label>
+                                    <input
+                                        value={offer.rating || '—'}
+                                        disabled
+                                        className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="label">عدد المقيمين</label>
+                                    <input
+                                        value={offer.number_of_rating_customers || '—'}
+                                        disabled
+                                        className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed"
+                                    />
+                                </div>
+                            </div>
+                            <div className="card p-6 space-y-4">
+                                <h3 className="font-bold text-lg">تفاصيل السعر</h3>
+
+                                <div>
+                                    <label className="label">السعر يشمل</label>
+                                    <textarea
+                                        value={offer.price_contain || '—'}
+                                        disabled
+                                        rows={3}
+                                        className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="label">السعر لا يشمل</label>
+                                    <textarea
+                                        value={offer.price_not_contain || '—'}
+                                        disabled
+                                        rows={3}
+                                        className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed"
+                                    />
+                                </div>
+                            </div>
+
+
                         </div>
 
                         {/* Hotels */}

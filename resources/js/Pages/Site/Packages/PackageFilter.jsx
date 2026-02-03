@@ -4,7 +4,7 @@ import { Range } from "react-range";
 import { router } from "@inertiajs/react";
 import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 
-export default function PackageFilter({ priceRange }) {
+export default function PackageFilter({ priceRange , counts = {}}) {
   const [selectedGovernments, setSelectedGovernments] = useState([]);
   const [selectedDurations, setSelectedDurations] = useState([]);
   const [selectedStars, setSelectedStars] = useState([]);
@@ -36,6 +36,13 @@ export default function PackageFilter({ priceRange }) {
       return null;
     }).filter(Boolean);
   };
+const arabicToNumber = {
+  "٧ أيام": "7",
+  "١٠ أيام": "10",
+  "١٤ يوم فأكثر": "14",
+};
+
+
 
   const applyFilters = () => {
     router.get(
@@ -161,7 +168,8 @@ export default function PackageFilter({ priceRange }) {
                     className="size-4 rounded border-[#dce5df] text-primary focus:ring-primary/20"
                   />
                   <span className="text-[#4b5563] group-hover:text-primary transition-colors">{label}</span>
-                  <span className="mr-auto text-xs text-[#9ca3af]">(١٢)</span>
+                  <span className="mr-auto text-xs text-[#9ca3af]"> ({counts?.[arabicToNumber[label]] ?? 0})
+</span>
                 </label>
               ))}
             </div>

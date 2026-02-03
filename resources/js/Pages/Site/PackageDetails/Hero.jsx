@@ -2,7 +2,7 @@ export default function Hero( ) {
  
  
   return (
-   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px] md:h-[500px]">
+   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[400px] md:h-[500px]  text-black">
   {/* Main Image */}
   <div className="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-2xl">
     <div

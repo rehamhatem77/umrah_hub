@@ -11,6 +11,7 @@ export default function AllPackagesCard({
     rating,
     days,
     date,
+    customers_rating,
     popularBadge,
     availablePlaces,
     hotels = [], }) {
@@ -33,7 +34,7 @@ export default function AllPackagesCard({
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            
+
             className={`group bg-white rounded-2xl overflow-hidden transition-all ${isSoldOut ? 'opacity-50 pointer-events-none' : ''}`}
         >
             <div className="relative h-52 overflow-hidden">
@@ -54,31 +55,36 @@ export default function AllPackagesCard({
 
                 {popularBadge && (
                     <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-green-600 text-white text-black text-xs font-bold px-3 py-1 rounded-xl shadow">
-                        
+
                         <span>{popularBadge}</span>
                     </div>
                 )}
 
-               
+
                 <div className="absolute bottom-3 right-3 text-white flex items-center gap-1 text-xs">
                     <FaMapMarkerAlt />
                     <span>{location}</span>
                 </div>
             </div>
 
-            
+
             <div className="p-4 flex flex-col flex-grow">
-               
-                <div className="flex justify-between items-start mb-2">
-                    <div className="flex text-amber-400 text-sm gap-1">
-                        {Array.from({ length: Math.round(rating) }).map((_, i) => (
+
+                <div className="flex justify-between items-center mb-2">
+                    <div className="flex text-amber-400 text-sm gap-1 items-center">
+                        {Array.from({ length: Math.round(rating || 0) }).map((_, i) => (
                             <FaStar key={i} />
                         ))}
+                        {/* Show customer rating only if it exists */}
+                        {customers_rating != null && (
+                            <span className="text-gray-400 ml-2">({customers_rating})</span>
+                        )}
                     </div>
                     <span className="text-xs text-green-600 bg-[#f6f8f6] px-2 py-0.5 rounded">
                         شامل الطيران
                     </span>
                 </div>
+
 
                 <h3 className="text-lg font-bold text-[#111813] mb-3 leading-snug group-hover:text-primary transition-colors">
                     {title}
@@ -102,23 +108,23 @@ export default function AllPackagesCard({
                         <div className="flex items-start gap-2 text-sm text-[#4b5563]">
                             <FaHotel className="text-green-600 mt-0.5" />
                             {/* <div className="flex flex-col"> */}
-                                <div className="flex flex-wrap gap-1">
-                                    <span>فندق</span>
-                                    {hotels.slice(0, 2).map((hotel, idx) => (
-                                        <span key={idx}>
-                                            {hotel.name}
-                                            {idx === 0 && hotels.length > 1 ? " وفندق " : ""}
-                                        </span>
-                                    ))}
+                            <div className="flex flex-wrap gap-1">
+                                <span>فندق</span>
+                                {hotels.slice(0, 2).map((hotel, idx) => (
+                                    <span key={idx}>
+                                        {hotel.name}
+                                        {idx === 0 && hotels.length > 1 ? " وفندق " : ""}
+                                    </span>
+                                ))}
 
-                                    {hotels.length > 2 && (
+                                {hotels.length > 2 && (
                                     <span className="text-xs text-[#63886f] mr-1">
                                         + {hotels.length - 2} فنادق أخرى
                                     </span>
                                 )}
-                                </div>
-                                
                             </div>
+
+                        </div>
                         // </div>
                     )}
 
@@ -141,11 +147,10 @@ export default function AllPackagesCard({
                         onClick={() => !isSoldOut && Inertia.visit("/packages")}
                         whileHover={!isSoldOut ? { scale: 1.07 } : {}}
                         whileTap={!isSoldOut ? { scale: 0.95 } : {}}
-                        className={`text-sm font-bold py-2 px-4 rounded-lg transition-colors ${
-                            isSoldOut
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-[#111813] hover:bg-primary text-white"
-                        }`}
+                        className={`text-sm font-bold py-2 px-4 rounded-lg transition-colors ${isSoldOut
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-[#111813] hover:bg-primary text-white"
+                            }`}
                     >
                         {isSoldOut ? "تم البيع" : "احجز الآن"}
                     </motion.button>

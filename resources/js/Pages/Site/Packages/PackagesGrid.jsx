@@ -127,6 +127,7 @@ useEffect(() => {
                   price={toArabicNumbers(pkg.price)}
                   date={pkg.start_date}
                   hotels={pkg.hotels}
+                
                   popularBadge={pkg.is_popular ? "أكثر طلباً" : ""}
                   location={
                     pkg.locations?.length
@@ -139,7 +140,8 @@ useEffect(() => {
                   }
                   image={pkg.image}
                   badge={pkg.is_special_offer ? "مميز" : ""}
-                  rating={pkg.average_hotel_rating}
+                  rating={pkg.rating? pkg.rating : pkg.average_hotel_rating}
+                  customers_rating={pkg.number_of_rating_customers?pkg.number_of_rating_customers :null}
                   availablePlaces={pkg.available_places}
                 />
               </motion.div>

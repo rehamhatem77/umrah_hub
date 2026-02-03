@@ -25,7 +25,7 @@ const hotels = [
 ];
 
   return (
-    <div className="flex flex-col gap-6" id="hotels">
+    <div className="flex flex-col gap-6  text-black" id="hotels">
       <h3 className="text-2xl font-bold font-heading text-text-dark">
         الفنادق والإقامة
       </h3>

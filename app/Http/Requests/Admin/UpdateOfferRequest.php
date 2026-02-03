@@ -35,6 +35,12 @@ class UpdateOfferRequest extends FormRequest
             'title' => 'required|string|max:255',
             'slug'  => 'nullable|string|max:255'. $this->offer->id,
 
+            'desc'      => 'required|string|max:2555',
+            'rating' => 'required|numeric|min:1',
+            'number_of_rating_customers' => 'required|integer|min:1',
+            'price_contain'       => 'required|string',
+            'price_not_contain'       => 'required|string',
+
 
             'trip_type_id'   => 'required|exists:trip_types,id',
             'company_id'     => 'required|exists:tour_companies,id',

@@ -26,27 +26,27 @@ class PackagesPageController extends Controller
                 'features:id,name,icon',
             ]);
 
-             if ($request->filled(['price_from', 'price_to'])) {
-        $offersQuery->whereBetween('price', [
-            $request->price_from,
-            $request->price_to
-        ]);
-    }
-     if ($request->filled('date')) {
-        $offersQuery->whereDate('start_date', '>=', $request->date);
-    }
-    if ($request->filled('durations')) {
-        $offersQuery->whereIn(
-            'duration_days',
-            $this->mapDurations($request->durations)
-        );
-    }
+        if ($request->filled(['price_from', 'price_to'])) {
+            $offersQuery->whereBetween('price', [
+                $request->price_from,
+                $request->price_to
+            ]);
+        }
+        if ($request->filled('date')) {
+            $offersQuery->whereDate('start_date', '>=', $request->date);
+        }
+        if ($request->filled('durations')) {
+            $offersQuery->whereIn(
+                'duration_days',
+                $this->mapDurations($request->durations)
+            );
+        }
 
-     if ($request->filled('stars')) {
-        $offersQuery->whereHas('hotels', function ($q) use ($request) {
-            $q->whereIn('stars', $request->stars);
-        });
-    }
+        if ($request->filled('stars')) {
+            $offersQuery->whereHas('hotels', function ($q) use ($request) {
+                $q->whereIn('stars', $request->stars);
+            });
+        }
 
 
         // switch ($filter) {
@@ -84,6 +84,7 @@ class PackagesPageController extends Controller
                 'is_popular' => $offer->is_popular,
                 'image' => $offer->main_image_url,
                 'locations' => $offer->locations,
+                "number_of_rating_customers" => $offer->number_of_rating_customers,
                 'average_hotel_rating' => $offer->average_hotel_rating,
                 'hotels' => $offer->hotels->map(fn($hotel) => [
                     'id' => $hotel->id,
@@ -94,38 +95,46 @@ class PackagesPageController extends Controller
                 'company' => $offer->company,
                 'trip_type' => $offer->tripType,
                 'features' => $offer->features,
-                
+
             ];
         });
+        $durationCounts = Offer::active()
+            ->whereDate('end_date', '>=', now())
+            ->selectRaw('duration_days, COUNT(*) as count')
+            ->groupBy('duration_days')
+            ->pluck('count', 'duration_days');
+            
         $minPrice = $offersQuery->min('price');
-$maxPrice = $offersQuery->max('price');
+        $maxPrice = $offersQuery->max('price');
 
         return Inertia::render('Packages', [
             'offers' => $offers,
             'currentFilter' => $filter ?? '',
             'priceRange' => [
-        'min' => $minPrice ?? 0,
-        'max' => $maxPrice ?? 10000,
-    ],
+                'min' => $minPrice ?? 0,
+                'max' => $maxPrice ?? 10000,
+            ],
+            'durationCounts' => [
+                '7' => $durationCounts[7] ?? 0,
+                '10' => $durationCounts[10] ?? 0,
+                '14' => $durationCounts[14] ?? 0,
+            ],
         ]);
     }
 
     private function mapDurations(array $durations): array
-{
-    return collect($durations)
-        ->flatMap(function ($d) {
-            return match ($d) {
-                '7'  => [7],
-                '10'   => [10],
-                '14'  => [14],
-                default => [],
-            };
-        })
-        ->unique()
-        ->values()
-        ->toArray();
-}
-
-
-    
+    {
+        return collect($durations)
+            ->flatMap(function ($d) {
+                return match ($d) {
+                    '7'  => [7],
+                    '10'   => [10],
+                    '14'  => [14],
+                    default => [],
+                };
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+    }
 }

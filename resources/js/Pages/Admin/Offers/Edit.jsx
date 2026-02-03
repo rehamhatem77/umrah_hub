@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { MdOutlineHotel } from 'react-icons/md';
+import toArabicNumbers from '@/Components/Utils/ArabicNumbers';
 
 const pageMotion = {
     hidden: { opacity: 0, y: 6 },
@@ -75,6 +76,13 @@ export default function Edit({
         seo_title: offer?.seo_title || '',
         seo_description: offer?.seo_description || '',
 
+        desc: offer?.desc || '',
+        rating: offer?.rating || '',
+        number_of_rating_customers: offer?.number_of_rating_customers || '',
+        price_contain: offer?.price_contain || '',
+        price_not_contain: offer?.price_not_contain || '',
+
+
         governorates: offer?.governorates?.map(g => g.id) || [],
         hotels: offer?.hotels?.map(h => h.id) || [],
 
@@ -118,6 +126,11 @@ export default function Edit({
     const [selectedFeatures, setSelectedFeatures] = useState([]);
 
     const noOptionsMessage = () => 'لا توجد بيانات';
+    const [priceContainItems, setPriceContainItems] = useState([]);
+    const [priceNotContainItems, setPriceNotContainItems] = useState([]);
+    const [newPriceContain, setNewPriceContain] = useState('');
+    const [newPriceNotContain, setNewPriceNotContain] = useState('');
+
 
     const selectStyles = {
         control: (base, state) => ({
@@ -216,6 +229,92 @@ export default function Edit({
         }
     }, [offer]);
 
+    useEffect(() => {
+        if (offer?.price_contain) {
+            setPriceContainItems(
+                offer.price_contain
+                    .split(',')
+                    .map(i => i.trim())
+                    .filter(Boolean)
+            );
+        }
+
+        if (offer?.price_not_contain) {
+            setPriceNotContainItems(
+                offer.price_not_contain
+                    .split(',')
+                    .map(i => i.trim())
+                    .filter(Boolean)
+            );
+        }
+    }, [offer]);
+
+    useEffect(() => {
+        const days = Number(form.data.duration_days);
+        if (!days) return;
+
+        let currentProgram = form.data.program || '';
+
+        // Count existing "اليوم X" entries
+        const dayCountInProgram = (currentProgram.match(/اليوم \d+/g) || []).length;
+
+        // If program is empty, or days increased, add missing days
+        if (dayCountInProgram < days) {
+            let additionalProgram = '';
+            for (let i = dayCountInProgram + 1; i <= days; i++) {
+                additionalProgram += `
+<p><strong>اليوم ${toArabicNumbers(i)}</strong></p>
+<p>عنوان اليوم:</p>
+<p>الوصف:</p>
+`;
+            }
+            form.setData('program', currentProgram + additionalProgram);
+            setFrontendErrors(p => ({ ...p, program: null }));
+        }
+
+        if (dayCountInProgram > days) {
+
+            const parts = currentProgram.split(/(?=<p><strong>اليوم \d+<\/strong><\/p>)/);
+            const newProgram = parts.slice(0, days).join('');
+            form.setData('program', newProgram);
+        }
+    }, [form.data.duration_days]);
+
+
+    const addPriceContainItem = () => {
+        if (newPriceContain.trim() && !priceContainItems.includes(newPriceContain.trim())) {
+            const updated = [...priceContainItems, newPriceContain.trim()];
+            setPriceContainItems(updated);
+            form.setData('price_contain', updated.join(', '));
+            setNewPriceContain('');
+            setFrontendErrors(p => ({ ...p, price_contain: null }));
+        }
+    };
+
+    const removePriceContainItem = (index) => {
+        const updated = priceContainItems.filter((_, i) => i !== index);
+        setPriceContainItems(updated);
+        form.setData('price_contain', updated.join(', '));
+    };
+
+    const addPriceNotContainItem = () => {
+        if (newPriceNotContain.trim() && !priceNotContainItems.includes(newPriceNotContain.trim())) {
+            const updated = [...priceNotContainItems, newPriceNotContain.trim()];
+            setPriceNotContainItems(updated);
+            form.setData('price_not_contain', updated.join(', '));
+            setNewPriceNotContain('');
+            setFrontendErrors(p => ({ ...p, price_not_contain: null }));
+        }
+    };
+
+    const removePriceNotContainItem = (index) => {
+        const updated = priceNotContainItems.filter((_, i) => i !== index);
+        setPriceNotContainItems(updated);
+        form.setData('price_not_contain', updated.join(', '));
+    };
+
+
+
     const handleImages = (e) => {
         const newFiles = Array.from(e.target.files);
 
@@ -254,6 +353,7 @@ export default function Edit({
     };
 
 
+
     const validate = () => {
         const errors = {};
 
@@ -279,6 +379,26 @@ export default function Edit({
         if (!form.data.hotels.length)
             errors.hotels = 'اختر فندقًا واحدًا على الأقل';
 
+        if (!form.data.desc.trim())
+            errors.desc = 'الوصف المختصر مطلوب';
+
+        if (!form.data.rating || Number(form.data.rating) < 1 || Number(form.data.rating) > 5)
+            errors.rating = 'التقييم يجب أن يكون بين 1 و 5';
+
+        if (
+            !form.data.number_of_rating_customers ||
+            Number(form.data.number_of_rating_customers) < 1
+        )
+            errors.number_of_rating_customers = 'عدد المقيمين يجب أن يكون 1 على الأقل';
+
+        if (!form.data.price_contain || form.data.price_contain.trim() === '')
+            errors.price_contain = 'المحتويات المشمولة في السعر مطلوبة';
+
+        if (!form.data.price_not_contain || form.data.price_not_contain.trim() === '')
+            errors.price_not_contain = 'المحتويات غير المشمولة في السعر مطلوبة';
+
+
+
 
         setFrontendErrors(errors);
         return Object.keys(errors).length === 0;
@@ -295,7 +415,9 @@ export default function Edit({
                 // toast.success('تم تعديل الباقة بنجاح');
                 router.get(route('admin.offers.index'))
             },
-            onError: () => {
+            onError: (errors) => {
+                console.log('server Errors:', errors);
+
                 toast.error('حدثت أخطاء في الإدخال، يرجى المراجعة والتمحيص مرة أخرى');
             },
         });
@@ -330,6 +452,7 @@ export default function Edit({
 
                 <form
                     onSubmit={submit}
+                    noValidate
                     className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start"
                 >
                     <div className="lg:col-span-2 space-y-6">
@@ -365,6 +488,21 @@ export default function Edit({
                                     <InputError message={frontendErrors.offer_code || form.errors.offer_code} />
                                 </div>
                             </div>
+                            <div>
+                                <label className="label">وصف مختصر</label>
+                                <textarea
+                                    rows={3}
+                                    className={`input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm ${frontendErrors.desc && 'border-red-500'}`}
+                                    value={form.data.desc}
+                                    onChange={e => {
+                                        form.setData('desc', e.target.value);
+                                        setFrontendErrors(p => ({ ...p, desc: null }));
+                                    }}
+                                    placeholder="وصف مختصر للعرض (حد أقصى 2555 حرف)"
+                                />
+                                <InputError message={frontendErrors.desc || form.errors.desc} />
+                            </div>
+
 
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <div>
@@ -563,6 +701,98 @@ export default function Edit({
                                     <InputError message={frontendErrors.airline} />
                                 </div>
                             </div>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="label">التقييم</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="5"
+                                        step="0.1"
+
+                                        className={`input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  ${frontendErrors.rating && 'border-red-500'}`}
+                                        value={form.data.rating}
+                                        onChange={e => {
+                                            form.setData('rating', e.target.value);
+                                            setFrontendErrors(p => ({ ...p, rating: null }));
+                                        }}
+                                        placeholder="مثال: 4.5"
+                                    />
+                                    <InputError message={frontendErrors.rating || form.errors.rating} />
+                                </div>
+                                <div>
+                                    <label className="label">عدد المقيمين</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        className={`input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  ${frontendErrors.number_of_rating_customers && 'border-red-500'
+                                            }`}
+                                        value={form.data.number_of_rating_customers}
+                                        onChange={e => {
+                                            form.setData('number_of_rating_customers', e.target.value);
+                                            setFrontendErrors(p => ({
+                                                ...p,
+                                                number_of_rating_customers: null,
+                                            }));
+                                        }}
+                                        placeholder="مثال: 120"
+                                    />
+                                    <InputError
+                                        message={
+                                            frontendErrors.number_of_rating_customers ||
+                                            form.errors.number_of_rating_customers
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="label">السعر يشمل</label>
+                                    <div className={`border rounded-lg p-2 flex flex-wrap gap-2 ${frontendErrors.price_contain ? 'border-red-500' : 'border-gray-300'}`}>
+                                        {priceContainItems.map((item, i) => (
+                                            <div key={i} className="flex items-center gap-1 bg-[var(--app-primary)] text-white px-2 py-1 rounded">
+                                                <span>{item}</span>
+                                                <button type="button" onClick={() => removePriceContainItem(i)}>×</button>
+                                            </div>
+                                        ))}
+                                        <input
+                                            type="text"
+                                            placeholder="أضف عنصر جديد واضغط Enter"
+                                            value={newPriceContain}
+                                            onChange={e => setNewPriceContain(e.target.value)}
+                                            onKeyDown={e => e.key === 'Enter' ? (e.preventDefault(), addPriceContainItem()) : null}
+                                            className="flex-1 border-none focus:ring-0 focus:outline-none text-sm"
+                                        />
+                                    </div>
+                                    <InputError message={frontendErrors.price_contain || form.errors.price_contain} />
+                                </div>
+
+                                <div>
+                                    <label className="label">السعر لا يشمل</label>
+                                    <div className={`border rounded-lg p-2 flex flex-wrap gap-2 ${frontendErrors.price_not_contain ? 'border-red-500' : 'border-gray-300'}`}>
+                                        {priceNotContainItems.map((item, i) => (
+                                            <div key={i} className="flex items-center gap-1 bg-[var(--app-primary)] text-white px-2 py-1 rounded">
+                                                <span>{item}</span>
+                                                <button type="button" onClick={() => removePriceNotContainItem(i)}>×</button>
+                                            </div>
+                                        ))}
+                                        <input
+                                            type="text"
+                                            placeholder="أضف عنصر جديد واضغط Enter"
+                                            value={newPriceNotContain}
+                                            onChange={e => setNewPriceNotContain(e.target.value)}
+                                            onKeyDown={e => e.key === 'Enter' ? (e.preventDefault(), addPriceNotContainItem()) : null}
+                                            className="flex-1 border-none focus:ring-0 focus:outline-none text-sm"
+                                        />
+                                    </div>
+                                    <InputError message={frontendErrors.price_not_contain || form.errors.price_not_contain} />
+                                </div>
+
+                            </div>
+
+
+
+
                         </div>
 
                         <div className="card p-6 space-y-4">
@@ -612,6 +842,7 @@ export default function Edit({
                                     formats={quillFormats}
                                     placeholder="اكتب برنامج الرحلة بالتفصيل..."
                                 />
+
                             </div>
                             <InputError message={frontendErrors.program || form.errors.program} />
                         </div>
@@ -671,31 +902,30 @@ export default function Edit({
                             {previewImages.length > 0 && (
                                 <div className="grid grid-cols-3 gap-2 mt-4">
                                     {previewImages.map((img, index) => (
-    <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
-        <img src={img.src} className="w-full h-full object-cover" />
+                                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
+                                            <img src={img.src} className="w-full h-full object-cover" />
 
-        <button
-            type="button"
-            onClick={() => form.setData('main_image_id', img.id)}
-            className={`absolute top-1 left-1 p-1 rounded-full ${
-                form.data.main_image_id === img.id
-                    ? 'bg-yellow-400 text-white'
-                    : 'bg-white/80 text-gray-600'
-            }`}
-            title="تعيين كصورة رئيسية"
-        >
-            <FaStar size={12} />
-        </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => form.setData('main_image_id', img.id)}
+                                                className={`absolute top-1 left-1 p-1 rounded-full ${form.data.main_image_id === img.id
+                                                    ? 'bg-yellow-400 text-white'
+                                                    : 'bg-white/80 text-gray-600'
+                                                    }`}
+                                                title="تعيين كصورة رئيسية"
+                                            >
+                                                <FaStar size={12} />
+                                            </button>
 
-        <button
-            type="button"
-            onClick={() => removeImage(index)}
-            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-        >
-            ✕
-        </button>
-    </div>
-))}
+                                            <button
+                                                type="button"
+                                                onClick={() => removeImage(index)}
+                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    ))}
 
                                 </div>
                             )}

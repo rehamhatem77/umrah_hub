@@ -17,6 +17,9 @@ return new class extends Migration
 
             $table->string('offer_code')->unique();
             $table->string('title');
+
+            $table->string('desc');
+            
             $table->string('slug')->unique();
 
             // $table->foreignId('governorate_id')->constrained('governorates')->cascadeOnDelete();
@@ -26,6 +29,12 @@ return new class extends Migration
 
             $table->integer('duration_days');
             $table->decimal('price', 10, 2);
+
+             $table->decimal('rating', 10, 2);
+             $table->integer('number_of_rating_customers');
+               $table->string('price_contain');
+                 $table->string('price_not_contain');
+
             $table->string('airline')->nullable();
             $table->text('program');
 

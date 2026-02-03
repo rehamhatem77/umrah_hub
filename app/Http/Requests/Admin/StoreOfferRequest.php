@@ -20,11 +20,11 @@ class StoreOfferRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     protected function prepareForValidation()
-{
-    $this->merge([
-        'whatsapp_number' => $this->whatsapp_number ?? '01111111111',
-    ]);
-}
+    {
+        $this->merge([
+            'whatsapp_number' => $this->whatsapp_number ?? '01111111111',
+        ]);
+    }
 
     public function rules(): array
     {
@@ -32,6 +32,13 @@ class StoreOfferRequest extends FormRequest
             //
             'offer_code' => 'required|string|max:100|unique:offers,offer_code',
             'title'      => 'required|string|max:255',
+
+            'desc'      => 'required|string|max:2555',
+            'rating' => 'required|numeric|min:1',
+            'number_of_rating_customers' => 'required|integer|min:1',
+            'price_contain'       => 'required|string',
+            'price_not_contain'       => 'required|string',
+
             'slug'       => 'nullable|string|max:255',
 
             'trip_type_id'   => 'required|exists:trip_types,id',
@@ -44,7 +51,7 @@ class StoreOfferRequest extends FormRequest
 
             'airline' => 'required|string|max:255',
 
-          
+
             'tour_level' => 'required|in:economical,standard,luxury,vip',
 
             'governorates' => 'required|array',

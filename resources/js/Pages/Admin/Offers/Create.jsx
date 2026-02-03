@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { MdOutlineHotel } from 'react-icons/md';
+import toArabicNumbers from '@/Components/Utils/ArabicNumbers';
 
 
 const pageMotion = {
@@ -77,6 +78,12 @@ export default function Create({
         seo_title: '',
         seo_description: '',
 
+        desc: '',
+        rating: '',
+        number_of_rating_customers: '',
+        price_contain: '',
+        price_not_contain: '',
+
         trip_type_id: null,
         company_id: null,
         governorates: [],
@@ -106,6 +113,84 @@ export default function Create({
     const [frontendErrors, setFrontendErrors] = useState({});
     const [selectedHotel, setSelectedHotel] = useState(null);
     const noOptionsMessage = () => 'لا توجد بيانات';
+
+    const [priceContainItems, setPriceContainItems] = useState(
+        form.data.price_contain
+            ? form.data.price_contain.split(',').map(i => i.trim())
+            : []
+    );
+    const [priceNotContainItems, setPriceNotContainItems] = useState(
+        form.data.price_not_contain
+            ? form.data.price_not_contain.split(',').map(i => i.trim())
+            : []
+    );
+    useEffect(() => {
+        if (form.data.duration_days) {
+            const days = Number(form.data.duration_days);
+            const currentProgram = form.data.program;
+
+            const dayCountInProgram = (currentProgram.match(/اليوم \d+/g) || []).length;
+            const regenerate = !currentProgram || dayCountInProgram !== days;
+
+            if (regenerate) {
+                let programHTML = '';
+                for (let i = 1; i <= days; i++) {
+                    programHTML += `
+<p><strong>اليوم ${toArabicNumbers(i)}</strong></p>
+<p>عنوان اليوم:</p>
+<p>الوصف:</p>
+`;
+                }
+                form.setData('program', programHTML);
+                setFrontendErrors(p => ({ ...p, program: null }));
+            }
+        }
+    }, [form.data.duration_days]);
+
+
+
+    const addPriceContainItem = (e) => {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const value = e.target.value.trim();
+            if (!value) return;
+
+            const updated = [...priceContainItems, value];
+            setPriceContainItems(updated);
+            form.setData('price_contain', updated.join(', '));
+
+            e.target.value = '';
+            setFrontendErrors(p => ({ ...p, price_contain: null }));
+        }
+    };
+    const removePriceContainItem = (index) => {
+        const updated = priceContainItems.filter((_, i) => i !== index);
+        setPriceContainItems(updated);
+        form.setData('price_contain', updated.join(', '));
+    };
+
+    const addPriceNotContainItem = (e) => {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const value = e.target.value.trim();
+            if (!value) return;
+
+            const updated = [...priceNotContainItems, value];
+            setPriceNotContainItems(updated);
+            form.setData('price_not_contain', updated.join(', '));
+
+            e.target.value = '';
+            setFrontendErrors(p => ({ ...p, price_not_contain: null }));
+        }
+    };
+
+    const removePriceNotContainItem = (index) => {
+        const updated = priceNotContainItems.filter((_, i) => i !== index);
+        setPriceNotContainItems(updated);
+        form.setData('price_not_contain', updated.join(', '));
+    };
+
+
 
 
     const selectStyles = {
@@ -188,6 +273,23 @@ export default function Create({
         if (!form.data.airline) errors.airline = 'اختر الطيران';
         if (!form.data.governorates.length)
             errors.governorates = 'اختر محافظة واحدة على الأقل';
+        if (!form.data.desc.trim())
+            errors.desc = 'الوصف المختصر مطلوب';
+
+        if (!form.data.rating || Number(form.data.rating) < 1)
+            errors.rating = 'التقييم يجب أن يكون رقمًا أكبر من أو يساوي 1';
+
+        if (
+            !form.data.number_of_rating_customers ||
+            Number(form.data.number_of_rating_customers) < 1
+        )
+            errors.number_of_rating_customers = 'عدد المقيمين يجب أن يكون 1 على الأقل';
+
+        if (!form.data.price_contain.trim())
+            errors.price_contain = 'هذا الحقل مطلوب';
+
+        if (!form.data.price_not_contain.trim())
+            errors.price_not_contain = 'هذا الحقل مطلوب';
 
         if (!form.data.hotels.length)
             errors.hotels = 'اختر فندق واحد على الأقل';
@@ -206,6 +308,7 @@ export default function Create({
         setFrontendErrors(errors);
         return Object.keys(errors).length === 0;
     };
+
 
     const submit = (e) => {
         e.preventDefault();
@@ -304,6 +407,21 @@ export default function Create({
                                     />
                                 </div>
                             </div>
+                            <div>
+                                <label className="label">وصف مختصر للباقة</label>
+                                <textarea
+                                    rows={3}
+                                    className={`input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  ${frontendErrors.desc && 'border-red-500'}`}
+                                    placeholder="وصف مختصر لا يتجاوز 2555 حرف"
+                                    value={form.data.desc}
+                                    onChange={e => {
+                                        form.setData('desc', e.target.value);
+                                        setFrontendErrors(p => ({ ...p, desc: null }));
+                                    }}
+                                />
+                                <InputError message={frontendErrors.desc || form.errors.desc} />
+                            </div>
+
 
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <div>
@@ -454,7 +572,7 @@ export default function Create({
                                     />
                                     <InputError
                                         message={
-                                            
+
                                             form.errors.whatsapp_number
                                         }
                                     />
@@ -616,6 +734,127 @@ export default function Create({
                                     />
                                 </div>
                             </div>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="label">التقييم</label>
+                                    <input
+                                        type="number"
+                                        step="0.1"
+                                        min="1"
+                                        className={`input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  ${frontendErrors.rating && 'border-red-500'}`}
+                                        placeholder="مثال: 4.5"
+                                        value={form.data.rating}
+                                        onChange={e => {
+                                            form.setData('rating', e.target.value);
+                                            setFrontendErrors(p => ({ ...p, rating: null }));
+                                        }}
+                                    />
+                                    <InputError message={frontendErrors.rating || form.errors.rating} />
+                                </div>
+
+                                <div>
+                                    <label className="label">عدد العملاء المقيمين</label>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        className={`input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  ${frontendErrors.number_of_rating_customers && 'border-red-500'}`}
+                                        placeholder="مثال: 120"
+                                        value={form.data.number_of_rating_customers}
+                                        onChange={e => {
+                                            form.setData('number_of_rating_customers', e.target.value);
+                                            setFrontendErrors(p => ({ ...p, number_of_rating_customers: null }));
+                                        }}
+                                    />
+                                    <InputError
+                                        message={
+                                            frontendErrors.number_of_rating_customers ||
+                                            form.errors.number_of_rating_customers
+                                        }
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="label">السعر يشمل</label>
+
+                                    <div className={`input min-h-[44px] flex flex-wrap gap-2 items-center
+        ${frontendErrors.price_contain ? 'border-red-500' : ''}`}>
+
+                                        {priceContainItems.map((item, index) => (
+                                            <span
+                                                key={index}
+                                                className="bg-[#d4af37]/20  text-[var(--app-primary)]
+                           px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                                            >
+                                                {item}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removePriceContainItem(index)}
+                                                    className="text-red-500 text-xs"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </span>
+                                        ))}
+
+                                        <input
+                                            type="text"
+                                            className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
+                                            placeholder="اكتب عنصر واضغط Enter أو ,"
+                                            onKeyDown={addPriceContainItem}
+                                        />
+                                    </div>
+
+                                    <InputError
+                                        message={frontendErrors.price_contain || form.errors.price_contain}
+                                    />
+                                </div>
+
+
+                                <div>
+                                    <label className="label">السعر لا يشمل</label>
+
+                                    <div
+                                        className={`input min-h-[44px] flex flex-wrap gap-2 items-center
+        ${frontendErrors.price_not_contain ? 'border-red-500' : ''}`}
+                                    >
+                                        {priceNotContainItems.map((item, index) => (
+                                            <span
+                                                key={index}
+                                                className="bg-red-500/10 text-red-600
+                px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                                            >
+                                                {item}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removePriceNotContainItem(index)}
+                                                    className="text-red-500 text-xs"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </span>
+                                        ))}
+
+                                        <input
+                                            type="text"
+                                            className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
+                                            placeholder="اكتب عنصر واضغط Enter أو ,"
+                                            onKeyDown={addPriceNotContainItem}
+                                        />
+                                    </div>
+
+                                    <InputError
+                                        message={
+                                            frontendErrors.price_not_contain ||
+                                            form.errors.price_not_contain
+                                        }
+                                    />
+                                </div>
+
+                            </div>
+
+
                         </div>
 
 
@@ -652,7 +891,7 @@ export default function Create({
 
                                     <InputError message={frontendErrors.hotels} />
 
-                                    
+
                                 </div>
 
                                 {/* <div>
@@ -684,8 +923,8 @@ export default function Create({
                                 className={`rounded-lg border ${frontendErrors.program ? 'border-red-500' : 'border-gray-300'
                                     }`}
                             >
-                                <ReactQuill
-                                direction="rtl"
+                                {/* <ReactQuill
+                                    direction="rtl"
                                     theme="snow"
                                     value={form.data.program}
                                     onChange={value => {
@@ -695,7 +934,20 @@ export default function Create({
                                     modules={quillModules}
                                     formats={quillFormats}
                                     placeholder="اكتب برنامج الرحلة بالتفصيل..."
+                                /> */}
+                                <ReactQuill
+                                    theme="snow"
+                                    value={form.data.program}
+                                    onChange={value => {
+                                        form.setData('program', value);
+                                        setFrontendErrors(p => ({ ...p, program: null }));
+                                    }}
+                                    modules={quillModules}
+                                    formats={quillFormats}
+                                    placeholder="اكتب برنامج الرحلة بالتفصيل لكل يوم..."
                                 />
+
+
                             </div>
 
                             <InputError

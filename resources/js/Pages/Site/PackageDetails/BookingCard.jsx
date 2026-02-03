@@ -8,7 +8,7 @@ export default function BookingCard({data }) {
  <div className="sticky top-24 flex flex-col gap-4">
 
   {/* Booking Card */}
-  <div className="bg-white rounded-2xl p-6 shadow-lg border border-primary/50">
+  <div className="bg-white rounded-2xl p-6 shadow-lg border  text-black border-primary/50">
     
     {/* Price */}
     <div className="flex items-end justify-between mb-2">

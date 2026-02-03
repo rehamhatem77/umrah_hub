@@ -15,6 +15,7 @@
 
     --app-success: #16a34a;
     --app-danger: #dc2626;
+    --app-grey: #6c6b6b;
 
     --app-font-size: 0.875rem;
     --app-font-family: 'Cairo', 'Arial', sans-serif;
@@ -51,6 +52,15 @@ textarea {
     }
 
     .btn-primary:hover {
+        filter: brightness(0.9);
+    }
+
+      .btn-secondary{
+        @apply px-5 py-2 rounded-lg text-white font-medium transition shadow;
+        background-color: var(--app-grey);
+    }
+
+    .btn-secondary:hover {
         filter: brightness(0.9);
     }
 
@@ -143,6 +153,25 @@ textarea {
 }
 .ql-container {
     min-height: 180px;
+}
+.ql-container.ql-snow {
+    direction: rtl !important;       
+    text-align: right !important;   
+}
+
+.ql-editor {
+    direction: rtl !important;   
+    text-align: right !important;   
+    min-height: 200px;   
+}
+
+.ql-editor p {
+  margin: 0 0 0.75em 0; 
+}
+
+.ql-editor {
+  direction: rtl;        
+  text-align: right;
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

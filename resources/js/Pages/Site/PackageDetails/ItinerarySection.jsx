@@ -33,7 +33,7 @@ export default function ItinerarySection() {
   ];
 
   return (
-    <div className="flex flex-col gap-6" id="itinerary">
+    <div className="flex flex-col gap-6  text-black" id="itinerary">
       <h3 className="text-2xl font-bold font-heading text-text-dark">
         خط سير الرحلة
       </h3>

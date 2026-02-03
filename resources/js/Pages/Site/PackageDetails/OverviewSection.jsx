@@ -9,7 +9,7 @@ const facilities = [
 
 export default function OverviewSection() {
   return (
-    <div className="flex flex-col gap-4" id="overview">
+    <div className="flex flex-col gap-4  text-black" id="overview">
       <h3 className="text-2xl font-bold font-heading text-text-dark">
         نظرة عامة
       </h3>

@@ -20,7 +20,7 @@ use Inertia\Inertia;
 
 class OfferController extends Controller
 {
-   
+
 
     public function index(Request $request)
     {
@@ -129,7 +129,7 @@ class OfferController extends Controller
 
 
         try {
-             DB::beginTransaction();
+            DB::beginTransaction();
             $data = $request->validated();
             $data['slug'] = $this->generateUniqueSlug($data['title']);
 
@@ -150,18 +150,15 @@ class OfferController extends Controller
                     ]);
                 }
             }
-             DB::commit();
-              return redirect()
-            ->route('admin.offers.index')
-            ->with('success', 'تم إنشاء الباقة بنجاح');
-
+            DB::commit();
+            return redirect()
+                ->route('admin.offers.index')
+                ->with('success', 'تم إنشاء الباقة بنجاح');
         } catch (\Throwable  $e) {
-             DB::rollBack();
+            DB::rollBack();
             //  \Log::error($e);
             return back()->with('error', 'حدث خطأ أثناء إنشاء الباقة');
         }
-
-       
     }
 
     public function edit(Offer $offer)
@@ -194,67 +191,64 @@ class OfferController extends Controller
             $offer->hotels()->sync($request->hotels ?? []);
 
             if ($request->filled('deleted_images')) {
-            $imagesToDelete = OfferImage::whereIn('id', $request->deleted_images)
-                ->where('offer_id', $offer->id)
-                ->get();
+                $imagesToDelete = OfferImage::whereIn('id', $request->deleted_images)
+                    ->where('offer_id', $offer->id)
+                    ->get();
 
-            foreach ($imagesToDelete as $img) {
-                Storage::disk('public')->delete($img->image_path);
-                $img->forceDelete();
+                foreach ($imagesToDelete as $img) {
+                    Storage::disk('public')->delete($img->image_path);
+                    $img->forceDelete();
+                }
             }
-        }
-                if ($request->hasFile('images')) {
-            $currentMaxOrder = $offer->images()->max('sort_order') ?? 0;
+            if ($request->hasFile('images')) {
+                $currentMaxOrder = $offer->images()->max('sort_order') ?? 0;
 
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('offers', 'public');
+                foreach ($request->file('images') as $index => $image) {
+                    $path = $image->store('offers', 'public');
 
-                $offer->images()->create([
-                    'image_path' => $path,
-                    'is_main'    => false,
-                    'sort_order' => $currentMaxOrder + $index + 1,
-                ]);
+                    $offer->images()->create([
+                        'image_path' => $path,
+                        'is_main'    => false,
+                        'sort_order' => $currentMaxOrder + $index + 1,
+                    ]);
+                }
             }
-        }
-         if ($request->filled('main_image_id')) {
-            $offer->images()->update(['is_main' => false]);
+            if ($request->filled('main_image_id')) {
+                $offer->images()->update(['is_main' => false]);
 
-            OfferImage::where('id', $request->main_image_id)
-                ->where('offer_id', $offer->id)
-                ->update(['is_main' => true]);
-        }
+                OfferImage::where('id', $request->main_image_id)
+                    ->where('offer_id', $offer->id)
+                    ->update(['is_main' => true]);
+            }
 
-             DB::commit();
-             return redirect()
-            ->route('admin.offers.index')
-            ->with('success', 'تم تحديث الباقة بنجاح');
+            DB::commit();
+            return redirect()
+                ->route('admin.offers.index')
+                ->with('success', 'تم تحديث الباقة بنجاح');
         } catch (\Throwable  $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'حدث خطأ أثناء تحديث الباقة: ']);
+            return back()->withErrors(['error' => 'حدث خطأ أثناء تحديث الباقة: ' . $e->getMessage()]);
         }
-
-       
     }
 
-   public function destroy(Offer $offer)
-{
-    try {
-        DB::beginTransaction();
+    public function destroy(Offer $offer)
+    {
+        try {
+            DB::beginTransaction();
 
-        $offer->images()->delete();
-        $offer->delete();
+            $offer->images()->delete();
+            $offer->delete();
 
-        DB::commit();
+            DB::commit();
 
-        return redirect()
-            ->route('admin.offers.index')
-            ->with('success', 'تم نقل الباقة إلى سلة المهملات');
-
-    } catch (\Throwable $e) {
-        DB::rollBack();
-        return back()->with('error', 'حدث خطأ أثناء حذف الباقة');
+            return redirect()
+                ->route('admin.offers.index')
+                ->with('success', 'تم نقل الباقة إلى سلة المهملات');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', 'حدث خطأ أثناء حذف الباقة');
+        }
     }
-}
 
 
     public function toggleFlag(Request $request, Offer $offer)
@@ -272,18 +266,18 @@ class OfferController extends Controller
         return back()->with('success', 'تم تحديث الحالة');
     }
 
-   private function generateUniqueSlug(string $title): string
-{
-    $slug = Str::slug($title); 
-    $originalSlug = $slug;
-    $counter = 1;
-    while (Offer::where('slug', $slug)->exists()) {
-        $slug = $originalSlug . '-' . $counter;
-        $counter++;
-    }
+    private function generateUniqueSlug(string $title): string
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Offer::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
 
-    return $slug;
-}
+        return $slug;
+    }
 
 
     public function deleteImage(OfferImage $image)
@@ -361,102 +355,98 @@ class OfferController extends Controller
         ]);
     }
 
-  public function restore($id)
-{
-    try {
-        DB::beginTransaction();
+    public function restore($id)
+    {
+        try {
+            DB::beginTransaction();
 
-        $offer = Offer::onlyTrashed()->findOrFail($id);
-        $offer->restore();
-        $offer->images()->withTrashed()->restore();
+            $offer = Offer::onlyTrashed()->findOrFail($id);
+            $offer->restore();
+            $offer->images()->withTrashed()->restore();
 
-        DB::commit();
+            DB::commit();
 
-        return redirect()
-            ->route('admin.offers.trash')
-            ->with('success', 'تم استعادة الباقة بنجاح');
-
-    } catch (\Throwable $e) {
-        DB::rollBack();
-        return back()->with('error', 'حدث خطأ أثناء الاستعادة');
+            return redirect()
+                ->route('admin.offers.trash')
+                ->with('success', 'تم استعادة الباقة بنجاح');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', 'حدث خطأ أثناء الاستعادة');
+        }
     }
-}
 
 
 
-   public function forceDelete($id)
-{
-    try {
-        DB::beginTransaction();
+    public function forceDelete($id)
+    {
+        try {
+            DB::beginTransaction();
 
-        $offer = Offer::onlyTrashed()
-            ->with([
-                'images' => fn($q) => $q->withTrashed(),
-                'features',
-                'governorates',
-                'hotels',
-            ])
-            ->findOrFail($id);
+            $offer = Offer::onlyTrashed()
+                ->with([
+                    'images' => fn($q) => $q->withTrashed(),
+                    'features',
+                    'governorates',
+                    'hotels',
+                ])
+                ->findOrFail($id);
 
-        foreach ($offer->images as $image) {
-            Storage::disk('public')->delete($image->image_path);
-            $image->forceDelete();
+            foreach ($offer->images as $image) {
+                Storage::disk('public')->delete($image->image_path);
+                $image->forceDelete();
+            }
+
+            $offer->features()->detach();
+            $offer->governorates()->detach();
+            $offer->hotels()->detach();
+
+            $offer->forceDelete();
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.offers.trash')
+                ->with('success', 'تم حذف الباقة نهائياً');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', 'حدث خطأ أثناء الحذف النهائي');
+        }
+    }
+
+
+    public function search(Request $request)
+    {
+        $q = $request->get('q');
+
+        if (!$q) {
+            return response()->json([]);
         }
 
-        $offer->features()->detach();
-        $offer->governorates()->detach();
-        $offer->hotels()->detach();
+        $offers = Offer::select('id', 'title', 'offer_code', 'slug')
+            ->where('offer_code', 'like', "%{$q}%")
+            ->orWhere('title', 'like', "%{$q}%")
+            ->limit(5)
+            ->get()
+            ->map(fn($o) => [
+                'type' => 'offer',
+                'label' => "{$o->offer_code} - {$o->title}",
+                'url' => route('admin.offers.show', $o->id),
+            ]);
 
-        $offer->forceDelete();
+        $governorates = Governorate::select('id', 'name')
+            ->where('name', 'like', "%{$q}%")
+            ->limit(5)
+            ->get()
+            ->map(fn($g) => [
+                'type' => 'governorate',
+                'label' => $g->name,
+                'url' => route('admin.offers.index', [
+                    'governorate_id' => $g->id
+                ]),
+            ]);
 
-        DB::commit();
-
-        return redirect()
-            ->route('admin.offers.trash')
-            ->with('success', 'تم حذف الباقة نهائياً');
-
-    } catch (\Throwable $e) {
-        DB::rollBack();
-        return back()->with('error', 'حدث خطأ أثناء الحذف النهائي');
+        return response()->json(
+            $offers->merge($governorates)->values()
+        );
     }
-}
-
-
-public function search(Request $request)
-{
-    $q = $request->get('q');
-
-    if (!$q) {
-        return response()->json([]);
-    }
-
-    $offers = Offer::select('id', 'title', 'offer_code', 'slug')
-        ->where('offer_code', 'like', "%{$q}%")
-        ->orWhere('title', 'like', "%{$q}%")
-        ->limit(5)
-        ->get()
-        ->map(fn ($o) => [
-            'type' => 'offer',
-            'label' => "{$o->offer_code} - {$o->title}",
-            'url' => route('admin.offers.show', $o->id),
-        ]);
-
-    $governorates = Governorate::select('id', 'name')
-        ->where('name', 'like', "%{$q}%")
-        ->limit(5)
-        ->get()
-        ->map(fn ($g) => [
-            'type' => 'governorate',
-            'label' => $g->name,
-            'url' => route('admin.offers.index', [
-                'governorate_id' => $g->id
-            ]),
-        ]);
-
-    return response()->json(
-        $offers->merge($governorates)->values()
-    );
-}
-
-
 }

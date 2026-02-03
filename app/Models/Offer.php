@@ -13,6 +13,13 @@ class Offer extends Model
     protected $fillable = [
         'offer_code',
         'title',
+
+        'desc',
+        'rating',
+        'number_of_rating_customers',
+        'price_contain',
+        'price_not_contain',
+        
         'slug',
         'trip_type_id',
         'company_id',

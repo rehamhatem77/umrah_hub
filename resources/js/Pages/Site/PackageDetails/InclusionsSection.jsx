@@ -18,7 +18,7 @@ export default function InclusionsSection({ included = [], excluded = [] }) {
 
 return (
     <div
-      className="grid md:grid-cols-2 gap-8 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm"
+      className="grid md:grid-cols-2 gap-8 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm  text-black"
       id="inclusions"
     >
       {/* Included */}

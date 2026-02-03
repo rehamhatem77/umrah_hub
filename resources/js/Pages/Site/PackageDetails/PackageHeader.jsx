@@ -68,7 +68,7 @@ export default function PackageHeaderAnimatedTabs() {
   return (
     <>
       {/* Header */}
-      <div className="border-b border-primary pb-6">
+      <div className="border-b border-primary pb-6 text-black">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -103,7 +103,7 @@ export default function PackageHeaderAnimatedTabs() {
       </div>
 
       {/* Sticky Tabs Navigation */}
-      <div className="sticky top-0 z-50 bg-white">
+      <div className="sticky top-0 z-50 bg-white  text-black">
         <div className="relative flex items-center gap-6 border-b border-primary text-sm font-bold overflow-x-auto hide-scrollbar whitespace-nowrap px-4">
           {tabs.map((tab, index) => (
             <button
