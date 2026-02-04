@@ -90,9 +90,10 @@ export default function PackageHeaderAnimatedTabs({ data }) {
             <div className="flex items-center gap-4 text-sm text-text-muted flex-wrap">
               <div className="flex items-center gap-1">
                 <FaStar className="text-accent-gold text-lg" />
-                <span className="text-text-dark font-bold">{data.rating?data.rating:data.average_hotel_rating}</span>
-               
+                <span className="text-text-dark font-bold">{data.rating!=="0.00" || null ?toArabicNumbers(data.rating):toArabicNumbers(data.average_hotel_rating)}</span>
+               {! data.number_of_rating_customers && data.number_of_rating_customers!=0 && (
                 <span>({toArabicNumbers(data.number_of_rating_customers)} تقييم)</span>
+                )}
               </div>
 
               <span className="w-1 h-1 rounded-full bg-gray-300" />

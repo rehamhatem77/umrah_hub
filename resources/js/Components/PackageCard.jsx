@@ -2,6 +2,8 @@ import { FiMapPin, FiClock, FiUsers, FiStar } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaMapMarked, FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { FaMapLocation, FaMapLocationDot } from "react-icons/fa6";
+import { MdOutlineMessage } from "react-icons/md";
+import { usePage } from "@inertiajs/react";
 
 
 export default function PackageCard({
@@ -16,8 +18,43 @@ export default function PackageCard({
   type,
   date,
   slug,
+  rating,
 }) {
   const isCompact = variant === "compact";
+  const { footer } = usePage().props;
+  
+      if (!footer?.contact_wp) return null;
+      const whatsappNumber = footer?.contact_wp.replace(/\s+/g, "");
+
+  const formatDate = (value) => {
+    if (!value) return "غير محدد";
+    const d = new Date(value);
+    if (isNaN(d)) return value;
+    return d.toISOString().split("T")[0];
+  };
+
+  const whatsappMessage = encodeURIComponent(
+    "مرحباً \n" +
+    "أرغب في الاستفسار عن باقة سياحية بالتفاصيل التالية:\n\n" +
+
+    "اسم الباقة: " + title + "\n" +
+    "الموقع: " + location + "\n" +
+    "المدة: " + days + "\n" +
+    "المتبقي: " + type + "\n" +
+    "التاريخ: " + formatDate(date) + "\n" +
+    "كود العرض: " + (offerCode ?? "لا يوجد") + "\n" +
+    "التقييم: " + (badge ? badge : rating ? rating : "غير متوفر") + "\n" +
+    "السعر: " + price.toLocaleString("ar-EG") + " ج.م\n\n" +
+
+    "صورة الباقة:\n" + image + "\n\n" +
+    (slug ? "رابط الباقة:\n" + route("packages.show", slug) : "")
+  );
+
+
+
+
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
 
   return (
     <motion.div
@@ -116,11 +153,11 @@ export default function PackageCard({
 
         {isCompact ? (
           <>
-            <div className="flex items-center gap-1 text-xs text-gray-400 mb-2"> 
+            <div className="flex items-center gap-1 text-xs text-gray-400 mb-2">
               {/* <FiClock />  */}
               <span> {days}</span> </div>
             <div className="flex justify-between items-center">
-              <a href={slug? route("packages.show", slug) : ""} className="text-xs text-green-600 font-medium">
+              <a href={slug ? route("packages.show", slug) : ""} className="text-xs text-green-600 font-medium">
                 عرض التفاصيل
               </a>
               <span className="text-green-600 font-bold text-sm">
@@ -129,15 +166,35 @@ export default function PackageCard({
             </div>
           </>
         ) : (
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-3">
             <span className="text-green-600 font-extrabold text-xl">
               {price.toLocaleString()} ج.م
             </span>
 
-            <a href={slug? route("packages.show", slug) : ""} className="bg-green-100 text-green-700 px-5 py-2 rounded-xl text-sm font-bold hover:bg-green-200 transition">
-              تفاصيل الباقة
-            </a>
+            <div className="flex gap-2">
+              <a
+                href={slug ? route("packages.show", slug) : ""}
+                className="bg-green-100 text-green-700 px-5 py-2 rounded-xl text-sm font-bold hover:bg-green-200 transition"
+              >
+                تفاصيل الباقة
+              </a>
+
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="تواصل معنا عبر واتساب"
+                className="bg-gray-100 px-2 py-1 rounded-xl
+             text-sm font-bold hover:bg-gray-100 transition
+             flex items-center justify-center"
+              >
+                <MdOutlineMessage size={20} className="text-green-600" />
+              </a>
+
+
+            </div>
           </div>
+
         )}
       </div>
     </motion.div>

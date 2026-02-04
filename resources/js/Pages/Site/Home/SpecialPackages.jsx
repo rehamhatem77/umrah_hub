@@ -67,6 +67,7 @@ export default function SpecialPackages({ specialPackages, title, description, b
                                 offerCode={pkg.offer_code}
                                 slug={pkg.slug}
                                 price={toArabicNumbers(pkg.price)}
+                                rating={pkg.rating}
                                 days={
                                     toArabicNumbers(pkg.duration_days) +
                                     (pkg.duration_days !== 14? " أيام":" يوم")
@@ -86,6 +87,7 @@ export default function SpecialPackages({ specialPackages, title, description, b
                                     toArabicNumbers(pkg.available_places) +
                                     (pkg.available_places <= 10 ? " مقاعد" : " مقعد")
                                 }
+                                date={pkg.start_date}
                             />
                         </motion.div>
                     ))}

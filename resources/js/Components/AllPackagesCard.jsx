@@ -1,11 +1,15 @@
 import { motion } from "framer-motion";
 import { FaStar, FaCalendarAlt, FaClock, FaHotel, FaMapMarkerAlt } from "react-icons/fa";
 import { Inertia } from "@inertiajs/inertia";
+import { MdOutlineMessage } from "react-icons/md";
+import { usePage } from "@inertiajs/react";
 
 export default function AllPackagesCard({
     title,
+    offerCode,
     image,
     price,
+    slug,
     badge,
     location,
     rating,
@@ -27,6 +31,30 @@ export default function AllPackagesCard({
     };
 
     const isSoldOut = availablePlaces === 0;
+
+      const { footer } = usePage().props;
+      
+          if (!footer?.contact_wp) return null;
+          const whatsappNumber = footer?.contact_wp.replace(/\s+/g, "");
+
+
+    const whatsappMessage = encodeURIComponent(
+        "مرحباً \n" +
+        "أرغب في الاستفسار عن باقة سياحية بالتفاصيل التالية:\n\n" +
+
+        "اسم الباقة: " + title + "\n" +
+        "الموقع: " + location + "\n" +
+        "المدة: " + days + "\n" +
+        "المتبقي: " + availablePlaces +"مقاعد "+ "\n" +
+        "التاريخ: " + formatDate(date) + "\n" +
+        "كود العرض: " + (offerCode ?? "لا يوجد") + "\n" +
+        "التقييم: " + (badge ? badge : rating ? rating : "غير متوفر") + "\n" +
+        "السعر: " + price.toLocaleString("ar-EG") + " ج.م\n\n" +
+
+        "صورة الباقة:\n" + image + "\n\n" +
+        (slug ? "رابط الباقة:\n" + route("packages.show", slug) : "")
+    );
+    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
     return (
         <motion.div
@@ -144,16 +172,20 @@ export default function AllPackagesCard({
                     </div>
 
                     <motion.button
-                        onClick={() => !isSoldOut && Inertia.visit("/packages")}
+                        onClick={() => {
+                            if (!isSoldOut) window.open(whatsappLink, "_blank");
+                        }}
                         whileHover={!isSoldOut ? { scale: 1.07 } : {}}
                         whileTap={!isSoldOut ? { scale: 0.95 } : {}}
-                        className={`text-sm font-bold py-2 px-4 rounded-lg transition-colors ${isSoldOut
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-[#111813] hover:bg-primary text-white"
+                        className={`text-sm font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${isSoldOut
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-gray-800 hover:bg-gray-900 text-white"
                             }`}
                     >
+                        
                         {isSoldOut ? "تم البيع" : "احجز الآن"}
                     </motion.button>
+
                 </div>
             </div>
         </motion.div>

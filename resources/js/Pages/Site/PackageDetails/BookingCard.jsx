@@ -1,15 +1,54 @@
  
 import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import { formatHijriDate } from "@/Components/Utils/HijriDate";
+import { usePage } from "@inertiajs/react";
 import { FaCalendarAlt, FaArrowLeft, FaWhatsapp, FaShareAlt, FaHeart, FaHeadset, FaArrowRight } from "react-icons/fa";
 
 
 export default function BookingCard({data }) {
+    const { footer } = usePage().props;
+    
+        if (!footer?.contact_wp) return null;
+        const whatsappNumber = footer?.contact_wp.replace(/\s+/g, "");
 
   const startDateHijri = data?.start_date ? formatHijriDate(data.start_date) : "غير متوفر";
   const endDateHijri = data?.end_date ? formatHijriDate(data.end_date) : "غير متوفر";
-// console.log("RAW:", data.start_date);
-// console.log("HIJRI:", formatHijriDate(data.start_date));
+
+      const formatDate = (date) => {
+        if (!date) return null;
+
+        return new Date(date).toLocaleDateString("ar-EG", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+    };
+    const ratingText = data.is_special
+  ? "مميز"
+  : data.rating && data.rating !== "0.00"
+    ? toArabicNumbers(data.rating)
+    : data.average_hotel_rating
+      ? toArabicNumbers(data.average_hotel_rating)
+      : "غير متوفر";
+const whatsappMessage = encodeURIComponent(
+        "مرحباً \n" +
+        "أرغب في الاستفسار عن باقة سياحية بالتفاصيل التالية:\n\n" +
+
+        "اسم الباقة: " + data.title + "\n" +
+        "الموقع: " + data.locations + "\n" +
+        "المدة: " + toArabicNumbers(data.duration_days) + "أيام "+ "\n" +
+        "المتبقي: " + toArabicNumbers(data.available_places) +"مقاعد "+ "\n" +
+        "التاريخ: " + " من "+ startDateHijri +" الي " + endDateHijri + "\n" +
+        "كود العرض: " + (data.offer_code ?? "لا يوجد") + "\n" +
+        "التقييم: " + ratingText + " نجوم\n" +
+        "السعر: " +toArabicNumbers( data.price.toLocaleString("ar-EG")) + " ج.م\n\n" +
+
+        "صورة الباقة:\n" + data.image + "\n\n" +
+        (data.slug ? "رابط الباقة:\n" + route("packages.show", data.slug) : "")
+    );
+    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+     const whatsappmsg = `https://wa.me/${whatsappNumber}`;
+
  
   return (
  <div className="sticky top-24 flex flex-col gap-4">
@@ -43,15 +82,25 @@ export default function BookingCard({data }) {
 
     {/* Buttons */}
     <div className="flex flex-col gap-3">
-      <button className="btn--primary w-full h-12 bg-accent-green hover:bg-accent-green/90 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
+      <a 
+      href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="تواصل معنا عبر واتساب"
+      className="btn--primary w-full h-12 bg-accent-green hover:bg-accent-green/90 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
         <span>احجز الآن</span>
         <FaArrowLeft className="text-sm rtl:rotate-180" />
-      </button>
+      </a>
 
-      <button className="btn--secondary w-full h-12 bg-white border border-accent-green text-accent-green font-bold rounded-lg transition-colors flex items-center justify-center gap-2 hover:bg-green-50">
+      <a 
+      href={whatsappmsg}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="تواصل معنا عبر واتساب"
+      className="btn--secondary w-full h-12 bg-white border border-accent-green text-accent-green font-bold rounded-lg transition-colors flex items-center justify-center gap-2 hover:bg-green-50">
         <FaWhatsapp />
         <span>تواصل عبر واتساب</span>
-      </button>
+      </a>
     </div>
 
     {/* Share / Save */}

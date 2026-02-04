@@ -136,6 +136,7 @@ export default function PackagesGrid({ offers, special }) {
                 <a href={pkg.slug? route("packages.show", pkg.slug) : ""} >
                 <AllPackagesCard
                   title={pkg.title}
+                  slug={pkg.slug}
                   offerCode={pkg.offer_code}
                   price={toArabicNumbers(pkg.price)}
                   date={pkg.start_date}
