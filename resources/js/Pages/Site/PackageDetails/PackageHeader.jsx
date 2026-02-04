@@ -1,6 +1,8 @@
 import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import { useState, useEffect, useRef } from "react";
+import { BsStars } from "react-icons/bs";
 import { FaStar, FaMapMarkerAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const tabs = [
   { id: "overview", label: "نظرة عامة" },
@@ -14,11 +16,9 @@ export default function PackageHeaderAnimatedTabs({ data }) {
   const [underlineStyle, setUnderlineStyle] = useState({});
   const tabsRef = useRef([]);
 
-  // Scroll Spy
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPos = window.scrollY + 100; // offset for sticky header
-
+      const scrollPos = window.scrollY + 100;
       for (let tab of tabs) {
         const section = document.getElementById(tab.id);
         if (!section) continue;
@@ -32,20 +32,18 @@ export default function PackageHeaderAnimatedTabs({ data }) {
         }
       }
     };
-
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // call once to set initial active tab
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Update underline position
   useEffect(() => {
     const index = tabs.findIndex((t) => t.id === activeTab);
     const el = tabsRef.current[index];
     if (el) {
       setUnderlineStyle({
-        width: `${el.offsetWidth}px`,
-        left: `${el.offsetLeft}px`,
+        width: el.offsetWidth,
+        left: el.offsetLeft,
       });
     }
   }, [activeTab]);
@@ -54,7 +52,7 @@ export default function PackageHeaderAnimatedTabs({ data }) {
     const section = document.getElementById(id);
     if (!section) return;
 
-    const headerOffset = 80; // adjust if sticky header height changes
+    const headerOffset = 80;
     const elementPosition = section.offsetTop;
     const offsetPosition = elementPosition - headerOffset;
 
@@ -68,70 +66,108 @@ export default function PackageHeaderAnimatedTabs({ data }) {
 
   return (
     <>
-      {/* Header */}
-      <div className="border-b border-primary pb-6 text-black">
+      
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="border-b border-primary pb-6 text-black"
+      >
         <div className="flex items-start justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-                {data.is_special_offer && (
-              <span className="bg-accent-gold/10 text-accent-gold text-xs font-bold px-2 py-1 rounded border border-accent-gold/20">
-                مميزة
-              </span>
-                )}
-              <span className="bg-primary text-text-muted text-xs font-bold px-2 py-1 rounded">
-                {toArabicNumbers( data.duration_days)} أيام / {toArabicNumbers( data.duration_days-1)} ليالي
-              </span>
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              {data.is_special_offer && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="flex items-center gap-1 bg-white-50 text-yellow-500 text-xs font-bold px-3 py-2 rounded border border-yellow-200"
+                >
+                  <BsStars />
+                  <span>مميزة</span>
+                </motion.div>
+              )}
+
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="bg-gray-100 text-gray-500 text-xs font-bold px-3 py-2 rounded"
+              >
+                {toArabicNumbers(data.duration_days)} أيام / {toArabicNumbers(data.duration_days - 1)} ليالي
+              </motion.span>
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold font-heading text-text-dark mb-3">
+            <motion.h1
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-3xl md:text-4xl font-bold font-heading text-text-dark mb-3"
+            >
               {data.title}
-            </h1>
+            </motion.h1>
 
-            <div className="flex items-center gap-4 text-sm text-text-muted flex-wrap">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="flex items-center gap-4 text-sm text-gray-500 flex-wrap"
+            >
               <div className="flex items-center gap-1">
-                <FaStar className="text-accent-gold text-lg" />
-                <span className="text-text-dark font-bold">{data.rating!=="0.00" || null ?toArabicNumbers(data.rating):toArabicNumbers(data.average_hotel_rating)}</span>
-               {! data.number_of_rating_customers && data.number_of_rating_customers!=0 && (
-                <span>({toArabicNumbers(data.number_of_rating_customers)} تقييم)</span>
+                <FaStar className="text-yellow-400 text-lg" />
+                <span className="text-text-dark font-bold">
+                  {data.rating !== "0.00" && data.rating !== null
+                    ? toArabicNumbers(data.rating)
+                    : toArabicNumbers(data.average_hotel_rating)}
+                </span>
+                {data.number_of_rating_customers!=0 && (
+                  <span>({toArabicNumbers(data.number_of_rating_customers)} تقييم)</span>
                 )}
               </div>
 
               <span className="w-1 h-1 rounded-full bg-gray-300" />
 
               <div className="flex items-center gap-1">
-                <FaMapMarkerAlt className="text-lg" />
-                <span>{ data.locations? data.locations.join("، "): "مكة المكرمة، المدينة المنورة"}</span>
+                <FaMapMarkerAlt className="text-lg text-green-600" />
+                <span>{data.locations ? data.locations.join("، ") : "مكة المكرمة، المدينة المنورة"}</span>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Sticky Tabs Navigation */}
-      <div className="sticky top-0 z-50 bg-white  text-black">
-        <div className="relative flex items-center gap-6 border-b border-primary text-sm font-bold overflow-x-auto hide-scrollbar whitespace-nowrap px-4">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="sticky top-14 z-20 bg-white pt-2 text-black"
+      >
+        <div className="relative flex items-center gap-6 border-b border-primary text-sm font-bold overflow-x-auto hide-scrollbar whitespace-nowrap px-4 py-2">
           {tabs.map((tab, index) => (
-            <button
+            <motion.button
               key={tab.id}
               ref={(el) => (tabsRef.current[index] = el)}
               onClick={() => handleClick(tab.id, index)}
-              className={`pb-3 transition-colors whitespace-nowrap ${
+              transition={{ type: "spring", stiffness: 300 }}
+              className={`pb-3 whitespace-nowrap transition-colors ${
                 activeTab === tab.id
-                  ? "text-accent-green"
-                  : "text-text-muted hover:text-accent-gold"
+                  ? "text-green-600  font-bold"
+                  : "text-gray-500"
               }`}
             >
               {tab.label}
-            </button>
+            </motion.button>
           ))}
 
           {/* Animated Underline */}
-          <span
-            className="absolute bottom-0 h-0.5 bg-accent-green transition-all duration-300"
-            style={underlineStyle}
+          <motion.span
+            className="absolute bottom-0 h-0.5 bg-green-600 rounded-full"
+            animate={{ left: underlineStyle.left, width: underlineStyle.width }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
           />
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

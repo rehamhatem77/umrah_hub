@@ -28,8 +28,8 @@ export default function PackageDetails({offer}) {
                         <div className="row">
                             <div className="w-full bg-white">
                                 <div className="flex justify-center">
-                                    <div className="w-full max-w-[1440px] px-4 md:px-10 lg:px-40">
-                                        <div className="flex flex-wrap gap-2 py-4">
+                                    <div className="w-full max-w-[1440px] px-4 md:px-10 lg:px-30">
+                                        <div className="flex flex-wrap gap-2 py-1">
                                             <a
                                                 className="text-gray-500 hover:text-primary text-sm font-medium leading-normal"
                                                 href="/"
