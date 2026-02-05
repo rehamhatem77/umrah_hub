@@ -85,6 +85,10 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
         Route::get('show/{offer}', [OfferController::class, 'show'])->name('show');
 
 
+        Route::get('/search', [OfferController::class, 'search'])
+    ->name('search');
+
+
         Route::delete('images/{image}', [OfferController::class, 'deleteImage'])
             ->name('images.delete');
         Route::patch('images/{image}/main', [OfferController::class, 'toggleMainImage'])

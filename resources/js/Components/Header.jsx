@@ -17,7 +17,7 @@ export default function Header() {
         }
 
         const timeout = setTimeout(() => {
-            fetch(route('admin.search', { q: query }))
+            fetch(route('admin.offers.search', { q: query }))
                 .then(res => res.json())
                 .then(data => {
                     setResults(data);

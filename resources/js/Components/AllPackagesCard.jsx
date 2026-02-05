@@ -15,6 +15,7 @@ export default function AllPackagesCard({
     rating,
     days,
     date,
+    level,
     customers_rating,
     popularBadge,
     availablePlaces,
@@ -29,13 +30,18 @@ export default function AllPackagesCard({
             year: "numeric",
         });
     };
-
+    const levelStyles = {
+        اقتصادي: { text: 'text-green-600', bg: 'bg-green-100' },
+        عادي: { text: 'text-blue-600', bg: 'bg-blue-100' },
+        VIP: { text: 'text-yellow-600', bg: 'bg-yellow-100' },
+        فاخر: { text: 'text-red-600', bg: 'bg-red-100' },
+    };
     const isSoldOut = availablePlaces === 0;
 
-      const { footer } = usePage().props;
-      
-          if (!footer?.contact_wp) return null;
-          const whatsappNumber = footer?.contact_wp.replace(/\s+/g, "");
+    const { footer } = usePage().props;
+
+    if (!footer?.contact_wp) return null;
+    const whatsappNumber = footer?.contact_wp.replace(/\s+/g, "");
 
 
     const whatsappMessage = encodeURIComponent(
@@ -45,7 +51,7 @@ export default function AllPackagesCard({
         "اسم الباقة: " + title + "\n" +
         "الموقع: " + location + "\n" +
         "المدة: " + days + "\n" +
-        "المتبقي: " + availablePlaces +"مقاعد "+ "\n" +
+        "المتبقي: " + availablePlaces + "مقاعد " + "\n" +
         "التاريخ: " + formatDate(date) + "\n" +
         "كود العرض: " + (offerCode ?? "لا يوجد") + "\n" +
         "التقييم: " + (badge ? badge : rating ? rating : "غير متوفر") + "\n" +
@@ -89,10 +95,16 @@ export default function AllPackagesCard({
                 )}
 
 
-                <div className="absolute bottom-3 right-3 text-white flex items-center gap-1 text-xs">
-                    <FaMapMarkerAlt />
-                    <span>{location}</span>
+                <div className="absolute bottom-3 right-3 flex items-center gap-3 text-white text-xs">
+                    <div className="flex items-center gap-1">
+                        <FaMapMarkerAlt />
+                        <span>{location}</span>
+                    </div>
+
+
+
                 </div>
+
             </div>
 
 
@@ -108,9 +120,12 @@ export default function AllPackagesCard({
                             <span className="text-gray-400 ml-2">({customers_rating})</span>
                         )}
                     </div>
-                    <span className="text-xs text-green-600 bg-[#f6f8f6] px-2 py-0.5 rounded">
-                        شامل الطيران
+                    <span
+                        className={`text-xs font-semibold px-2 py-0.5 rounded-full ${levelStyles[level]?.text} ${levelStyles[level]?.bg}`}
+                    >
+                        {level}
                     </span>
+
                 </div>
 
 
@@ -178,11 +193,11 @@ export default function AllPackagesCard({
                         whileHover={!isSoldOut ? { scale: 1.07 } : {}}
                         whileTap={!isSoldOut ? { scale: 0.95 } : {}}
                         className={`text-sm font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${isSoldOut
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-gray-800 hover:bg-gray-900 text-white"
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-gray-800 hover:bg-gray-900 text-white"
                             }`}
                     >
-                        
+
                         {isSoldOut ? "تم البيع" : "احجز الآن"}
                     </motion.button>
 

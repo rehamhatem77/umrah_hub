@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import Select from 'react-select';
 import { motion } from 'framer-motion';
 import { FiChevronLeft, FiMapPin, FiStar } from 'react-icons/fi';
@@ -56,9 +56,13 @@ export default function ShowOffer({
             >
 
                 <div className="flex items-center gap-1 text-sm text-gray-500">
-                    <button disabled>لوحة التحكم</button>
+                    <button onClick={() => router.get(route('dashboard'))}>
+                        لوحة التحكم
+                    </button>
                     <FiChevronLeft />
-                    <button disabled>الباقات</button>
+                    <button onClick={() => router.get(route('admin.offers.index'))}>
+                        الباقات
+                    </button>
                     <FiChevronLeft />
                     <span className="text-[var(--app-primary)] font-medium">عرض بيانات الباقة</span>
                 </div>

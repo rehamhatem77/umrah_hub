@@ -15,6 +15,7 @@ export default function PackageHeaderAnimatedTabs({ data }) {
   const [activeTab, setActiveTab] = useState("overview");
   const [underlineStyle, setUnderlineStyle] = useState({});
   const tabsRef = useRef([]);
+  const level=data.tour_level;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,6 +64,12 @@ export default function PackageHeaderAnimatedTabs({ data }) {
 
     setActiveTab(id);
   };
+   const levelStyles = {
+        اقتصادي: { text: 'text-green-600', bg: 'bg-green-100' },
+        عادي: { text: 'text-blue-600', bg: 'bg-blue-100' },
+        VIP: { text: 'text-yellow-600', bg: 'bg-yellow-100' },
+        فاخر: { text: 'text-red-600', bg: 'bg-red-100' },
+    };
 
   return (
     <>
@@ -98,16 +105,33 @@ export default function PackageHeaderAnimatedTabs({ data }) {
               >
                 {toArabicNumbers(data.duration_days)} أيام / {toArabicNumbers(data.duration_days - 1)} ليالي
               </motion.span>
+
+               <span
+                        className={`text-xs font-semibold px-3 py-2  rounded ${levelStyles[level]?.text} ${levelStyles[level]?.bg}`}
+                    >
+                        {level} 
+                    </span>
             </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-3xl md:text-4xl font-bold font-heading text-text-dark mb-3"
-            >
-              {data.title}
-            </motion.h1>
+            <div className="flex items-center gap-3 flex-wrap mb-3">
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-3xl md:text-4xl font-bold font-heading text-text-dark"
+              >
+                {data.title}
+              </motion.h1>
+
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="text-lg md:text-xl font-medium text-gray-500"
+              >
+                ({data.trip_type.name})
+              </motion.span>
+            </div>
 
             <motion.div
               initial={{ opacity: 0 }}

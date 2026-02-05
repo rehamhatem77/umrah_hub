@@ -152,6 +152,7 @@ export default function PackagesGrid({ offers, special }) {
                     toArabicNumbers(pkg.duration_days) +
                     (pkg.duration_days !== 14 ? " أيام" : " يوم")
                   }
+                  level={pkg.tour_level??"شامل الطيران"}
                   image={pkg.image}
                   badge={pkg.is_special_offer ? "مميز" : ""}
                   rating={pkg.rating ? pkg.rating : pkg.average_hotel_rating}

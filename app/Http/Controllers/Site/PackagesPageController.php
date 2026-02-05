@@ -11,6 +11,14 @@ use Inertia\Inertia;
 class PackagesPageController extends Controller
 {
     //
+
+     private array $tourLevelMap = [
+        'economical' => 'اقتصادي',
+        'standard'   => 'عادي',
+        'vip'        => 'VIP',
+        'luxury'     => 'فاخر',
+    ];
+
     public function index(Request $request)
     {
         $filter = $request->query('filter');
@@ -22,7 +30,7 @@ class PackagesPageController extends Controller
                 'hotels:id,name,city,stars',
                 'images:id,offer_id,image_path,is_main,sort_order',
                 'mainImage:id,offer_id,image_path',
-                'company:id',
+                'company:id,company_code',
                 'tripType:id,name',
                 'features:id,name,icon',
             ]);
@@ -86,6 +94,8 @@ class PackagesPageController extends Controller
                 'is_popular' => $offer->is_popular,
                 'image' => $offer->main_image_url,
                 'locations' => $offer->locations,
+               'tour_level' => $this->tourLevelMap[$offer->tour_level] ?? $offer->tour_level,
+
                 "number_of_rating_customers" => $offer->number_of_rating_customers,
                 'average_hotel_rating' => $offer->average_hotel_rating,
                 'hotels' => $offer->hotels->map(fn($hotel) => [
@@ -174,9 +184,8 @@ class PackagesPageController extends Controller
                 'is_popular' => $offer->is_popular,
                 'desc' => $offer->desc,
                 'airline' => $offer->airline,
+                'tour_level' => $this->tourLevelMap[$offer->tour_level] ?? $offer->tour_level,
                 'program' => $offer->program,
-                'tour_level' => $offer->tour_level,
-                'tour_level_label' => $offer->tour_level_label,
                 'image' => $offer->main_image_url,
                 'images' => $offer->images->map(fn($img) => [
                     'id' => $img->id,
