@@ -21,6 +21,7 @@ use App\Http\Controllers\SIte\AboutUsController;
 use App\Http\Controllers\Site\ContactController;
 use App\Http\Controllers\Site\FooterController;
 use App\Http\Controllers\Site\HomeController;
+use App\Http\Controllers\Site\OfferSearchController;
 use App\Http\Controllers\Site\PackagesPageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -41,12 +42,9 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 
 Route::get('/packages', [PackagesPageController::class, 'index'])->name('packages');
-// Route::get('/packagedetails', function () {
-//     return Inertia::render('PackageDetails');
-// });
+
 Route::get('/packages/{slug}', [PackagesPageController::class, 'show'])->name('packages.show');
-
-
+Route::get('/search', [OfferSearchController::class, 'search'])->name('packages.search');
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

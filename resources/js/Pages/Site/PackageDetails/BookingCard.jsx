@@ -177,7 +177,7 @@ ${data.slug ? `رابط الباقة:\n${route("packages.show", data.slug)}` : "
           <a 
           className="text-green-600 font-bold text-sm flex items-center gap-1 hover:underline"
 
-            href="#"
+            href="/contact"
           >
             تواصل معنا
             <FaArrowRight className="text-sm rtl:rotate-180" />
