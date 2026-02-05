@@ -48,6 +48,7 @@ class Offer extends Model
         'is_active'        => 'boolean',
         'start_date'       => 'date',
         'end_date'         => 'date',
+        'program' => 'array', 
     ];
 
     /* ================= Relations ================= */

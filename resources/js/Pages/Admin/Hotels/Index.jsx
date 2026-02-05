@@ -11,7 +11,8 @@ import {
     FiChevronLeft,
     FiMapPin,
     FiStar,
-    FiAlertTriangle
+    FiAlertTriangle,
+    FiMessageSquare
 } from 'react-icons/fi';
 import { MdOutlineHotel } from 'react-icons/md';
 import { FaStar } from 'react-icons/fa6';
@@ -43,13 +44,13 @@ export default function Index({ hotels, filters }) {
     };
 
     const openDelete = (hotel) => {
-      
+
         setSelectedHotel(hotel);
         setDeleteModal(true);
     };
 
     const destroy = () => {
-          if (selectedHotel.offers_count > 0) {
+        if (selectedHotel.offers_count > 0) {
             toast.error('لا يمكن حذف فندق مرتبط بعروض');
             return;
         }
@@ -65,7 +66,7 @@ export default function Index({ hotels, filters }) {
 
             <div className=" px-3 sm:px-6 space-y-6">
 
-             
+
                 <div className="flex items-center gap-1 text-sm text-gray-500">
                     <button
                         onClick={() => router.get(route('dashboard'))}
@@ -86,22 +87,22 @@ export default function Index({ hotels, filters }) {
                         <MdOutlineHotel className="text-2xl text-[var(--app-primary)]" />
                         <h1 className="text-xl font-bold">إدارة الفنادق</h1>
                     </div>
-                    
-                    <div className="flex space-x-2 justify-between flex-col sm:flex-row gap-3">
-                    <button
-                        onClick={() => router.get(route('hotels.create'))}
-                        className="btn-primary flex items-center gap-2"
-                    >
-                        <FiPlus /> إضافة فندق
-                    </button>
 
-                    <button
-                        onClick={() => router.get(route('hotels.trash'))}
-                        className="w-fit flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
-                    >
-                        <FiTrash2 /> سلة المحذوفات
-                    </button>
-                </div>
+                    <div className="flex space-x-2 justify-between flex-col sm:flex-row gap-3">
+                        <button
+                            onClick={() => router.get(route('hotels.create'))}
+                            className="btn-primary flex items-center gap-2"
+                        >
+                            <FiPlus /> إضافة فندق
+                        </button>
+
+                        <button
+                            onClick={() => router.get(route('hotels.trash'))}
+                            className="w-fit flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+                        >
+                            <FiTrash2 /> سلة المحذوفات
+                        </button>
+                    </div>
                 </div>
 
                 {/* Search */}
@@ -154,7 +155,7 @@ export default function Index({ hotels, filters }) {
                                                 <FiEye size={18} />
                                             </button>
 
-                                            
+
                                             <button
                                                 onClick={() => router.get(route('hotels.edit', hotel.id))}
                                                 className="p-1.5 rounded text-[var(--app-primary)] hover:bg-[var(--app-primary)]/10 transition"
@@ -162,7 +163,7 @@ export default function Index({ hotels, filters }) {
                                                 <FiEdit2 size={18} />
                                             </button>
 
-                                           
+
                                             <button
                                                 onClick={() => openDelete(hotel)}
                                                 className="p-1.5 rounded text-red-600 hover:bg-red-50 transition"
@@ -210,7 +211,7 @@ export default function Index({ hotels, filters }) {
                 )}
 
 
-             
+
                 <Modal
                     show={showModal}
                     onClose={() => setShowModal(false)}
@@ -219,9 +220,20 @@ export default function Index({ hotels, filters }) {
                     contentClassName="max-h-[80vh] overflow-y-auto p-6 space-y-4"
                 >
                     {selectedHotel && (
-                        <div className="grid gap-4 sm:grid-cols-2 text-sm">
 
-                     
+                        <div className="grid gap-4 sm:grid-cols-2 text-sm">
+                            {selectedHotel.image_path && (
+                                <div className="col-span-full flex justify-center">
+                                    <img
+                                        src={`/storage/${selectedHotel.image_path}`}
+                                        alt={selectedHotel.name}
+                                        className="w-32 h-20 object-cover rounded-lg border shadow-sm"
+                                    />
+                                </div>
+                            )}
+
+
+
                             <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 shadow-sm hover:shadow transition">
                                 <MdOutlineHotel className="text-[var(--app-primary)] w-6 h-6" />
                                 <div>
@@ -230,7 +242,7 @@ export default function Index({ hotels, filters }) {
                                 </div>
                             </div>
 
-                   
+
                             <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 shadow-sm hover:shadow transition">
                                 <FiMapPin className="text-green-500 w-5 h-5" />
                                 <div>
@@ -238,8 +250,15 @@ export default function Index({ hotels, filters }) {
                                     <div className="font-medium text-gray-800">{selectedHotel.city}</div>
                                 </div>
                             </div>
+                            <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 col-span-full shadow-sm hover:shadow transition">
+                                <FiMessageSquare className="text-purple-500 w-5 h-5" />
+                                <div>
+                                    <div className="text-gray-500 text-xs">وصف الفندق</div>
+                                    <div className="font-medium text-gray-800">{selectedHotel.desc}</div>
+                                </div>
+                            </div>
 
-                      
+
                             <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 shadow-sm hover:shadow transition">
                                 <FaStar className="text-yellow-400 w-5 h-5" />
                                 <div>
@@ -248,7 +267,7 @@ export default function Index({ hotels, filters }) {
                                 </div>
                             </div>
 
-                  
+
                             {selectedHotel.city === 'مكة' && (
                                 <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 shadow-sm hover:shadow transition">
                                     <FiMapPin className="text-blue-500 w-5 h-5" />
@@ -268,7 +287,7 @@ export default function Index({ hotels, filters }) {
                                 </div>
                             )}
 
-                      
+
                             <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 col-span-full shadow-sm hover:shadow transition">
                                 <FiMapPin className="text-purple-500 w-5 h-5" />
                                 <div>
@@ -277,7 +296,7 @@ export default function Index({ hotels, filters }) {
                                 </div>
                             </div>
 
-                    
+
                             {selectedHotel.features && (
                                 <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 col-span-full shadow-sm hover:shadow transition">
                                     <FiStar className="text-orange-500 w-5 h-5" />
@@ -288,7 +307,7 @@ export default function Index({ hotels, filters }) {
                                 </div>
                             )}
 
-                        
+
                             <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 col-span-full shadow-sm hover:shadow transition">
                                 <FiEye className={`w-5 h-5 ${selectedHotel.is_active ? 'text-green-500' : 'text-red-500'}`} />
                                 <div>
@@ -303,15 +322,15 @@ export default function Index({ hotels, filters }) {
                     )}
                 </Modal>
                 <Modal show={deleteModal} title="تأكيد الحذف" onClose={() => setDeleteModal(false)}>
-                                    <div className="text-center space-y-3">
-                                        <FiAlertTriangle className="text-3xl mx-auto text-red-500" />
-                                        <p>هل أنت متأكد من حذف هذا الفندق؟</p>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => setDeleteModal(false)} className="btn-secondary flex-1">إلغاء</button>
-                                            <button onClick={destroy} className="btn-danger flex-1">حذف</button>
-                                        </div>
-                                    </div>
-                                </Modal>
+                    <div className="text-center space-y-3">
+                        <FiAlertTriangle className="text-3xl mx-auto text-red-500" />
+                        <p>هل أنت متأكد من حذف هذا الفندق؟</p>
+                        <div className="flex gap-2">
+                            <button onClick={() => setDeleteModal(false)} className="btn-secondary flex-1">إلغاء</button>
+                            <button onClick={destroy} className="btn-danger flex-1">حذف</button>
+                        </div>
+                    </div>
+                </Modal>
 
             </div>
         </AuthenticatedLayout>

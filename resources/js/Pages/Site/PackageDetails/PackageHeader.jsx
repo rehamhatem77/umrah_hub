@@ -71,6 +71,7 @@ export default function PackageHeaderAnimatedTabs({ data }) {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
+         viewport={{ once: false, amount: 0.3 }}
         className="border-b border-primary pb-6 text-black"
       >
         <div className="flex items-start justify-between">
@@ -81,6 +82,7 @@ export default function PackageHeaderAnimatedTabs({ data }) {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 300 }}
+                   viewport={{ once: false, amount: 0.3 }}
                   className="flex items-center gap-1 bg-white-50 text-yellow-500 text-xs font-bold px-3 py-2 rounded border border-yellow-200"
                 >
                   <BsStars />

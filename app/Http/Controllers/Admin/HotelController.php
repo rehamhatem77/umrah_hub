@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HotelRequest;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -66,6 +67,11 @@ class HotelController extends Controller
             if (Hotel::withTrashed()->where('name', $data['name'])->exists()) {
                 return back()->with('error', 'يوجد فندق بنفس الاسم، يرجى اختيار اسم مختلف');
             }
+             if ($request->hasFile('image')) {
+                $data['image_path'] = $request->file('image')
+                    ->store('hotels', 'public');
+            }
+            
 
             Hotel::create($data);
 
@@ -101,7 +107,18 @@ class HotelController extends Controller
     public function update(HotelRequest $request, Hotel $hotel)
     {
         try {
-            $hotel->update($request->validated());
+
+         $data = $request->validated();
+
+            if ($request->hasFile('image')) {
+                if ($hotel->image_path) {
+                    Storage::disk('public')->delete($hotel->image_path);
+                }
+
+                $data['image_path'] = $request->file('image')
+                    ->store('hotels', 'public');
+            }
+             $hotel->update($data);
 
             return redirect()
                 ->route('hotels.index')
@@ -124,6 +141,9 @@ class HotelController extends Controller
             }
 
             if ($request->boolean('force')) {
+                 if ($hotel->image_path) {
+                    Storage::disk('public')->delete($hotel->image_path);
+                }
                 $hotel->forceDelete();
 
                 return redirect()

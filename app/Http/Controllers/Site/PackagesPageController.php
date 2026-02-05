@@ -146,7 +146,7 @@ class PackagesPageController extends Controller
             ->whereDate('end_date', '>=', now())
             ->where('slug', $slug)
             ->with([
-                'hotels:id,name,city,stars,distance_from_kaaba,distance_from_nabawi,address_location,features',
+                'hotels:id,desc,image_path,name,city,stars,distance_from_kaaba,distance_from_nabawi,address_location,features',
                 'images:id,offer_id,image_path,is_main,sort_order',
                 'mainImage:id,offer_id,image_path',
                 'company:id,company_code',

@@ -47,6 +47,8 @@ public function rules(): array
 
         'stars' => ['required', 'integer', 'min:1', 'max:5'],
         'address_location' => ['nullable', 'string'],
+        'desc' => ['required', 'string'],
+        'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         'features' => ['nullable', 'string'],
         'is_active' => ['boolean'],
     ];
@@ -62,6 +64,8 @@ public function rules(): array
             'city.required' => 'المدينة مطلوبة',
             'city.in' => 'المدينة المختارة غير صالحة',
             'slug.unique' => 'هذا الرابط التعريفي مستخدم بالفعل',
+            'desc'=>'الوصف مطلوب',
+            'image_path'=>'صورة الفندق مطلوبة',
 
             'distance_from_kaaba.required_if' =>
                 'المسافة من الكعبة مطلوبة عند اختيار مكة',

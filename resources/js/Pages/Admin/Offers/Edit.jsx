@@ -91,7 +91,11 @@ export default function Edit({
         duration_days: offer?.duration_days || '',
         price: offer?.price || '',
         airline: offer?.airline || '',
-        program: offer?.program || '',
+        program_days: Array.isArray(offer?.program)
+            ? offer.program
+            : [],
+            program:[],
+
         start_date: offer?.start_date
             ? offer.start_date.slice(0, 10)
             : '',
@@ -253,32 +257,31 @@ export default function Edit({
         const days = Number(form.data.duration_days);
         if (!days) return;
 
-        let currentProgram = form.data.program || '';
+        let updated = [...form.data.program_days];
 
-        // Count existing "اليوم X" entries
-        const dayCountInProgram = (currentProgram.match(/اليوم \d+/g) || []).length;
 
-        // If program is empty, or days increased, add missing days
-        if (dayCountInProgram < days) {
-            let additionalProgram = '';
-            for (let i = dayCountInProgram + 1; i <= days; i++) {
-                additionalProgram += `
-<p><strong>اليوم ${toArabicNumbers(i)}</strong></p>
-<p>عنوان اليوم:</p>
-<p>الوصف:</p>
-`;
+        if (updated.length < days) {
+            for (let i = updated.length + 1; i <= days; i++) {
+                updated.push({
+                    day: i,
+                    label: `اليوم ${toArabicNumbers(i)}`,
+                    title: '',
+                    desc: '',
+                });
             }
-            form.setData('program', currentProgram + additionalProgram);
-            setFrontendErrors(p => ({ ...p, program: null }));
         }
 
-        if (dayCountInProgram > days) {
 
-            const parts = currentProgram.split(/(?=<p><strong>اليوم \d+<\/strong><\/p>)/);
-            const newProgram = parts.slice(0, days).join('');
-            form.setData('program', newProgram);
+        if (updated.length > days) {
+            updated = updated.slice(0, days);
         }
+
+        form.setData('program_days', updated);
     }, [form.data.duration_days]);
+    useEffect(() => {
+        form.setData('program', form.data.program_days);
+    }, [form.data.program_days]);
+
 
 
     const addPriceContainItem = () => {
@@ -340,46 +343,46 @@ export default function Edit({
     // };
 
     const handleImages = (e) => {
-    const newFiles = Array.from(e.target.files);
-    const MAX_IMAGES = 10; 
-    const MAX_SIZE_KB = 2048; 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        const newFiles = Array.from(e.target.files);
+        const MAX_IMAGES = 10;
+        const MAX_SIZE_KB = 2048;
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
-    const errors = [];
+        const errors = [];
 
-    if (previewImages.length + newFiles.length > MAX_IMAGES) {
-        errors.push(`الحد الأقصى ${MAX_IMAGES} صور`);
-    }
-
-    newFiles.forEach((file, idx) => {
-        if (!allowedTypes.includes(file.type)) {
-            errors.push(`الصورة رقم ${idx + 1} يجب أن تكون بصيغة JPG, PNG أو WEBP`);
+        if (previewImages.length + newFiles.length > MAX_IMAGES) {
+            errors.push(`الحد الأقصى ${MAX_IMAGES} صور`);
         }
-        const sizeInKB = file.size / 1024;
-        if (sizeInKB > MAX_SIZE_KB) {
-            errors.push(`حجم الصورة رقم ${idx + 1} أكبر من ${MAX_SIZE_KB} كيلوبايت`);
-        }
-    });
 
-    if (errors.length) {
-        toast.error(errors.join('\n'));
+        newFiles.forEach((file, idx) => {
+            if (!allowedTypes.includes(file.type)) {
+                errors.push(`الصورة رقم ${idx + 1} يجب أن تكون بصيغة JPG, PNG أو WEBP`);
+            }
+            const sizeInKB = file.size / 1024;
+            if (sizeInKB > MAX_SIZE_KB) {
+                errors.push(`حجم الصورة رقم ${idx + 1} أكبر من ${MAX_SIZE_KB} كيلوبايت`);
+            }
+        });
+
+        if (errors.length) {
+            toast.error(errors.join('\n'));
+            e.target.value = null;
+            return;
+        }
+        form.setData('images', [...form.data.images, ...newFiles]);
+
+        setPreviewImages(prev => [
+            ...prev,
+            ...newFiles.map(file => ({
+                id: null,
+                file,
+                src: URL.createObjectURL(file),
+                isNew: true,
+            })),
+        ]);
+
         e.target.value = null;
-        return;
-    }
-    form.setData('images', [...form.data.images, ...newFiles]);
-
-    setPreviewImages(prev => [
-        ...prev,
-        ...newFiles.map(file => ({
-            id: null,
-            file,
-            src: URL.createObjectURL(file),
-            isNew: true,
-        })),
-    ]);
-
-    e.target.value = null;
-};
+    };
 
     const removeImage = (index) => {
         const img = previewImages[index];
@@ -409,7 +412,7 @@ export default function Edit({
         if (previewImages.length === 0) errors.images = 'يرجى رفع صورة واحدة على الأقل';
         if (!form.data.start_date) errors.start_date = 'اختر تاريخ بداية الباقة';
         if (!form.data.end_date) errors.end_date = 'اختر تاريخ نهاية الباقة';
-        if (!form.data.program.trim()) errors.program = 'برنامج الرحلة مطلوب';
+        // if (!form.data.program.trim()) errors.program = 'برنامج الرحلة مطلوب';
         if (!form.data.tour_level) errors.tour_level = 'اختر مستوى الرحلة';
         if (!form.data.available_places) errors.available_places = 'عدد الأماكن المتاحة مطلوب';
         // if (!form.data.whatsapp_number.trim()) errors.whatsapp_number = 'رقم الواتساب مطلوب';
@@ -438,6 +441,13 @@ export default function Edit({
 
         if (!form.data.price_not_contain || form.data.price_not_contain.trim() === '')
             errors.price_not_contain = 'المحتويات غير المشمولة في السعر مطلوبة';
+         const hasAtLeastOneDayFilled = form.data.program_days.some(
+            day =>
+                (day.title && day.title.trim() !== '') ||
+                (day.desc && day.desc.trim() !== '')
+        );
+        if (!hasAtLeastOneDayFilled)
+            errors.program_days = 'يجب إدخال بيانات يوم واحد على الأقل';
 
 
 
@@ -874,17 +884,46 @@ export default function Edit({
                         <div className="card p-6">
                             <h3 className="font-bold mb-3">برنامج الرحلة</h3>
                             <div className={`rounded-lg border ${frontendErrors.program ? 'border-red-500' : 'border-gray-300'}`}>
-                                <ReactQuill
-                                    theme="snow"
-                                    value={form.data.program}
-                                    onChange={value => {
-                                        form.setData('program', value);
-                                        setFrontendErrors(p => ({ ...p, program: null }));
-                                    }}
-                                    modules={quillModules}
-                                    formats={quillFormats}
-                                    placeholder="اكتب برنامج الرحلة بالتفصيل..."
-                                />
+                                <div className="space-y-4">
+                                    {form.data.program_days.map((day, index) => (
+                                        <div key={index} className="border rounded-lg p-4 space-y-2">
+                                            <input
+                                                className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  font-semibold text-[var(--app-primary)]"
+                                                value={day.label}
+                                                placeholder="مثال: اليوم 3-5"
+                                                onChange={e => {
+                                                    const updated = [...form.data.program_days];
+                                                    updated[index].label = e.target.value;
+                                                    form.setData('program_days', updated);
+                                                }}
+                                            />
+
+                                            <input
+                                                className="input w-full"
+                                                placeholder="عنوان اليوم"
+                                                value={day.title}
+                                                onChange={e => {
+                                                    const updated = [...form.data.program_days];
+                                                    updated[index].title = e.target.value;
+                                                    form.setData('program_days', updated);
+                                                }}
+                                            />
+
+                                            <textarea
+                                                rows={3}
+                                                className="input w-full"
+                                                placeholder="وصف اليوم"
+                                                value={day.desc}
+                                                onChange={e => {
+                                                    const updated = [...form.data.program_days];
+                                                    updated[index].desc = e.target.value;
+                                                    form.setData('program_days', updated);
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
 
                             </div>
                             <InputError message={frontendErrors.program || form.errors.program} />
@@ -939,7 +978,7 @@ export default function Edit({
                             <label className="border-2 border-dashed rounded-xl p-6 flex flex-col items-center cursor-pointer hover:border-[var(--app-primary)] transition">
                                 <FiUpload size={28} />
                                 <span className="mt-2 text-xs text-gray-500">اسحب الصور أو اضغط للرفع</span>
-                                <input multiple type="file" accept="image/*"  className="hidden" onChange={handleImages} />
+                                <input multiple type="file" accept="image/*" className="hidden" onChange={handleImages} />
                             </label>
 
                             {previewImages.length > 0 && (

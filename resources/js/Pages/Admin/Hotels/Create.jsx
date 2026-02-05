@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { FiChevronLeft, FiMapPin, FiSave } from 'react-icons/fi';
 import { FaStar, FaHotel } from 'react-icons/fa6';
 import { useEffect, useState } from 'react';
+import { FaTrash } from 'react-icons/fa';
 
 const pageMotion = { hidden: { opacity: 0, y: 6 }, visible: { opacity: 1, y: 0 } };
 
@@ -39,6 +40,8 @@ const StarRating = ({ value, onChange }) => (
 export default function Create() {
     const form = useForm({
         name: '',
+        desc: '',
+        image: null,
         city: null,
         distance_from_kaaba: '',
         distance_from_nabawi: '',
@@ -50,6 +53,7 @@ export default function Create() {
     const flash = usePage().props.flash;
 
     const [frontendErrors, setFrontendErrors] = useState({});
+    const [imagePreview, setImagePreview] = useState(null);
 
     const cityOptions = [
         { value: 'مكة', label: 'مكة المكرمة' },
@@ -85,44 +89,72 @@ export default function Create() {
         setFrontendErrors(prev => ({ ...prev, city: null }));
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        form.setData('image', file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+   const removeImage = () => {
+    form.setData('image', null);
+    setImagePreview(null);
+};
+
+
     const validate = () => {
         const errors = {};
 
         if (!form.data.name.trim()) errors.name = 'الاسم مطلوب';
+        if (!form.data.desc.trim()) errors.desc = 'الوصف مطلوب';
         if (!form.data.city) errors.city = 'اختر المدينة';
         if (form.data.city === 'مكة' && !form.data.distance_from_kaaba) errors.distance_from_kaaba = 'المسافة من الكعبة مطلوبة';
         if (form.data.city === 'المدينة المنورة' && !form.data.distance_from_nabawi) errors.distance_from_nabawi = 'المسافة من النبوي مطلوبة';
         if (!form.data.stars) errors.stars = 'اختر تقييم الفندق';
         if (!form.data.address_location.trim()) errors.address_location = 'العنوان مطلوب';
+        if (!form.data.image) errors.image = 'يرجى رفع صورة للفندق';
 
         setFrontendErrors(errors);
         return Object.keys(errors).length === 0;
     };
 
     const submit = (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        if (!validate()) return;
+    if (!validate()) return;
 
-        const submitData = {
-            ...form.data,
-            distance_from_kaaba: form.data.distance_from_kaaba ? Number(form.data.distance_from_kaaba) : null,
-            distance_from_nabawi: form.data.distance_from_nabawi ? Number(form.data.distance_from_nabawi) : null,
-        };
+    const formData = new FormData();
 
-        form.post(route('hotels.store'), {
-            data: submitData,
-            onSuccess: () => {
-                // toast.success('تم إضافة الفندق بنجاح');
-                form.reset();
-                router.get(route('hotels.create'));
-            },
-            onError: (e) => {
-                toast.error(e.message || 'حدثت أخطاء في الإدخال. يرجى التحقق والمحاولة مرة أخرى.');
+  
+    formData.append('name', form.data.name);
+    formData.append('desc', form.data.desc);
+    formData.append('city', form.data.city ?? '');
+    formData.append('distance_from_kaaba', form.data.distance_from_kaaba ?? '');
+    formData.append('distance_from_nabawi', form.data.distance_from_nabawi ?? '');
+    formData.append('stars', form.data.stars ?? '');
+    formData.append('address_location', form.data.address_location);
+    formData.append('features', form.data.features ?? '');
+    formData.append('is_active', form.data.is_active ? 1 : 0);
 
-            },
-        });
-    };
+
+    if (form.data.image) {
+        formData.append('image', form.data.image);
+    }
+
+    form.post(route('hotels.store'), {
+        data: formData,
+        onSuccess: () => {
+            form.reset();
+            setImagePreview(null);
+            router.get(route('hotels.create'));
+        },
+        onError: (e) => {
+            toast.error(e.message || 'حدثت أخطاء في الإدخال. يرجى التحقق والمحاولة مرة أخرى.');
+        },
+    });
+};
+
     // useEffect(() => {
     //     if (flash?.error) {
     //         toast.error(flash.error);
@@ -170,6 +202,21 @@ export default function Create() {
                             }}
                         />
                         <InputError message={frontendErrors.name || form.errors.name} />
+                    </div>
+
+                    <div>
+                        <label className="label">الوصف</label>
+                        <textarea
+                            rows={3}
+                            className={`input w-full ${frontendErrors.desc ? 'border-red-500  focus:border-red-500 focus:ring-red-500' : 'focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] '}`}
+                            placeholder="أدخل وصف الفندق"
+                            value={form.data.desc}
+                            onChange={e => {
+                                form.setData('desc', e.target.value);
+                                setFrontendErrors(prev => ({ ...prev, desc: null }));
+                            }}
+                        />
+                        <InputError message={frontendErrors.desc || form.errors.desc} />
                     </div>
 
                     <div>
@@ -248,6 +295,44 @@ export default function Create() {
                         />
                         <InputError message={frontendErrors.address_location || form.errors.address_location} />
                     </div>
+                    <div>
+                        <label className="label">صورة الفندق</label>
+
+                      
+                        <div className="flex flex-col mt-2 gap-2">
+                            <button
+                                type="button"
+                                onClick={() => document.getElementById('hotel-image-input').click()}
+                                className="btn-primary w-40 text-center"
+                            >
+                                اختر صورة
+                            </button>
+                            <input
+                                id="hotel-image-input"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="hidden"
+                            />
+
+
+                            {imagePreview && (
+                                <div className="relative mt-2 w-32 h-32">
+                                    <img src={imagePreview} className="w-full h-full object-cover rounded" />
+                                    <button
+                                        type="button"
+                                        onClick={removeImage}
+                                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                    >
+                                        <FaTrash />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        <InputError message={frontendErrors.image || form.errors.image} />
+                    </div>
+
 
                     <div>
                         <label className="label">المميزات</label>

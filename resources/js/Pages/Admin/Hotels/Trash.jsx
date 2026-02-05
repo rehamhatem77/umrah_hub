@@ -3,7 +3,7 @@ import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import Modal from '@/Components/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronLeft, FiTrash2, FiAlertTriangle, FiMapPin, FiPhone, FiSearch, FiEye, FiStar } from 'react-icons/fi';
+import { FiChevronLeft, FiTrash2, FiAlertTriangle, FiMapPin, FiPhone, FiSearch, FiEye, FiStar, FiMessageSquare } from 'react-icons/fi';
 import { FaRegBuilding, FaStar, FaWhatsapp, FaWindowRestore } from 'react-icons/fa6';
 import { MdOutlineHotel, MdRestore } from "react-icons/md";
 import toast from 'react-hot-toast';
@@ -220,6 +220,15 @@ export default function Trash({ hotels, filters }) {
                 >
                     {selectedHotel && (
                         <div className="grid gap-4 sm:grid-cols-2 text-sm">
+                            {selectedHotel.image_path && (
+                                <div className="col-span-full flex justify-center">
+                                    <img
+                                        src={`/storage/${selectedHotel.image_path}`}
+                                        alt={selectedHotel.name}
+                                        className="w-32 h-20 object-cover rounded-lg border shadow-sm"
+                                    />
+                                </div>
+                            )}
 
 
                             <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 shadow-sm hover:shadow transition">
@@ -238,7 +247,14 @@ export default function Trash({ hotels, filters }) {
                                     <div className="font-medium text-gray-800">{selectedHotel.city}</div>
                                 </div>
                             </div>
-
+                            
+<div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 col-span-full shadow-sm hover:shadow transition">
+                                <FiMessageSquare className="text-purple-500 w-5 h-5" />
+                                <div>
+                                    <div className="text-gray-500 text-xs">وصف الفندق</div>
+                                    <div className="font-medium text-gray-800">{selectedHotel.desc}</div>
+                                </div>
+                            </div>
 
                             <div className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50 shadow-sm hover:shadow transition">
                                 <FaStar className="text-yellow-400 w-5 h-5" />

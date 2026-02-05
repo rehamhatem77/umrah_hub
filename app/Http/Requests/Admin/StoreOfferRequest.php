@@ -45,7 +45,22 @@ class StoreOfferRequest extends FormRequest
             'company_id'     => 'required|exists:tour_companies,id',
 
             'duration_days' => 'required|integer|min:1',
-            'program'       => 'required|string',
+            'program' => ['required', 'array', function ($attribute, $value, $fail) {
+
+                $hasDay = false;
+
+                foreach ($value as $day) {
+                    if (!empty($day['title']) || !empty($day['desc'])) {
+                        $hasDay = true;
+                        break;
+                    }
+                }
+
+                if (!$hasDay) {
+                    $fail('يجب إدخال عنوان أو وصف ليوم واحد على الأقل في البرنامج.');
+                }
+            }],
+
 
             'price' => 'required|numeric|min:0',
 

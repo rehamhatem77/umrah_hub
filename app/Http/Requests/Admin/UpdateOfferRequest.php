@@ -21,11 +21,11 @@ class UpdateOfferRequest extends FormRequest
      */
 
     protected function prepareForValidation()
-{
-    $this->merge([
-        'whatsapp_number' => $this->whatsapp_number ?? '01111111111',
-    ]);
-}
+    {
+        $this->merge([
+            'whatsapp_number' => $this->whatsapp_number ?? '01111111111',
+        ]);
+    }
 
     public function rules(): array
     {
@@ -33,7 +33,7 @@ class UpdateOfferRequest extends FormRequest
             //
             'offer_code' => 'required|string|max:100|unique:offers,offer_code,' . $this->offer->id,
             'title' => 'required|string|max:255',
-            'slug'  => 'nullable|string|max:255'. $this->offer->id,
+            'slug'  => 'nullable|string|max:255' . $this->offer->id,
 
             'desc'      => 'required|string|max:2555',
             'rating' => 'required|numeric|min:1',
@@ -52,7 +52,22 @@ class UpdateOfferRequest extends FormRequest
             'hotels.*' => 'exists:hotels,id',
 
             'duration_days' => 'required|integer|min:1',
-            'program'       => 'required|string',
+            'program' => ['required', 'array', function ($attribute, $value, $fail) {
+
+                $hasDay = false;
+
+                foreach ($value as $day) {
+                    if (!empty($day['title']) || !empty($day['desc'])) {
+                        $hasDay = true;
+                        break;
+                    }
+                }
+
+                if (!$hasDay) {
+                    $fail('يجب إدخال عنوان أو وصف ليوم واحد على الأقل في البرنامج.');
+                }
+            }],
+
 
             'price' => 'required|numeric|min:0',
 
@@ -79,15 +94,15 @@ class UpdateOfferRequest extends FormRequest
             'features.*' => 'exists:features,id',
 
             'images'   => 'nullable|array',
-            'images.*' => 'image|max:2048', 
+            'images.*' => 'image|max:2048',
             'is_main_image' => 'nullable|integer',
 
 
 
             'deleted_images'   => ['nullable', 'array'],
-        'deleted_images.*' => ['integer', 'exists:offer_images,id'],
+            'deleted_images.*' => ['integer', 'exists:offer_images,id'],
 
-        'main_image_id'    => ['nullable', 'integer', 'exists:offer_images,id'],
+            'main_image_id'    => ['nullable', 'integer', 'exists:offer_images,id'],
         ];
     }
 }

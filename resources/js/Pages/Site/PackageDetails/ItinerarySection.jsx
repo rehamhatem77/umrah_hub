@@ -1,96 +1,66 @@
+import { motion } from "framer-motion";
+
 export default function ItinerarySection({ program }) {
 
- 
-  const itinerary = program ? parseProgram(program) :
-
-    [
+  const itinerary = Array.isArray(program)
+    ? program.filter((day) => day.title || day.desc)
+    : [
       {
-        title: "اليوم ١: الوصول إلى جدة والتوجه لمكة",
-        description:
-          "الاستقبال في مطار الملك عبد العزيز بجدة بواسطة مندوبينا، ثم الانتقال عبر باصات VIP مكيفة إلى الفندق في مكة المكرمة لتسليم الغرف والاستراحة.",
-        color: "bg-accent-green",
+        label: "اليوم ١",
+        title: "الوصول إلى جدة والتوجه لمكة",
+        desc: "الاستقبال في مطار الملك عبد العزيز بجدة بواسطة مندوبينا، ثم الانتقال عبر باصات VIP مكيفة إلى الفندق في مكة المكرمة لتسليم الغرف والاستراحة.",
       },
       {
-        title: "اليوم ٢: أداء مناسك العمرة",
-        description:
-          "التوجه إلى الحرم المكي لأداء مناسك العمرة جماعةً بإشراف مرشد ديني متخصص لشرح المناسك والدعاء.",
-        color: "bg-accent-gold",
+        label: "اليوم ٢",
+        title: "أداء مناسك العمرة",
+        desc: "التوجه إلى الحرم المكي لأداء مناسك العمرة جماعةً بإشراف مرشد ديني متخصص لشرح المناسك والدعاء.",
       },
       {
-        title: "اليوم ٣ - ٧: التفرغ للعبادة في مكة",
-        description:
-          "أيام حرة للصلاة في الحرم المكي والاعتكاف، مع توفر وجبات الإفطار والسحور في الفندق.",
-        color: "bg-gray-300",
+        label: "اليوم ٣ - ٧",
+        title: "التفرغ للعبادة في مكة",
+        desc: "أيام حرة للصلاة في الحرم المكي والاعتكاف، مع توفر وجبات الإفطار والسحور في الفندق.",
       },
       {
-        title: "اليوم ٨: المغادرة إلى المدينة المنورة",
-        description:
-          "السفر صباحاً بقطار الحرمين السريع إلى المدينة المنورة، والوصول للفندق القريب من المسجد النبوي.",
-        color: "bg-gray-300",
+        label: "اليوم ٨",
+        title: "المغادرة إلى المدينة المنورة",
+        desc: "السفر صباحاً بقطار الحرمين السريع إلى المدينة المنورة، والوصول للفندق القريب من المسجد النبوي.",
       },
       {
-        title: "اليوم ١٠: المغادرة",
-        description:
-          "التوجه إلى مطار المدينة المنورة للعودة إلى الديار بسلامة الله.",
-        color: "bg-gray-300",
+        label: "اليوم ١٠",
+        title: "المغادرة",
+        desc: "التوجه إلى مطار المدينة المنورة للعودة إلى الديار بسلامة الله.",
       },
     ];
 
-function parseProgram(programHtml) {
-  if (!programHtml) return [];
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(programHtml, "text/html");
-  const paragraphs = Array.from(doc.querySelectorAll("p"));
-
-  const days = [];
-  let currentDay = null;
-  let tempTitle = null;
-
-  paragraphs.forEach((p) => {
-    const text = p.textContent.trim();
-    if (!text) return;
-
-    // اليوم
-    if (/^اليوم\s+[\p{N}]+/u.test(text)) {
-      currentDay = {
-        title: text,
-        dayTitle: "عنوان غير متوفر",
-        description: "الوصف غير متوفر",
-        color: "bg-gray-300",
-      };
-      days.push(currentDay);
-      tempTitle = true; // next paragraph will be dayTitle
-    } else if (currentDay && tempTitle) {
-      // first paragraph after "اليوم X" → day title
-      currentDay.dayTitle = text !== "عنوان اليوم:" ? text : "عنوان غير متوفر";
-      tempTitle = false; // next paragraph will be description
-    } else if (currentDay && !tempTitle) {
-      // next paragraph → description
-      currentDay.description = text !== "الوصف:" ? text : "الوصف غير متوفر";
-    }
-  });
-
-  if (days.length) days[0].color = "bg-accent-green";
-  if (days.length > 1) days[1].color = "bg-accent-gold";
-
-  // Merge dayTitle into title if you want
-  days.forEach(d => {
-    d.title = `${d.title}: ${d.dayTitle}`;
-  });
-
-  return days;
-}
+  const containerVariants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.2 } },
+  };
 
 
-
-
+  const getDotColor = (index) => {
+    if (index === 0) return "bg-accent-green";
+    if (index === 1) return "bg-accent-gold";
+    return "bg-gray-300";
+  };
 
   return (
-    <div className="flex flex-col gap-6  text-black" id="itinerary">
-      <h3 className="text-2xl font-bold font-heading text-text-dark">
+    <motion.div
+      className="flex flex-col gap-6 text-black"
+      id="itinerary"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ amount: 0.3, once: false }}
+    >
+      <motion.h3
+        className="text-2xl font-bold font-heading text-text-dark"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         خط سير الرحلة
-      </h3>
+      </motion.h3>
 
       <div className="relative border-r border-dashed border-gray-300 mr-3">
         {itinerary.map((day, index) => (
@@ -99,28 +69,37 @@ function parseProgram(programHtml) {
             className={`relative pr-8 ${index !== itinerary.length - 1 ? "mb-10" : ""
               }`}
           >
-            {/* Timeline Dot */}
-            <div
-              className={`absolute -right-[7px] top-1 w-3.5 h-3.5 rounded-full ring-4 ring-white ${day.color}`}
+
+            <motion.div
+              className={`absolute -right-[7px] top-1 w-3.5 h-3.5 rounded-full ring-4 ring-white ${getDotColor(
+                index
+              )}`}
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
             />
 
-            {/* Title */}
-            <h4 className="text-lg font-bold text-text-dark mb-2">
-              {day.title}
-            </h4>
 
-            {/* Description */}
-            <p className="text-text-muted leading-relaxed">
-              {day.description}
-            </p>
+            <motion.h4
+              className="text-lg font-bold text-text-dark mb-2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              {day.label}: {day.title}
+            </motion.h4>
+
+            {/* Display description */}
+            <motion.p
+              className="text-text-muted leading-relaxed"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              {day.desc}
+            </motion.p>
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
-
-
-
-
-

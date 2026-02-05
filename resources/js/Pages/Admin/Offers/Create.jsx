@@ -92,7 +92,8 @@ export default function Create({
         duration_days: '',
         price: '',
         airline: '',
-        program: '',
+        program_days: [],
+        program: [],
         start_date: '',
         end_date: '',
         available_places: '',
@@ -124,28 +125,6 @@ export default function Create({
             ? form.data.price_not_contain.split(',').map(i => i.trim())
             : []
     );
-    useEffect(() => {
-        if (form.data.duration_days) {
-            const days = Number(form.data.duration_days);
-            const currentProgram = form.data.program;
-
-            const dayCountInProgram = (currentProgram.match(/اليوم \d+/g) || []).length;
-            const regenerate = !currentProgram || dayCountInProgram !== days;
-
-            if (regenerate) {
-                let programHTML = '';
-                for (let i = 1; i <= days; i++) {
-                    programHTML += `
-<p><strong>اليوم ${toArabicNumbers(i)}</strong></p>
-<p>عنوان اليوم:</p>
-<p>الوصف:</p>
-`;
-                }
-                form.setData('program', programHTML);
-                setFrontendErrors(p => ({ ...p, program: null }));
-            }
-        }
-    }, [form.data.duration_days]);
 
 
 
@@ -231,24 +210,7 @@ export default function Create({
         if (flash?.error) toast.error(flash.error);
     }, [flash]);
 
-    // const handleImages = (e) => {
-    //     const newFiles = Array.from(e.target.files);
 
-    //     const totalFiles = [...form.data.images, ...newFiles];
-    //     if (totalFiles.length > 10) {
-    //         toast.error('الحد الأقصى 10 صور');
-    //         return;
-    //     }
-
-    //     form.setData('images', totalFiles);
-
-    //     setPreviewImages(prev => [
-    //         ...prev,
-    //         ...newFiles.map(file => URL.createObjectURL(file))
-    //     ]);
-
-    //     e.target.value = null;
-    // };
     const handleImages = (e) => {
         const newFiles = Array.from(e.target.files);
 
@@ -283,7 +245,24 @@ export default function Create({
         e.target.value = null;
     };
 
+    useEffect(() => {
+        if (!form.data.duration_days) return;
 
+        const days = Number(form.data.duration_days);
+
+        const generatedDays = Array.from({ length: days }, (_, i) => ({
+            day: i + 1,
+            label: `اليوم ${toArabicNumbers(i + 1)}`,
+            title: '',
+            desc: '',
+        }));
+
+
+        form.setData('program_days', generatedDays);
+    }, [form.data.duration_days]);
+    useEffect(() => {
+    form.setData('program', form.data.program_days);
+}, [form.data.program_days]);
 
     const removeImage = (index) => {
         const imgs = [...previewImages];
@@ -331,11 +310,16 @@ export default function Create({
         if (form.data.images.length === 0) errors.images = 'يرجى رفع صورة واحدة على الأقل';
         if (!form.data.start_date) errors.start_date = 'اختر تاريخ بداية الباقة';
         if (!form.data.end_date) errors.end_date = 'اختر تاريخ نهاية الباقة';
-        if (!form.data.program.trim())
-            errors.program = 'برنامج الرحلة مطلوب';
+        const hasAtLeastOneDayFilled = form.data.program_days.some(
+            day =>
+                (day.title && day.title.trim() !== '') ||
+                (day.desc && day.desc.trim() !== '')
+        );
+        if (!hasAtLeastOneDayFilled)
+            errors.program_days = 'يجب إدخال بيانات يوم واحد على الأقل';
+
         if (!form.data.tour_level) errors.tour_level = 'اختر مستوى الرحلة';
         if (!form.data.available_places) errors.available_places = 'عدد الأماكن المتاحة مطلوب';
-        // if (!form.data.whatsapp_number.trim()) errors.whatsapp_number = 'رقم الواتساب مطلوب';
         if (!form.data.seo_title.trim()) errors.seo_title = '  مطلوب';
         if (!form.data.seo_description.trim()) errors.seo_description = ' مطلوب';
 
@@ -351,11 +335,11 @@ export default function Create({
         form.post(route('admin.offers.store'), {
             forceFormData: true,
             onSuccess: () => {
-                // toast.success('تم إضافة الباقة بنجاح');
                 router.get(route('admin.offers.index'))
             },
-            onError: () => {
-            toast.error(`حدثت أخطاء في الإدخال، يرجى المراجعة والتمحيص مرة أخرى.`);
+            onError: (error) => {
+                console.log(error);
+                toast.error(`حدثت أخطاء في الإدخال، يرجى المراجعة والتمحيص مرة أخرى.`);
             },
         });
     };
@@ -952,47 +936,63 @@ export default function Create({
 
 
 
-                        <div className="card p-6">
+                        <div className="card p-6 space-y-4">
                             <h3 className="font-bold mb-3">برنامج الرحلة</h3>
+                            <InputError message={frontendErrors.program_days} />
 
-                            <div
-                                className={`rounded-lg border ${frontendErrors.program ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                            >
-                                {/* <ReactQuill
-                                    direction="rtl"
-                                    theme="snow"
-                                    value={form.data.program}
-                                    onChange={value => {
-                                        form.setData('program', value);
-                                        setFrontendErrors(p => ({ ...p, program: null }));
-                                    }}
-                                    modules={quillModules}
-                                    formats={quillFormats}
-                                    placeholder="اكتب برنامج الرحلة بالتفصيل..."
-                                /> */}
-                                <ReactQuill
-                                    theme="snow"
-                                    value={form.data.program}
-                                    onChange={value => {
-                                        form.setData('program', value);
-                                        setFrontendErrors(p => ({ ...p, program: null }));
-                                    }}
-                                    modules={quillModules}
-                                    formats={quillFormats}
-                                    placeholder="اكتب برنامج الرحلة بالتفصيل لكل يوم..."
-                                />
+                            {!form.data.duration_days ? (
+                                <div className="p-4 text-sm text-gray-500 bg-gray-50 border rounded-lg">
+                                    اختر مدة الرحلة أولاً
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {form.data.program_days.map((dayObj, index) => (
+                                        <div
+                                            key={index}
+                                            className="border rounded-lg p-4 space-y-2 bg-gray-50"
+                                        >
+                                            <input
+                                                className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  font-semibold text-[var(--app-primary)]"
+                                                value={dayObj.label}
+                                                placeholder="مثال: اليوم 3-5"
+                                                onChange={e => {
+                                                    const updated = [...form.data.program_days];
+                                                    updated[index].label = e.target.value;
+                                                    form.setData('program_days', updated);
+                                                }}
+                                            />
 
 
-                            </div>
+                                            <input
+                                                className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
+                                                placeholder="عنوان اليوم"
+                                                value={dayObj.title}
+                                                onChange={e => {
+                                                    const updated = [...form.data.program_days];
+                                                    updated[index].title = e.target.value;
+                                                    form.setData('program_days', updated);
+                                                }}
+                                            />
 
-                            <InputError
-                                message={
-                                    frontendErrors.program ||
-                                    form.errors.program
-                                }
-                            />
+                                            <textarea
+                                                rows={3}
+                                                className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
+                                                placeholder="وصف اليوم"
+                                                value={dayObj.desc}
+                                                onChange={e => {
+                                                    const updated = [...form.data.program_days];
+                                                    updated[index].desc = e.target.value;
+                                                    form.setData('program_days', updated);
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <InputError message={frontendErrors.program} />
                         </div>
+
 
 
                         <div className="card p-6 space-y-4">

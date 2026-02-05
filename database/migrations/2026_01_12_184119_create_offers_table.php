@@ -36,7 +36,7 @@ return new class extends Migration
                  $table->string('price_not_contain');
 
             $table->string('airline')->nullable();
-            $table->text('program');
+            $table->json('program')->nullable();
 
             // $table->foreignId('hotel_id')
             //     ->nullable()

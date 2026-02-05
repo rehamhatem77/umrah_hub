@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import HotelCard from "@/Components/HotelCard";
 
 export default function HotelsSection({ hotels }) {
@@ -7,14 +8,43 @@ export default function HotelsSection({ hotels }) {
     );
   }
 
+
+  const containerVariants = {
+    hidden: {},
+    show: {
+      transition: { staggerChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  };
+
   return (
-    <div className="flex flex-col gap-6  text-black" id="hotels">
-      <h3 className="text-2xl font-bold font-heading text-text-dark">
+    <motion.div
+      className="flex flex-col gap-6 text-black"
+      id="hotels"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: false, amount: 0.3 }} 
+    >
+
+      <motion.h3
+        className="text-2xl font-bold font-heading text-text-dark"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+         viewport={{ amount: 0.3, once: false }}
+
+      >
         الفنادق والإقامة
-      </h3>
+      </motion.h3>
+
 
       {hotels.map((hotel) => {
-        // Determine location text dynamically
+      
         let locationText = hotel.address_location || "موقع غير متوفر";
         if (hotel.city) {
           if (["مكة", "مكة المكرمة", "Mekka"].includes(hotel.city)) {
@@ -24,31 +54,34 @@ export default function HotelsSection({ hotels }) {
           }
         }
 
-        // Convert text features to array (comma-separated or JSON)
+
         let features = [];
         if (hotel.features) {
           try {
-            // Try parsing as JSON first
             features = JSON.parse(hotel.features);
             if (!Array.isArray(features)) features = [];
           } catch {
-            // Fallback: comma-separated string
-            features = hotel.features.split(",").map(f => f.trim());
+            features = hotel.features.split(",").map((f) => f.trim());
           }
         }
 
         return (
-          <HotelCard
+          <motion.div
             key={hotel.id}
-            name={hotel.name}
-            image={hotel.main_image_url || ""}
-            location={locationText}
-            description={hotel.description || "لا يوجد وصف متاح"}
-            features={features}
-            rating={hotel.stars || 0}
-          />
+            variants={itemVariants}
+            transition={{ type: "spring", stiffness: 200 }}
+          >
+            <HotelCard
+              name={hotel.name}
+              image={hotel.image_path || ""}
+              location={locationText}
+              description={hotel.desc || "لا يوجد وصف متاح"}
+              features={features}
+              rating={hotel.stars || 0}
+            />
+          </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }

@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
+
+            $table->text('desc'); 
+            $table->string('image_path')->nullable();
+
             $table->string('slug')->unique();
             $table->enum('city', ['مكة', 'المدينة المنورة']);
             $table->string('address_location')->nullable();

@@ -220,15 +220,33 @@ export default function ShowOffer({
 
                         {/* Program */}
                         <div className="card p-6">
-                            <h3 className="font-bold mb-3">برنامج الرحلة</h3>
-                            <ReactQuill
-                                theme="snow"
-                                value={offer.program}
-                                readOnly
-                                modules={quillModules}
-                                formats={quillFormats}
-                            />
+                            <h3 className="font-bold mb-4">برنامج الرحلة</h3>
+
+                            <div className="space-y-4">
+                                {offer.program && offer.program.length > 0 ? (
+                                    offer.program.map((day, index) => (
+                                        <div
+                                            key={index}
+                                            className="border rounded-lg p-4 bg-gray-50"
+                                        >
+                                            <h4 className="font-semibold mb-2">
+                                                اليوم {day.day}
+                                                {day.title && ` – ${day.title}`}
+                                            </h4>
+
+                                            {day.desc && (
+                                                <p className="text-gray-700 whitespace-pre-line">
+                                                    {day.desc}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-gray-500">لا يوجد برنامج رحلة</p>
+                                )}
+                            </div>
                         </div>
+
 
                         {/* SEO */}
                         <div className="card p-6 space-y-4">

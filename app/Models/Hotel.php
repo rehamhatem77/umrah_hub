@@ -13,6 +13,8 @@ class Hotel extends Model
     'name',
     'slug',
     'city',
+    'desc',
+    'image_path',
     'distance_from_kaaba',
     'distance_from_nabawi',
     'stars',

@@ -1,46 +1,93 @@
 import { iconsMap } from "@/Components/IconPicker";
-import { MdFlight, MdHotel, MdDirectionsBus, MdRestaurant } from "react-icons/md";
-
-const facilities = [
-  { icon: MdFlight, label: "تذاكر طيران" },
-  { icon: MdHotel, label: "فنادق ٥ نجوم" },
-  { icon: MdDirectionsBus, label: "نقل VIP" },
-  { icon: MdRestaurant, label: "إفطار وسحور" },
-];
+import { motion } from "framer-motion";
 
 export default function OverviewSection({ data }) {
+  const facilities = data?.features || [
+    { icon: "MdFlight", name: "تذاكر طيران" },
+    { icon: "MdHotel", name: "فنادق ٥ نجوم" },
+    { icon: "MdDirectionsBus", name: "نقل VIP" },
+    { icon: "MdRestaurant", name: "إفطار وسحور" },
+  ];
+
+  const containerVariants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.12,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 25 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.45, ease: "easeOut" },
+    },
+  };
+
   return (
-    <div className="flex flex-col gap-4  text-black" id="overview">
-      <h3 className="text-2xl font-bold font-heading text-text-dark">
+    <motion.div
+      id="overview"
+      className="flex flex-col gap-6 text-gray-900"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: false, amount: 0.3 }}
+    >
+      {/* Title */}
+      <motion.h3
+        className="text-2xl font-bold"
+        variants={itemVariants}
+      >
         نظرة عامة
-      </h3>
-      <p className="text-text-muted leading-relaxed text-lg">
-        {data.desc ? data.desc : `  استمتع بروحانية العشر الأواخر في مكة المكرمة مع باقة مصممة خصيصاً لراحتك.
-        تشمل هذه الباقة إقامة فاخرة قريبة من الحرم المكي، وتنقيلات خاصة بأحدث
-        الباصات، مع مرشدين ذوي خبرة لمساعدتك في أداء المناسك بكل يسر وسهولة. تجربة
-        لا تُنسى تجمع بين الروحانية والرفاهية.`}
-      </p>
+      </motion.h3>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
-        {data?.features?.map((facility, index) => {
+      {/* Description */}
+      <motion.p
+        className="text-gray-600 leading-relaxed text-lg"
+        variants={itemVariants}
+      >
+        {data.desc
+          ? data.desc
+          : `استمتع بروحانية العشر الأواخر في مكة المكرمة مع باقة مصممة خصيصاً لراحتك.
+          تشمل هذه الباقة إقامة فاخرة قريبة من الحرم المكي، وتنقيلات خاصة بأحدث
+          الباصات، مع مرشدين ذوي خبرة لمساعدتك في أداء المناسك بكل يسر وسهولة. تجربة
+          لا تُنسى تجمع بين الروحانية والرفاهية.`}
+      </motion.p>
+
+      {/* Facilities */}
+      <motion.div
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2"
+        variants={containerVariants}
+      >
+        {facilities.map((facility, index) => {
           const IconComponent = iconsMap[facility.icon];
-
           if (!IconComponent) return null;
 
           return (
-            <div
+            <motion.div
               key={index}
-              className="p-4 facility--item bg-primary rounded-xl flex flex-col items-center justify-center text-center gap-2"
+              className="p-4 bg-gray-100 rounded-xl flex flex-col items-center justify-center text-center gap-2"
+              variants={itemVariants}
+              whileHover={{ scale: 1.06 }}
+              transition={{ type: "spring", stiffness: 220, damping: 18 }}
             >
-              <IconComponent className="text-accent-green text-3xl" />
-              <span className="font-bold text-sm text-text-dark">
+              <motion.div
+                whileHover={{ rotate: -5, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <IconComponent className="text-green-600 text-3xl" />
+              </motion.div>
+
+              <span className="font-bold text-sm text-gray-900">
                 {facility.name}
               </span>
-            </div>
+            </motion.div>
           );
         })}
-
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
