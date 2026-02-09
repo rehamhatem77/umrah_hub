@@ -20,8 +20,23 @@ class PackagesPageController extends Controller
     ];
 
     public function index(Request $request)
-    {
-        $filter = $request->query('filter');
+{
+    try {
+        $filter = $request->query('filter', '');
+
+       
+        $allPricesQuery = Offer::active()->whereDate('end_date', '>=', now());
+        $minPriceDb = $allPricesQuery->min('price') ?? 0;
+        $maxPriceDb = $allPricesQuery->max('price') ?? 10000;
+
+       
+        $priceFrom = (int) $request->query('price_from', 0);
+        $priceTo   = (int) $request->query('price_to', $maxPriceDb);
+
+      
+        if ($priceTo > $maxPriceDb) {
+            $priceTo = $maxPriceDb;
+        }
 
         $offersQuery = Offer::query()
             ->active()
@@ -33,62 +48,41 @@ class PackagesPageController extends Controller
                 'company:id,company_code',
                 'tripType:id,name',
                 'features:id,name,icon',
-            ]);
+            ])
+            ->whereBetween('price', [$priceFrom, $priceTo]);
 
-        if ($request->filled(['price_from', 'price_to'])) {
-            $offersQuery->whereBetween('price', [
-                $request->price_from,
-                $request->price_to
-            ]);
-        }
+       
         if ($request->filled('date')) {
             $offersQuery->whereDate('start_date', '>=', $request->date);
         }
+
+      
         if ($request->filled('durations')) {
             $offersQuery->whereIn(
                 'duration_days',
                 $this->mapDurations($request->durations)
             );
         }
-        if ($request->filled('destination')) {
-            $cityMap = [
-                'makkah' => 'مكة',
-                'madinah' => 'المدينة المنورة',
-            ];
 
-            $offersQuery->whereHas('hotels', function ($q) use ($request, $cityMap) {
-                $q->where('city', $cityMap[$request->destination] ?? null);
+       
+        $cityMap = [
+            'مكة' => 'مكة',
+            'المدينة' => 'المدينة المنورة',
+            'المدينة المنورة' => 'المدينة المنورة',
+        ];
+        if ($request->filled('destination')) {
+            $city = $cityMap[$request->destination] ?? $request->destination;
+            $offersQuery->whereHas('hotels', function ($q) use ($city) {
+                $q->where('city', $city);
             });
         }
 
-
+       
         if ($request->filled('stars')) {
             $offersQuery->whereHas('hotels', function ($q) use ($request) {
                 $q->whereIn('stars', $request->stars);
             });
         }
-
-
-        // switch ($filter) {
-        //     case 'special':
-        //         $offersQuery->special();
-        //         break;
-        //     case 'popular':
-        //         $offersQuery->popular();
-        //         break;
-        //     case 'cheapest':
-        //         $offersQuery->cheapest();
-        //         break;
-        //     case 'nearest':
-        //         $offersQuery->nearest();
-        //         break;
-        //     case 'ramadan':
-        //         $offersQuery->ramadan();
-        //         break;
-        //     default:
-        //         $offersQuery->latest();
-        //         break;
-        // }
 
         $offers = $offersQuery->paginate(6)->through(function ($offer) {
             $offer->loadMissing('hotels');
@@ -106,8 +100,7 @@ class PackagesPageController extends Controller
                 'image' => $offer->main_image_url,
                 'locations' => $offer->locations,
                 'tour_level' => $this->tourLevelMap[$offer->tour_level] ?? $offer->tour_level,
-
-                "number_of_rating_customers" => $offer->number_of_rating_customers,
+                'number_of_rating_customers' => $offer->number_of_rating_customers,
                 'average_hotel_rating' => $offer->average_hotel_rating,
                 'hotels' => $offer->hotels->map(fn($hotel) => [
                     'id' => $hotel->id,
@@ -118,24 +111,22 @@ class PackagesPageController extends Controller
                 'company' => $offer->company,
                 'trip_type' => $offer->tripType,
                 'features' => $offer->features,
-
             ];
         });
+
+        
         $durationCounts = Offer::active()
             ->whereDate('end_date', '>=', now())
             ->selectRaw('duration_days, COUNT(*) as count')
             ->groupBy('duration_days')
             ->pluck('count', 'duration_days');
 
-        $minPrice = $offersQuery->min('price');
-        $maxPrice = $offersQuery->max('price');
-
         return Inertia::render('Packages', [
             'offers' => $offers,
-            'currentFilter' => $filter ?? '',
+            'currentFilter' => $filter,
             'priceRange' => [
-                'min' => $minPrice ?? 0,
-                'max' => $maxPrice ?? 10000,
+                'min' => $minPriceDb,
+                'max' => $maxPriceDb,
             ],
             'durationCounts' => [
                 '7' => $durationCounts[7] ?? 0,
@@ -143,7 +134,11 @@ class PackagesPageController extends Controller
                 '14' => $durationCounts[14] ?? 0,
             ],
         ]);
+    } catch (\Throwable $e) {
+        return back()->with('error' , 'حدث خطأ أثناء تحميل الباقات: ' . $e->getMessage());
     }
+}
+
 
     private function mapDurations(array $durations): array
     {

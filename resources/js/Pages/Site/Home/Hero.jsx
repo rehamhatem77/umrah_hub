@@ -161,6 +161,7 @@ export default function Hero({ homepage }) {
                                         destination: destination?.value || null,
                                         date: date || null,
                                         price_to: budget || null,
+                                        price_from: 0,
                                     });
                                 }}
                             >
