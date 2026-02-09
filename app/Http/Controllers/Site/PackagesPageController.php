@@ -10,9 +10,9 @@ use Inertia\Inertia;
 
 class PackagesPageController extends Controller
 {
-    //
 
-     private array $tourLevelMap = [
+
+    private array $tourLevelMap = [
         'economical' => 'اقتصادي',
         'standard'   => 'عادي',
         'vip'        => 'VIP',
@@ -50,6 +50,17 @@ class PackagesPageController extends Controller
                 $this->mapDurations($request->durations)
             );
         }
+        if ($request->filled('destination')) {
+            $cityMap = [
+                'makkah' => 'مكة',
+                'madinah' => 'المدينة المنورة',
+            ];
+
+            $offersQuery->whereHas('hotels', function ($q) use ($request, $cityMap) {
+                $q->where('city', $cityMap[$request->destination] ?? null);
+            });
+        }
+
 
         if ($request->filled('stars')) {
             $offersQuery->whereHas('hotels', function ($q) use ($request) {
@@ -94,7 +105,7 @@ class PackagesPageController extends Controller
                 'is_popular' => $offer->is_popular,
                 'image' => $offer->main_image_url,
                 'locations' => $offer->locations,
-               'tour_level' => $this->tourLevelMap[$offer->tour_level] ?? $offer->tour_level,
+                'tour_level' => $this->tourLevelMap[$offer->tour_level] ?? $offer->tour_level,
 
                 "number_of_rating_customers" => $offer->number_of_rating_customers,
                 'average_hotel_rating' => $offer->average_hotel_rating,
@@ -164,8 +175,8 @@ class PackagesPageController extends Controller
                 'features:id,name,icon',
             ])
             ->firstOrFail();
-            
-       $averageHotelRating = $offer->hotels->avg('stars'); 
+
+        $averageHotelRating = $offer->hotels->avg('stars');
 
         return Inertia::render('PackageDetails', [
             'offer' => [

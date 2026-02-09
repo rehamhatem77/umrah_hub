@@ -180,5 +180,11 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
     });
 });
 
+Route::fallback(function () {
+    return Inertia::render('Site/NotFound/NotFound')
+        ->toResponse(request())
+        ->setStatusCode(404);
+});
+
 
 require __DIR__ . '/auth.php';
