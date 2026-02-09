@@ -8,12 +8,12 @@ import {
 } from "react-icons/fa";
 
 export default function Footer({ footer }) {
-  if (!footer) return null;
+  // if (!footer) return null;
 
   const socialLinks = [
-    { icon: <FaFacebookF />, url: footer.fb_link },
-    { icon: <FaInstagram />, url: footer.insta_link },
-    { icon: <FaTwitter />, url: footer.x_link },
+    { icon: <FaFacebookF />, url: footer?.fb_link || "" },
+    { icon: <FaInstagram />, url: footer?.insta_link|| "" },
+    { icon: <FaTwitter />, url: footer?.x_link ||"" },
   ];
 
   return (
@@ -31,7 +31,7 @@ export default function Footer({ footer }) {
           </h2>
 
           <p className="text-sm leading-relaxed text-white/80 mb-6">
-            {footer.footer_desc || "منصة متخصصة في تقديم خدمات العمرة المتكاملة..."}
+            {footer?.footer_desc || "منصة متخصصة في تقديم خدمات العمرة المتكاملة..."}
           </p>
 
           <div className="flex gap-3">
@@ -58,7 +58,7 @@ export default function Footer({ footer }) {
         <div>
           <h3 className="font-semibold mb-5 text-lg">روابط سريعة</h3>
           <ul className="space-y-3 text-sm text-white/80">
-            {footer.quick_links?.map((link, i) => (
+            {footer?.quick_links?.map((link, i) => (
               <li key={i}>{link}</li>
             )) || (
                 <>
@@ -108,7 +108,7 @@ export default function Footer({ footer }) {
         <div>
           <h3 className="font-semibold mb-5 text-lg">خدماتنا</h3>
           <ul className="space-y-3 text-sm text-white/80">
-            {footer.services?.map((service, i) => (
+            {footer?.services?.map((service, i) => (
               <li key={i}>{service}</li>
             )) || (
                 <>
@@ -124,26 +124,26 @@ export default function Footer({ footer }) {
         <div>
           <h3 className="font-semibold mb-5 text-lg">تواصل معنا</h3>
           <ul className="space-y-4 text-sm text-white/80">
-            {footer.contact_address && (
+            {footer?.contact_address && (
               <li className="flex items-start gap-3">
                 <FaMapMarkerAlt className="mt-1 text-white/60" />
-                <span>{footer.contact_address}</span>
+                <span>{footer?.contact_address || ""}</span>
               </li>
             )}
-            {footer.contact_phone && (
+            {footer?.contact_phone && (
               <li className="flex items-center gap-3">
                 <FaPhoneAlt className="text-white/60" />
-                <span>{footer.contact_phone}</span>
+                <span>{footer?.contact_phone|| ""}</span>
               </li>
             )}
-            {footer.contact_email && (
+            {footer?.contact_email && (
               <li className="flex items-center gap-3">
                 <FaEnvelope className="text-white/60" />
                 <a
-                  href={`mailto:${footer?.contact_email}?subject=تواصل مع Umrah Hub`}
+                  href={`mailto:${footer?.contact_email || ""}?subject=تواصل مع Umrah Hub`}
                   className="hover:text-white transition"
                 >
-                  {footer?.contact_email}
+                  {footer?.contact_email || ""}
                 </a>
               </li>
             )}
