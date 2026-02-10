@@ -9,7 +9,7 @@ import SiteLayout from "@/Layouts/SiteLayout";
 
 
 
-export default function Packages({offers ,priceRange ,durationCounts}) {
+export default function Packages({offers ,priceRange ,durationCounts , governorates}) {
      const { url } = usePage();
        const params = new URLSearchParams(url.split("?")[1]);
     const filter = params.get("filter"); 
@@ -18,7 +18,7 @@ export default function Packages({offers ,priceRange ,durationCounts}) {
             <div className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <BreadCrumb />
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    <PackageFilter  priceRange={priceRange} counts={durationCounts}/>
+                    <PackageFilter  priceRange={priceRange} counts={durationCounts} governorates={governorates}/>
                     <PackagesGrid
                         offers={offers}
                         currentFilter={offers.currentFilter}

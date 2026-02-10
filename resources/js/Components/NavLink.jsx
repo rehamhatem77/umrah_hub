@@ -4,6 +4,7 @@ export default function NavLink({ href, children }) {
   const { url } = usePage();
   // const isActive = url === href;
   const isActive = new RegExp(`^${href}(\/.*)?$`).test(url);
+const isContactPage = url === '/contact';
 
   return (
     <Link
@@ -11,8 +12,8 @@ export default function NavLink({ href, children }) {
       className={`relative pb-1 transition
         ${
           isActive
-            ? "text-[var(--app-primary)]"
-            : "hover:text-[var(--app-primary)]"
+            ? isContactPage? "hover:text-white" : "text-[var(--app-primary)] hover:text-[var(--app-primary)]"
+            : ""
         }
       `}
     >
