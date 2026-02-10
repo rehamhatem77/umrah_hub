@@ -133,7 +133,7 @@ export default function Footer({ footer }) {
             {footer?.contact_phone && (
               <li className="flex items-center gap-3">
                 <FaPhoneAlt className="text-white/60" />
-                <span>{footer?.contact_phone|| ""}</span>
+                <span dir="ltr">{footer?.contact_phone|| ""}</span>
               </li>
             )}
             {footer?.contact_email && (

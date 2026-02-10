@@ -118,6 +118,7 @@ class HotelController extends Controller
                 $data['image_path'] = $request->file('image')
                     ->store('hotels', 'public');
             }
+
              $hotel->update($data);
 
             return redirect()

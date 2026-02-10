@@ -119,7 +119,7 @@ class TourCompanyController extends Controller
         }
         $companies = $query->latest()->paginate(10)->withQueryString();
 
-        $allGovernorates = Governorate::select('id', 'name')->get();
+        // $allGovernorates = Governorate::select('id', 'name')->get();
 
         $companies->getCollection()->transform(function ($company) {
             $company->governorates_list = $company->governorates->map(fn($g) => ['id' => $g->id, 'name' => $g->name]);
@@ -129,9 +129,10 @@ class TourCompanyController extends Controller
 
         return Inertia::render('Admin/TourCompanies/Trash', [
             'companies' => $companies->toArray(),
-            'governorates' => $allGovernorates,
+            // 'governorates' => $allGovernorates,
             'filters' => [
                 'search' => $request->search ?? '',
+                'governorate_id' => $request->governorate_id ?? '',
             ],
         ]);
     }

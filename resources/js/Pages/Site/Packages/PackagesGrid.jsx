@@ -68,7 +68,7 @@ export default function PackagesGrid({ offers, special }) {
 
       <div className="bg-white p-4 rounded-xl border border-[#f0f4f2] shadow-sm flex flex-wrap gap-4 items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-[#111813]">ترتيب حسب:</span>
+          <span className="text-sm font-bold text-[#111813]"> عرض حسب : &nbsp; &nbsp; </span>
           <div className="flex items-center gap-2">
             {filters.map((f) => (
               <button

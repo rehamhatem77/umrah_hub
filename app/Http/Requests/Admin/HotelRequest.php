@@ -65,7 +65,7 @@ public function rules(): array
             'city.in' => 'المدينة المختارة غير صالحة',
             'slug.unique' => 'هذا الرابط التعريفي مستخدم بالفعل',
             'desc'=>'الوصف مطلوب',
-            'image_path'=>'صورة الفندق مطلوبة',
+            // 'image_path'=>'صورة الفندق مطلوبة',
 
             'distance_from_kaaba.required_if' =>
                 'المسافة من الكعبة مطلوبة عند اختيار مكة',

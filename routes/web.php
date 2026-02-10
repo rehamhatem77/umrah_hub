@@ -73,7 +73,7 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
         Route::get('create', [OfferController::class, 'create'])->name('create');
         Route::post('/', [OfferController::class, 'store'])->name('store');
         Route::get('{offer}/edit', [OfferController::class, 'edit'])->name('edit');
-        Route::put('{offer}', [OfferController::class, 'update'])->name('update');
+        Route::post('{offer}', [OfferController::class, 'update'])->name('update');
         Route::delete('{offer}', [OfferController::class, 'destroy'])->name('destroy');
 
         Route::patch('{offer}/toggle/{flag}', [OfferController::class, 'toggleFlag'])
@@ -135,7 +135,7 @@ Route::middleware(['auth', 'admin.only'])->group(function () {
         Route::get('/hotels/create', [HotelController::class, 'create'])->name('hotels.create');
         Route::post('/hotels', [HotelController::class, 'store'])->name('hotels.store');
         Route::get('/hotels/{hotel}/edit', [HotelController::class, 'edit'])->name('hotels.edit');
-        Route::put('/hotels/{hotel}', [HotelController::class, 'update'])->name('hotels.update');
+        Route::post('/hotels/{hotel}', [HotelController::class, 'update'])->name('hotels.update');
         Route::delete('/hotels/{hotel}', [HotelController::class, 'destroy'])->name('hotels.destroy');
 
         Route::get('/hotels/trash', [HotelController::class, 'trash'])->name('hotels.trash');
