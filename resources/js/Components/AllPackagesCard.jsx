@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
-import { FaStar, FaCalendarAlt, FaClock, FaHotel, FaMapMarkerAlt } from "react-icons/fa";
+import {
+    FaStar,
+    FaCalendarAlt,
+    FaClock,
+    FaHotel,
+    FaMapMarkerAlt,
+} from "react-icons/fa";
 import { Inertia } from "@inertiajs/inertia";
 import { MdOutlineMessage } from "react-icons/md";
 import { usePage } from "@inertiajs/react";
@@ -19,8 +25,9 @@ export default function AllPackagesCard({
     customers_rating,
     popularBadge,
     availablePlaces,
-    hotels = [], }) {
-
+    governorates = [],
+    hotels = [],
+}) {
     const formatDate = (date) => {
         if (!date) return null;
 
@@ -31,10 +38,10 @@ export default function AllPackagesCard({
         });
     };
     const levelStyles = {
-        اقتصادي: { text: 'text-green-600', bg: 'bg-green-100' },
-        عادي: { text: 'text-blue-600', bg: 'bg-blue-100' },
-        VIP: { text: 'text-yellow-600', bg: 'bg-yellow-100' },
-        فاخر: { text: 'text-red-600', bg: 'bg-red-100' },
+        اقتصادي: { text: "text-green-600", bg: "bg-green-100" },
+        عادي: { text: "text-blue-600", bg: "bg-blue-100" },
+        VIP: { text: "text-yellow-600", bg: "bg-yellow-100" },
+        فاخر: { text: "text-red-600", bg: "bg-red-100" },
     };
     const isSoldOut = availablePlaces === 0;
 
@@ -43,22 +50,38 @@ export default function AllPackagesCard({
     if (!footer?.contact_wp) return null;
     const whatsappNumber = footer?.contact_wp.replace(/\s+/g, "");
 
-
     const whatsappMessage = encodeURIComponent(
         "مرحباً \n" +
-        "أرغب في الاستفسار عن باقة سياحية بالتفاصيل التالية:\n\n" +
-
-        "اسم الباقة: " + title + "\n" +
-        "الموقع: " + location + "\n" +
-        "المدة: " + days + "\n" +
-        "المتبقي: " + availablePlaces + "مقاعد " + "\n" +
-        "التاريخ: " + formatDate(date) + "\n" +
-        "كود العرض: " + (offerCode ?? "لا يوجد") + "\n" +
-        "التقييم: " + (badge ? badge : rating ? rating : "غير متوفر") + "\n" +
-        "السعر: " + price.toLocaleString("ar-EG") + " ج.م\n\n" +
-
-        "صورة الباقة:\n" + image + "\n\n" +
-        (slug ? "رابط الباقة:\n" + route("packages.show", slug) : "")
+            "أرغب في الاستفسار عن باقة سياحية بالتفاصيل التالية:\n\n" +
+            "اسم الباقة: " +
+            title +
+            "\n" +
+            "الموقع: " +
+            location +
+            "\n" +
+            "المدة: " +
+            days +
+            "\n" +
+            "المتبقي: " +
+            availablePlaces +
+            "مقاعد " +
+            "\n" +
+            "التاريخ: " +
+            formatDate(date) +
+            "\n" +
+            "كود العرض: " +
+            (offerCode ?? "لا يوجد") +
+            "\n" +
+            "التقييم: " +
+            (badge ? badge : rating ? rating : "غير متوفر") +
+            "\n" +
+            "السعر: " +
+            price.toLocaleString("ar-EG") +
+            " ج.م\n\n" +
+            "صورة الباقة:\n" +
+            image +
+            "\n\n" +
+            (slug ? "رابط الباقة:\n" + route("packages.show", slug) : ""),
     );
     const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
@@ -68,8 +91,7 @@ export default function AllPackagesCard({
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-
-            className={`group bg-white rounded-2xl overflow-hidden transition-all ${isSoldOut ? 'opacity-50 pointer-events-none' : ''}`}
+            className={`group bg-white rounded-2xl overflow-hidden transition-all ${isSoldOut ? "opacity-50 pointer-events-none" : ""}`}
         >
             <div className="relative h-52 overflow-hidden">
                 <img
@@ -89,45 +111,50 @@ export default function AllPackagesCard({
 
                 {popularBadge && (
                     <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-green-600 text-white text-black text-xs font-bold px-3 py-1 rounded-xl shadow">
-
                         <span>{popularBadge}</span>
                     </div>
                 )}
-
 
                 <div className="absolute bottom-3 right-3 flex items-center gap-3 text-white text-xs">
                     <div className="flex items-center gap-1">
                         <FaMapMarkerAlt />
                         <span>{location}</span>
                     </div>
-
-
-
                 </div>
-
-            </div>
-
-
-            <div className="p-4 flex flex-col flex-grow">
-
-                <div className="flex justify-between items-center mb-2">
-                    <div className="flex text-amber-400 text-sm gap-1 items-center">
-                        {Array.from({ length: Math.round(rating || 0) }).map((_, i) => (
-                            <FaStar key={i} />
-                        ))}
-                        {/* Show customer rating only if it exists */}
-                        {customers_rating != null && (
-                            <span className="text-gray-400 ml-2">({customers_rating})</span>
-                        )}
-                    </div>
+                <div className="absolute bottom-3 left-3 flex items-center gap-3 text-white text-xs">
                     <span
                         className={`text-xs font-semibold px-2 py-0.5 rounded-full ${levelStyles[level]?.text} ${levelStyles[level]?.bg}`}
                     >
                         {level}
                     </span>
-
                 </div>
+            </div>
 
+            <div className="p-4 flex flex-col flex-grow">
+                <div className="flex justify-between items-center mb-2">
+                    <div className="flex text-amber-400 text-sm gap-1 items-center">
+                        {Array.from({ length: Math.round(rating || 0) }).map(
+                            (_, i) => (
+                                <FaStar key={i} />
+                            ),
+                        )}
+                        {/* Show customer rating only if it exists */}
+                        {customers_rating != null && (
+                            <span className="text-gray-400 ml-2">
+                                ({customers_rating})
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex items-center gap-1">
+                        {governorates.length > 0 ?(
+                            <span className="text-sm text-gray-400">
+                                {governorates.map((gov) => gov.name).join(", ") } 
+                             </span>
+                        ) : (
+                            <span className="text-sm text-gray-400">الموقع غير محدد</span>
+                        )}
+                    </div>
+                </div>
 
                 <h3 className="text-lg font-bold text-[#111813] mb-3 leading-snug group-hover:text-primary transition-colors">
                     {title}
@@ -156,7 +183,9 @@ export default function AllPackagesCard({
                                 {hotels.slice(0, 2).map((hotel, idx) => (
                                     <span key={idx}>
                                         {hotel.name}
-                                        {idx === 0 && hotels.length > 1 ? " وفندق " : ""}
+                                        {idx === 0 && hotels.length > 1
+                                            ? " وفندق "
+                                            : ""}
                                     </span>
                                 ))}
 
@@ -166,13 +195,9 @@ export default function AllPackagesCard({
                                     </span>
                                 )}
                             </div>
-
                         </div>
                         // </div>
                     )}
-
-
-
                 </div>
 
                 <div className="mt-auto pt-4 border-t border-[#f0f4f2] flex items-center justify-between">
@@ -182,7 +207,9 @@ export default function AllPackagesCard({
                             <span className="text-xl font-black text-green-600">
                                 {price.toLocaleString()}
                             </span>
-                            <span className="text-xs font-bold text-[#111813]">ج.م</span>
+                            <span className="text-xs font-bold text-[#111813]">
+                                ج.م
+                            </span>
                         </div>
                     </div>
 
@@ -192,15 +219,14 @@ export default function AllPackagesCard({
                         }}
                         whileHover={!isSoldOut ? { scale: 1.07 } : {}}
                         whileTap={!isSoldOut ? { scale: 0.95 } : {}}
-                        className={`text-sm font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${isSoldOut
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-gray-800 hover:bg-gray-900 text-white"
-                            }`}
+                        className={`text-sm font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                            isSoldOut
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-gray-800 hover:bg-gray-900 text-white"
+                        }`}
                     >
-
                         {isSoldOut ? "تم البيع" : "احجز الآن"}
                     </motion.button>
-
                 </div>
             </div>
         </motion.div>
