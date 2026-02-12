@@ -119,7 +119,7 @@ export default function PackagesGrid({ offers, special }) {
 
             {offers?.data?.length > 0 && (
                 <motion.div
-                    className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
                     initial="hidden"
                     animate="show"
                     variants={{

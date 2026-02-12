@@ -153,10 +153,10 @@ console.log("Selected government:", selectedGovernment);
         <aside className="lg:col-span-3 space-y-6">
             <button
                 onClick={handleMobileFilterToggle}
-                className="lg:hidden w-full flex items-center justify-between bg-white p-4 rounded-xl border border-[#f0f4f2] shadow-sm"
+                className="lg:hidden w-full flex items-center justify-between text-black bg-white p-4 rounded-xl border border-[#f0f4f2] shadow-sm"
             >
                 <span className="font-bold">تصفية النتائج</span>
-                <FaFilter className="text-lg text-primary" />
+                <FaFilter className="text-lg text-black" />
             </button>
 
             <div

@@ -6,7 +6,6 @@ import { router } from "@inertiajs/react";
 import SectionCard from "../HomePage/SectionCard";
 import IconPicker, { umrahHajjIcons } from "@/Components/IconPicker";
 
-
 const fieldLabels = {
     seo_title: "عنوان SEO",
     seo_description: "وصف SEO",
@@ -59,20 +58,95 @@ const fieldLabels = {
 
 export default function AdminAboutUs({ aboutUs }) {
     const sections = [
-        { key: "seo", title: "قسم SEO", fields: ["seo_title", "seo_description", "seo_keywords"] },
-        { key: "hero", title: "قسم الهيرو", fields: ["hero_title", "hero_badge_title", "hero_description", "hero_image"] },
-        { key: "intro", title: "قسم المقدمة", fields: ["intro_title", "intro_description","intro_description_long" ,  "intro_badge", "intro_badge_sub", "intro_image"] },
-        { key: "vision_mission", title: "قسم الرؤية والرسالة", fields: ["vision_mission_title", "vision_mission_description", "mission_title", "mission_description", "vision_title", "vision_description"] },
-        { key: "why_choose_us", title: "قسم لماذا اخترنا", fields: ["why_choose_us_title", "why_choose_us_card_one_title", "why_choose_us_card_two_title", "why_choose_us_card_three_title", "why_choose_us_card_one_description", "why_choose_us_card_two_description", "why_choose_us_card_three_description", "why_choose_us_card_one_icon", "why_choose_us_card_two_icon", "why_choose_us_card_three_icon"] },
-        { key: "statistics", title: "قسم الإحصائيات", fields: ["statistic_one_number", "statistic_two_number", "statistic_three_number", "statistic_one_desc", "statistic_two_desc", "statistic_three_desc", "statistic_one_prefix", "statistic_two_prefix", "statistic_three_prefix"] },
-        { key: "action", title: "قسم الإجراء", fields: ["action_title", "action_desc", "action_btn_txt"] },
+        {
+            key: "seo",
+            title: "قسم SEO",
+            fields: ["seo_title", "seo_description", "seo_keywords"],
+        },
+        {
+            key: "hero",
+            title: "قسم الهيرو",
+            fields: [
+                "hero_title",
+                "hero_badge_title",
+                "hero_description",
+                "hero_image",
+            ],
+        },
+        {
+            key: "intro",
+            title: "قسم المقدمة",
+            fields: [
+                "intro_title",
+                "intro_description",
+                "intro_description_long",
+                "intro_badge",
+                "intro_badge_sub",
+                "intro_image",
+            ],
+        },
+        {
+            key: "vision_mission",
+            title: "قسم الرؤية والرسالة",
+            fields: [
+                "vision_mission_title",
+                "vision_mission_description",
+                "mission_title",
+                "mission_description",
+                "vision_title",
+                "vision_description",
+            ],
+        },
+        {
+            key: "why_choose_us",
+            title: "قسم لماذا اخترنا",
+            fields: [
+                "why_choose_us_title",
+                "why_choose_us_card_one_title",
+                "why_choose_us_card_two_title",
+                "why_choose_us_card_three_title",
+                "why_choose_us_card_one_description",
+                "why_choose_us_card_two_description",
+                "why_choose_us_card_three_description",
+                "why_choose_us_card_one_icon",
+                "why_choose_us_card_two_icon",
+                "why_choose_us_card_three_icon",
+            ],
+        },
+        {
+            key: "statistics",
+            title: "قسم الإحصائيات",
+            fields: [
+                "statistic_one_number",
+                "statistic_two_number",
+                "statistic_three_number",
+                "statistic_one_desc",
+                "statistic_two_desc",
+                "statistic_three_desc",
+                "statistic_one_prefix",
+                "statistic_two_prefix",
+                "statistic_three_prefix",
+            ],
+        },
+        {
+            key: "action",
+            title: "قسم الإجراء",
+            fields: ["action_title", "action_desc", "action_btn_txt"],
+        },
     ];
 
     const requiredFieldsMap = {
         seo: [],
         hero: ["hero_title", "hero_description", "hero_image"],
         intro: ["intro_title", "intro_description", "intro_image"],
-        vision_mission: ["vision_mission_title", "vision_mission_description", "mission_title", "mission_description", "vision_title", "vision_description"],
+        vision_mission: [
+            "vision_mission_title",
+            "vision_mission_description",
+            "mission_title",
+            "mission_description",
+            "vision_title",
+            "vision_description",
+        ],
         why_choose_us: [
             "why_choose_us_title",
             "why_choose_us_card_one_title",
@@ -80,7 +154,7 @@ export default function AdminAboutUs({ aboutUs }) {
             "why_choose_us_card_three_title",
             "why_choose_us_card_one_description",
             "why_choose_us_card_two_description",
-            "why_choose_us_card_three_description"
+            "why_choose_us_card_three_description",
         ],
         statistics: [
             "statistic_one_number",
@@ -88,12 +162,10 @@ export default function AdminAboutUs({ aboutUs }) {
             "statistic_three_number",
             "statistic_one_desc",
             "statistic_two_desc",
-            "statistic_three_desc"
+            "statistic_three_desc",
         ],
-        action: []
+        action: [],
     };
-
-
 
     const [openSection, setOpenSection] = useState(null);
     const [formData, setFormData] = useState({});
@@ -101,20 +173,16 @@ export default function AdminAboutUs({ aboutUs }) {
     const [generalError, setGeneralError] = useState("");
     const [iconPickerField, setIconPickerField] = useState(null);
 
-
- 
-
-
     const handleOpen = (section) => {
         setOpenSection(section.key);
         const initialData = {};
-        section.fields.forEach(f => initialData[f] = aboutUs?.[f] || "");
+        section.fields.forEach((f) => (initialData[f] = aboutUs?.[f] || ""));
         setFormData(initialData);
     };
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        setFormData(prev => ({ ...prev, [name]: files ? files[0] : value }));
+        setFormData((prev) => ({ ...prev, [name]: files ? files[0] : value }));
     };
 
     const handleSubmit = (sectionKey) => {
@@ -122,8 +190,14 @@ export default function AdminAboutUs({ aboutUs }) {
             const urlMap = {
                 hero: route("about-us.section.update", "hero"),
                 intro: route("about-us.section.update", "intro"),
-                vision_mission: route("about-us.section.update", "vision_mission"),
-                why_choose_us: route("about-us.section.update", "why_choose_us"),
+                vision_mission: route(
+                    "about-us.section.update",
+                    "vision_mission",
+                ),
+                why_choose_us: route(
+                    "about-us.section.update",
+                    "why_choose_us",
+                ),
                 statistics: route("about-us.section.update", "statistics"),
                 action: route("about-us.section.update", "action"),
             };
@@ -165,41 +239,54 @@ export default function AdminAboutUs({ aboutUs }) {
                 },
             });
         } catch (error) {
-           
             setGeneralError("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى");
         }
     };
 
-
-
     return (
         <AuthenticatedLayout title="إدارة صفحة من نحن">
             <div className="px-4 sm:px-6 space-y-6">
-
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                     <span>لوحة التحكم</span>
                     <FiChevronLeft />
-                    <span className="text-[var(--app-primary)] font-semibold"> من نحن</span>
+                    <span className="text-[var(--app-primary)] font-semibold">
+                        {" "}
+                        من نحن
+                    </span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div className="flex items-center gap-2">
                         <FiBriefcase className="text-2xl text-[var(--app-primary)]" />
-                        <h1 className="text-2xl font-bold text-gray-900">إدارة صفحة من نحن</h1>
+                        <h1 className="text-2xl font-bold text-gray-900">
+                            إدارة صفحة من نحن
+                        </h1>
                     </div>
                 </div>
 
                 {sections.map((section, i) => {
                     const fieldsData = {};
-                    section.fields.forEach(f => fieldsData[f] = aboutUs?.[f] || "");
+                    section.fields.forEach(
+                        (f) => (fieldsData[f] = aboutUs?.[f] || ""),
+                    );
                     const isOpen = openSection === section.key;
 
                     return (
                         <div key={i} className="relative">
-                            <SectionCard title={section.title} fieldsData={fieldsData} onOpen={() => handleOpen(section)} />
+                            <SectionCard
+                                title={section.title}
+                                fieldsData={fieldsData}
+                                onOpen={() => handleOpen(section)}
+                            />
                             <AnimatePresence>
                                 {isOpen && (
-                                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} className="bg-gray-50 border-l-4 border-[var(--app-primary)] rounded-b-2xl p-6 mt-2 overflow-hidden shadow-inner">
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.25 }}
+                                        className="bg-gray-50 border-l-4 border-[var(--app-primary)] rounded-b-2xl p-6 mt-2 overflow-hidden shadow-inner"
+                                    >
                                         {/* <form onSubmit={(e) => { e.preventDefault(); handleSubmit(section.key) }} className="space-y-4">
                                             {generalError && <p className="text-red-500 text-center mb-2">{generalError}</p>}
 
@@ -244,92 +331,207 @@ export default function AdminAboutUs({ aboutUs }) {
                                             </div>
                                         </form> */}
                                         <form
-                                            onSubmit={(e) => { e.preventDefault(); handleSubmit(section.key) }}
+                                            onSubmit={(e) => {
+                                                e.preventDefault();
+                                                handleSubmit(section.key);
+                                            }}
                                             className="space-y-4"
                                         >
-                                            {generalError && <p className="text-red-500 text-center mb-2">{generalError}</p>}
+                                            {generalError && (
+                                                <p className="text-red-500 text-center mb-2">
+                                                    {generalError}
+                                                </p>
+                                            )}
 
-                                            {section.fields.map(field => (
-                                                <div key={field} className="flex flex-col">
-                                                    <label className="text-sm font-medium mb-1">{fieldLabels[field]}</label>
+                                            {section.fields.map((field) => (
+                                                <div
+                                                    key={field}
+                                                    className="flex flex-col"
+                                                >
+                                                    <label className="text-sm font-medium mb-1">
+                                                        {fieldLabels[field]}
+                                                    </label>
 
                                                     {field.includes("image") ? (
                                                         <>
-                                                            {formData[field] && (
+                                                            {formData[
+                                                                field
+                                                            ] && (
                                                                 <img
-                                                                    src={typeof formData[field] === "string" ? `/storage/${formData[field]}` : URL.createObjectURL(formData[field])}
-                                                                    alt={fieldLabels[field]}
+                                                                    src={
+                                                                        typeof formData[
+                                                                            field
+                                                                        ] ===
+                                                                        "string"
+                                                                            ? `/storage/${formData[field]}`
+                                                                            : URL.createObjectURL(
+                                                                                  formData[
+                                                                                      field
+                                                                                  ],
+                                                                              )
+                                                                    }
+                                                                    alt={
+                                                                        fieldLabels[
+                                                                            field
+                                                                        ]
+                                                                    }
                                                                     className="w-48 h-32 object-cover rounded-md mb-2 border"
                                                                 />
                                                             )}
-                                                            <input type="file" name={field} accept="image/*" onChange={handleChange} className="hidden" id={`file-${field}`} />
-                                                            <label htmlFor={`file-${field}`} className="btn-primary inline-block cursor-pointer px-4 py-2 bg-[var(--app-primary)] text-white rounded-lg text-sm font-medium transition w-max">
+                                                            <input
+                                                                type="file"
+                                                                name={field}
+                                                                accept="image/*"
+                                                                onChange={
+                                                                    handleChange
+                                                                }
+                                                                className="hidden"
+                                                                id={`file-${field}`}
+                                                            />
+                                                            <label
+                                                                htmlFor={`file-${field}`}
+                                                                className="btn-primary inline-block cursor-pointer px-4 py-2 bg-[var(--app-primary)] text-white rounded-lg text-sm font-medium transition w-max"
+                                                            >
                                                                 اختر صورة
                                                             </label>
                                                         </>
-                                                    ) : field.includes("icon") ? (
+                                                    ) : field.includes(
+                                                          "icon",
+                                                      ) ? (
                                                         <>
-
                                                             <button
                                                                 type="button"
-                                                                onClick={() => setIconPickerField(field)}
+                                                                onClick={() =>
+                                                                    setIconPickerField(
+                                                                        field,
+                                                                    )
+                                                                }
                                                                 className="px-3 py-2 border rounded-lg text-sm text-gray-700 flex items-center justify-between"
                                                             >
-                                                                {formData[field] ? formData[field] : "اختر أيقونة"}
-                                                                <span className="ml-2 text-[var(--app-primary)]">🔽</span>
+                                                                {formData[field]
+                                                                    ? formData[
+                                                                          field
+                                                                      ]
+                                                                    : "اختر أيقونة"}
+                                                                <span className="ml-2 text-[var(--app-primary)]">
+                                                                    🔽
+                                                                </span>
                                                             </button>
 
+                                                            {formData[field] &&
+                                                                (() => {
+                                                                    const selectedIcon =
+                                                                        umrahHajjIcons.find(
+                                                                            (
+                                                                                i,
+                                                                            ) =>
+                                                                                i
+                                                                                    .icon
+                                                                                    ?.name ===
+                                                                                formData[
+                                                                                    field
+                                                                                ],
+                                                                        )?.icon;
 
-                                                   
-                                                            {formData[field] && (
-                                                                <span className="mt-1 flex items-center gap-2">
-                                                                    {React.createElement(
-                                                                        umrahHajjIcons.find(i => i.icon.name === formData[field])?.icon || null,
-                                                                        { className: "text-[var(--app-primary)] text-xl" }
-                                                                    )}
-                                                                    <span>{formData[field]}</span>
-                                                                </span>
+                                                                    return selectedIcon
+                                                                        ? React.createElement(
+                                                                              selectedIcon,
+                                                                              {
+                                                                                  className:
+                                                                                      "text-[var(--app-primary)] text-xl",
+                                                                              },
+                                                                          )
+                                                                        : null;
+                                                                })()}
+
+                                                            {formErrors[
+                                                                field
+                                                            ] && (
+                                                                <p className="text-red-500 text-sm mt-1">
+                                                                    {
+                                                                        formErrors[
+                                                                            field
+                                                                        ]
+                                                                    }
+                                                                </p>
                                                             )}
-
-
-                                                       
-                                                            {formErrors[field] && <p className="text-red-500 text-sm mt-1">{formErrors[field]}</p>}
                                                         </>
                                                     ) : (
                                                         <input
-                                                            type={field.includes("number") ? "number" : "text"}
+                                                            type={
+                                                                field.includes(
+                                                                    "number",
+                                                                )
+                                                                    ? "number"
+                                                                    : "text"
+                                                            }
                                                             name={field}
-                                                            value={formData[field] || ""}
-                                                            onChange={handleChange}
+                                                            value={
+                                                                formData[
+                                                                    field
+                                                                ] || ""
+                                                            }
+                                                            onChange={
+                                                                handleChange
+                                                            }
                                                             className={`input py-2 px-3 border rounded-lg focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)]
           ${formErrors[field] ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
                                                             placeholder={`أدخل ${fieldLabels[field]}`}
                                                         />
                                                     )}
 
-                                                    {formErrors[field] && !field.includes("icon") && (
-                                                        <p className="text-red-500 text-sm mt-1">{formErrors[field]}</p>
-                                                    )}
+                                                    {formErrors[field] &&
+                                                        !field.includes(
+                                                            "icon",
+                                                        ) && (
+                                                            <p className="text-red-500 text-sm mt-1">
+                                                                {
+                                                                    formErrors[
+                                                                        field
+                                                                    ]
+                                                                }
+                                                            </p>
+                                                        )}
                                                 </div>
                                             ))}
 
                                             <div className="flex justify-end gap-3 mt-2">
-                                                <button type="button" onClick={() => setOpenSection(null)} className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition">إلغاء</button>
-                                                <button type="submit" className="px-4 py-2 rounded-lg bg-[var(--app-primary)] text-white btn-primary transition">حفظ البيانات</button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setOpenSection(null)
+                                                    }
+                                                    className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+                                                >
+                                                    إلغاء
+                                                </button>
+                                                <button
+                                                    type="submit"
+                                                    className="px-4 py-2 rounded-lg bg-[var(--app-primary)] text-white btn-primary transition"
+                                                >
+                                                    حفظ البيانات
+                                                </button>
                                             </div>
 
                                             {/* ICON PICKER MODAL */}
                                             <IconPicker
                                                 show={!!iconPickerField}
-                                                onClose={() => setIconPickerField(null)}
+                                                onClose={() =>
+                                                    setIconPickerField(null)
+                                                }
                                                 onSelect={({ icon }) => {
                                                     if (iconPickerField) {
-                                                        setFormData(prev => ({ ...prev, [iconPickerField]: icon }));
-                                                        setIconPickerField(null); 
+                                                        setFormData((prev) => ({
+                                                            ...prev,
+                                                            [iconPickerField]:
+                                                                icon,
+                                                        }));
+                                                        setIconPickerField(
+                                                            null,
+                                                        );
                                                     }
                                                 }}
                                             />
-
                                         </form>
                                     </motion.div>
                                 )}

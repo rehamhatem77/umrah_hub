@@ -74,7 +74,7 @@ export default function Services({ services , title, description}) {
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: false, amount: 0.2 }}
-                    className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-4"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-4"
                 >
                     {Array.isArray(services) && services.map((service) => (
 

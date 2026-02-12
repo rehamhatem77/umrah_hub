@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SIte\AboutUsController;
+use App\Http\Controllers\Site\ChatbotController;
 use App\Http\Controllers\Site\ContactController;
 use App\Http\Controllers\Site\FooterController;
 use App\Http\Controllers\Site\HomeController;
@@ -45,6 +46,9 @@ Route::get('/packages', [PackagesPageController::class, 'index'])->name('package
 
 Route::get('/packages/{slug}', [PackagesPageController::class, 'show'])->name('packages.show');
 Route::get('/search', [OfferSearchController::class, 'search'])->name('packages.search');
+Route::post('/chatbot', [ChatbotController::class, 'ask']);
+
+
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

@@ -50,7 +50,7 @@ export default function SpecialPackages({ specialPackages, title, description, b
                     variants={{
                         show: { transition: { staggerChildren: 0.15 } },
                     }}
-                    className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                    className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     {specialPackages.map((pkg) => (
                         <motion.div

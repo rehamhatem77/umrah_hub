@@ -28,10 +28,9 @@ export default function SectionCard({ title, fieldsData, onOpen }) {
         seo_description: "وصف SEO",
         seo_keywords: "كلمات مفتاحية SEO",
 
-        hero_title: "عنوان الهيرو",
+        
         hero_badge_title: "شعار الهيرو",
-        hero_description: "وصف الهيرو",
-        hero_image: "صورة الهيرو",
+       
 
         intro_title: "عنوان المقدمة",
         intro_description: "وصف المقدمة",
