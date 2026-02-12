@@ -75,16 +75,16 @@ export default function IconPicker({ show, onClose, onSelect }) {
         <Modal show={show} title="اختر أيقونة" onClose={onClose}>
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 max-h-[60vh] overflow-y-auto">
                 {umrahHajjIcons.map(({ icon: Icon, label }) => (
-                    <button
-                        key={label}
-                        onClick={() => onSelect({ icon: Icon.name, label })}
-                        className="border rounded-lg p-3 hover:border-[var(--app-primary)] flex flex-col items-center gap-1 transition"
-                    >
-                        <Icon className="text-xl text-[var(--app-primary)]" />
-                        {/* <span className="text-[11px] text-gray-600 text-center leading-tight">
-                            {label}
-                        </span> */}
-                    </button>
+                        <button
+                            key={label}
+                            onClick={() => {
+                                const iconName = Object.keys(iconsMap).find(k => iconsMap[k] === Icon) || Icon.name || null;
+                                onSelect({ icon: iconName, label });
+                            }}
+                            className="border rounded-lg p-3 hover:border-[var(--app-primary)] flex flex-col items-center gap-1 transition"
+                        >
+                            <Icon className="text-xl text-[var(--app-primary)]" />
+                        </button>
                 ))}
             </div>
         </Modal>

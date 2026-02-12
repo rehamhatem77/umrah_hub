@@ -143,8 +143,7 @@ export default function WhyChooseUs({data }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-16 ">
 
           {features.map((item, index) => {
-           const IconComponent = iconsMap[item.icon] || HiIcons.HiOutlineHeart;
-
+                            const IconComponent = iconsMap[item.icon] || HiIcons[item.icon] || HiIcons.HiOutlineHeart; // safe fallback
             return (
               <motion.div
                 key={index}

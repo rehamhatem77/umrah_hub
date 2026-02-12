@@ -10,4 +10,8 @@ export default defineConfig({
         }),
         react(),
     ],
+  build: {
+    // Disable minification so function/class names remain unchanged after build
+    minify: false,
+  }
 });
