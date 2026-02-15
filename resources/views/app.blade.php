@@ -9,9 +9,9 @@
         <title>عمرة هَب - بوابتك الذكية لإدارة رحلات العمرة باحترافية وسهولة</title>
         <meta name="application-name" content="عمرة هَب">
 
-        <link rel="icon" type="image/svg+xml" href="/favicon.ico">
-        <link rel="alternate icon" href="/favicon.ico">
-        <link rel="apple-touch-icon" href="/favicon.ico">
+        <link rel="icon" type="image/svg+xml" href="/fav.png">
+        <link rel="alternate icon" href="/fav.png">
+        <link rel="apple-touch-icon" href="/fav.png">
         <meta name="theme-color" content="#2563eb">
 
         <!-- Fonts -->

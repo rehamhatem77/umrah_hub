@@ -69,13 +69,11 @@ export default function HomeHeader({ onSearch }) {
             <div className="relative flex items-center justify-between px-6 lg:px-40 py-4">
                 <div className="flex items-center gap-2 font-semibold z-50">
                     <img
-                        src="/favicon.ico"
+                        src="/omrahublogo.png"
                         alt="Umrah Hub"
-                        className="w-7 h-7"
+                        style={{ width: "130px", height: "auto" }}
                     />
-                    <span className="text-lg text-[var(--app-primary)] font-bold">
-                        Umrah Hub
-                    </span>
+                    
                 </div>
 
                 <div className="hidden lg:flex items-center flex-1 gap-6 justify-end">

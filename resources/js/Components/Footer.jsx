@@ -23,12 +23,11 @@ export default function Footer({ footer }) {
     >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         <div className="relative">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-            Umrah Hub
-            <span className="w-6 h-6 rounded-full bg-white text-[var(--app-primary)] flex items-center justify-center text-sm">
-              🕋
-            </span>
-          </h2>
+           <img
+                        src="/whitelogo.png"
+                        alt="Umrah Hub"
+                        style={{ width: "130px", height: "auto" }}
+                    />
 
           <p className="text-sm leading-relaxed text-white/80 mb-6">
             {footer?.footer_desc || "منصة متخصصة في تقديم خدمات العمرة المتكاملة..."}

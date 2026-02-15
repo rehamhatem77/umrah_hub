@@ -20,7 +20,7 @@ export default function SidebarContent({
                 {sidebarOpen && (
                     <div className="flex items-center gap-3">
                         <ApplicationLogo className="h-9 w-auto text-[var(--app-primary)]" />
-                        <span className="text-base font-bold text-[var(--app-primary)]">عمرة هَب</span>
+                        {/* <span className="text-base font-bold text-[var(--app-primary)]">عمرة هَب</span> */}
                     </div>
                 )}
 

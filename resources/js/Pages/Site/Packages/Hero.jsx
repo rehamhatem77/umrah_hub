@@ -7,7 +7,7 @@ export default function Hero() {
     return (
 <>
 <div className="mb-6 flex items-center gap-2 text-sm">
-  <a className="text-[#63886f] hover:text-primary" href="#">
+  <a className="text-[#63886f] hover:text-primary" href="/">
     الرئيسية
   </a>
   {/* <span className="material-symbols-outlined text-base text-[#dce5df] rotate-180">
