@@ -34,7 +34,7 @@ const rowMotion = {
     exit: { opacity: 0, y: -3 },
 };
 
-export default function Trash({ companies, filters }) {
+export default function Trash({ companies, filters, governorates }) {
     const [deleteModal, setDeleteModal] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [search, setSearch] = useState(filters.search || "");
@@ -386,12 +386,18 @@ export default function Trash({ companies, filters }) {
                                 iconColor="text-[var(--app-primary)]"
                             />
 
+
                             <InfoItem
                                 icon={<FaMapLocationDot />}
                                 label="المحافظات"
-                                value={governorates
-                                    ?.map((g) => g.name)
-                                    .join("، ")}
+                                value={selectedCompany.governorate_ids
+                                    .map((id) => {
+                                        const gov = governorates.find(
+                                            (g) => g.id === id,
+                                        );
+                                        return gov ? gov.name : "";
+                                    })
+                                    .join(" , ")}
                                 iconColor="text-green-500"
                             />
                             {!selectedCompany.email && (
