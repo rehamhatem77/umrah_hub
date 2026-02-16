@@ -49,13 +49,21 @@ export default function Hero({ homepage }) {
     };
 
     return (
+//         <section
+//             className="
+//         pattern-bg
+//   px-4 lg:px-20
+//   pt-5
+//   pb-40 sm:pb-44 lg:pb-28
+//   bg-gray-100
+// "
+//         >
         <section
             className="
-        
+        pattern-bg
   px-4 lg:px-20
   pt-5
-  pb-40 sm:pb-44 lg:pb-28
-  bg-gray-100
+  pb-40 sm:pb-44 lg:pb-28  
 "
         >
             <div className="relative rounded-[32px] min-h-[480px] sm:min-h-[520px] flex items-center justify-center">

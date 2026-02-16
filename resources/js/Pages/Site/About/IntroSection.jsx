@@ -78,7 +78,7 @@ export default function IntroSection({data }) {
 
   return (
     <motion.section
-      className="w-full bg-white py-20"
+      className="w-full py-20 pattern-bg"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}

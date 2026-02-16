@@ -227,6 +227,12 @@ class PackagesPageController extends Controller
                 'company' => $offer->company,
                 'trip_type' => $offer->tripType,
                 'features' => $offer->features,
+            ],
+            'meta' => [
+                'title' => "Umrah Hub - {$offer->title}",
+                'description' => $offer->desc ?? $offer->title,
+                'image' => asset($offer->main_image_url),
+                'url' => url()->current(),
             ]
         ]);
     }

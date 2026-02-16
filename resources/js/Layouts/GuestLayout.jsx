@@ -3,6 +3,8 @@ import { Link } from '@inertiajs/react';
 
 export default function GuestLayout({ children }) {
     return (
+
+
         <div dir="rtl" className="min-h-screen grid lg:grid-cols-2 bg-app-bg" style={{ gridTemplateColumns: '1.8fr 1.2fr' }}
 >
 
@@ -11,7 +13,7 @@ export default function GuestLayout({ children }) {
                    <div className="flex justify-center mb-6">
                      <Link href="/" className="flex items-center gap-2">
                        <ApplicationLogo className="h-14 w-14 text-app-primary" />
-                         <span className="text-xl font-bold">عمرة هَب</span>
+                       
                         </Link>
                    </div>
 

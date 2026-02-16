@@ -43,9 +43,6 @@ export default function BookingCard({ data }) {
 التقييم: ${ratingText} نجوم
 السعر: ${toArabicNumbers(data.price.toLocaleString("ar-EG"))} ج.م
 
-صورة الباقة:
-${data.image}
-
 ${data.slug ? `رابط الباقة:\n${route("packages.show", data.slug)}` : ""}`
   );
 

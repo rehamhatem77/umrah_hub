@@ -1,4 +1,5 @@
 import { Head } from "@inertiajs/react";
+import '../../css/style.css';
 import HomeHeader from "./Site/Home/HomeHeader";
 import { FiAtSign, FiCalendar, FiSearch } from "react-icons/fi";
 import { FaLocationPin } from "react-icons/fa6";

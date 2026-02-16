@@ -1,0 +1,28 @@
+/* main::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    opacity: .4;
+    background-image: url('/Patternbg.png');
+    background-repeat: repeat;
+    background-position: center;
+    background-size: 45px;
+}
+
+main {
+    position: relative;
+}
+
+main * {
+    z-index: 1;
+} */
+
+body {
+    background-image: url('/Patternbg.png');
+    background-repeat: repeat;
+    background-position: center;
+    background-size: 55px;
+}

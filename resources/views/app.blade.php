@@ -6,8 +6,38 @@
 
         {{-- <title inertia>{{ config('app.name', 'Laravel') }}</title> --}}
 
-        <title>عمرة هَب - بوابتك الذكية لإدارة رحلات العمرة باحترافية وسهولة</title>
-        <meta name="application-name" content="عمرة هَب">
+        {{-- <title>عمرة هَب - بوابتك الذكية لإدارة رحلات العمرة باحترافية وسهولة</title> --}}
+        
+
+<meta name="application-name" content="عمرة هَب">
+
+<title inertia>{{ $page['props']['meta']['title'] ?? 'عمرة هَب - بوابتك الذكية لإدارة رحلات العمرة' }}</title>
+
+<meta property="og:type" content="website">
+
+<meta property="og:title"
+      content="{{ $page['props']['meta']['title'] ?? 'عمرة هَب - بوابتك الذكية لإدارة رحلات العمرة' }}">
+
+<meta property="og:description"
+      content="{{ $page['props']['meta']['description'] ?? 'أفضل نظام لإدارة رحلات العمرة' }}">
+
+<meta property="og:image"
+      content="{{ $page['props']['meta']['image'] ?? asset('images/preview.jpg') }}">
+
+<meta property="og:url"
+      content="{{ $page['props']['meta']['url'] ?? url()->current() }}">
+
+<meta property="twitter:card" content="summary_large_image">
+
+<meta property="twitter:title"
+      content="{{ $page['props']['meta']['title'] ?? 'عمرة هَب' }}">
+
+<meta property="twitter:description"
+      content="{{ $page['props']['meta']['description'] ?? 'أفضل نظام لإدارة رحلات العمرة' }}">
+
+<meta property="twitter:image"
+      content="{{ $page['props']['meta']['image'] ?? asset('images/preview.jpg') }}">
+
 
         <link rel="icon" type="image/svg+xml" href="/fav.png">
         <link rel="alternate icon" href="/fav.png">

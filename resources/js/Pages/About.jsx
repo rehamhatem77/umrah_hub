@@ -20,8 +20,8 @@ export default function About({aboutUs }) {
     <SiteLayout title="Umrah Hub - عن الشركة ">
 
       <Hero data={aboutUs} />
-      <div className='row'>
-        <div className="w-full bg-white">
+      <div className='row pattern-bg'>
+        <div className="w-full ">
           <div className="flex justify-center">
             <div className="w-full max-w-[1440px] px-4 md:px-10 lg:px-40">
               <div className="flex flex-wrap gap-2 py-4">

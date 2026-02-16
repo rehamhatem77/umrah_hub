@@ -32,7 +32,8 @@ export default function Services({ services , title, description}) {
     };
 
     return (
-        <section className="relative bg-gradient-to-b from-gray-50 to-white py-16 px-4 overflow-hidden">
+        // <section className="relative pattern-bg bg-gradient-to-b from-gray-50 to-white py-16 px-4 overflow-hidden">
+        <section className="relative pattern-bg  py-16 px-4 overflow-hidden">
 
             <div className="absolute -top-20 -left-20 w-56 h-56 bg-[var(--app-primary)]/10 rounded-full blur-3xl" />
             <div className="absolute -bottom-20 -right-20 w-56 h-56 bg-[var(--app-primary)]/10 rounded-full blur-3xl" />

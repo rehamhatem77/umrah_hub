@@ -8,7 +8,9 @@ export default function SiteLayout({ children, title }) {
     const { footer } = usePage().props;
     return (
         <>
-            <Head title={title || "Umrah Hub"} />
+            <Head 
+title={title || "Umrah Hub"}
+ />
 
             <div
                 dir="rtl"
@@ -20,7 +22,7 @@ export default function SiteLayout({ children, title }) {
 
                 <Footer footer={footer} />
                 <WhatsAppButton />
-                <Chatbot />
+                {/* <Chatbot /> */}
             </div>
         </>
     );

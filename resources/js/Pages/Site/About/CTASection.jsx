@@ -8,7 +8,7 @@ export default function CTASection({ data }) {
 
     return (
         <motion.section
-            className="w-full bg-white py-16 md:py-24"
+            className="pattern-bg w-full py-16 md:py-24"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.7 }}

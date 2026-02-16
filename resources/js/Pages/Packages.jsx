@@ -1,4 +1,5 @@
-import "../../css/style.css";
+
+import "./Site/Packages/packages.css";
 import { Head, usePage } from "@inertiajs/react";
 
 import BreadCrumb from "./Site/Packages/Hero";
@@ -15,7 +16,7 @@ export default function Packages({offers ,priceRange ,durationCounts , governora
     const filter = params.get("filter"); 
     return (
         <SiteLayout title="Umrah Hub - الباقات">
-            <div className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className=" pattern-bg flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <BreadCrumb />
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     <PackageFilter  priceRange={priceRange} counts={durationCounts} governorates={governorates}/>

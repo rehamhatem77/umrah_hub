@@ -79,7 +79,7 @@ export default function PackageHeaderAnimatedTabs({ data }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
          viewport={{ once: false, amount: 0.3 }}
-        className="border-b border-primary pb-6 text-black"
+        className="border-b border-primary pb-6 text-black "
       >
         <div className="flex items-start justify-between">
           <div>
@@ -167,7 +167,7 @@ export default function PackageHeaderAnimatedTabs({ data }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="sticky top-14 z-20 bg-white pt-2 text-black"
+        className="sticky z-20 bg-white pt-2 text-black pachage-header"
       >
         <div className="relative flex items-center gap-6 border-b border-primary text-sm font-bold overflow-x-auto hide-scrollbar whitespace-nowrap px-4 py-2">
           {tabs.map((tab, index) => (

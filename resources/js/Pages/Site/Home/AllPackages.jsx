@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useEffect, useState } from "react";
 
+
 export default function AllPackages({ packages ,title, buttonText}) {
 
     const cardWidth = 235;
@@ -32,7 +33,7 @@ export default function AllPackages({ packages ,title, buttonText}) {
   const maxIndex = Math.max(0, packages.length - visible);
 
     return (
-        <section className="py-16 px-4 bg-white" dir="rtl">
+        <section className="py-16 px-4 pattern-bg" dir="rtl">
             <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}

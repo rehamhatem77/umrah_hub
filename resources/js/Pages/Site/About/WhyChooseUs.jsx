@@ -132,7 +132,7 @@ export default function WhyChooseUs({data }) {
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: false, amount: 0.3 }}
-      className="w-full bg-white py-24">
+      className="w-full   py-24 pattern-bg" >
       <div className="max-w-[1100px] mx-auto px-4">
         <div className="flex flex-col items-center mb-20">
           <h2 className="text-[28px] md:text-[32px] font-bold text-[#1B5E20]">
