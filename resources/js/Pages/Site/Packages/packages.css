@@ -21,7 +21,7 @@ main * {
 } */
 
 body {
-    background-image: url('/Patternbg.png');
+    background-image: url('/Patternbglight.png');
     background-repeat: repeat;
     background-position: center;
     background-size: 55px;
