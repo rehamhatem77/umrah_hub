@@ -1,7 +1,7 @@
 import { FaFilter, FaSlidersH, FaCalendarAlt, FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Range } from "react-range";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import Select from "react-select";
 
@@ -10,49 +10,50 @@ export default function PackageFilter({
     counts = {},
     governorates,
 }) {
+    useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
 
-const queryParams = new URLSearchParams(window.location.search);
-useEffect(() => {
-  
-    const priceFrom = queryParams.get("price_from");
-    const priceTo = queryParams.get("price_to");
+        const priceFrom = queryParams.get("price_from");
+        const priceTo = queryParams.get("price_to");
 
-    if (priceFrom && priceTo) {
-        setSelectedPrice([Number(priceFrom), Number(priceTo)]);
-    }
+        if (priceFrom && priceTo) {
+            setSelectedPrice([Number(priceFrom), Number(priceTo)]);
+        }
 
- 
-    const date = queryParams.get("date");
-    if (date) {
-        setSelectedDate(date);
-    }
+        const date = queryParams.get("date");
+        if (date) {
+            setSelectedDate(date);
+        }
 
-   
-    const durations = queryParams.getAll("durations[]");
-    if (durations.length) {
-        const mapped = durations.map((d) => {
-            if (d === "7") return "٧ أيام";
-            if (d === "10") return "١٠ أيام";
-            if (d === "14") return "١٤ يوم فأكثر";
-            return null;
-        }).filter(Boolean);
+        const durations = [];
 
-        setSelectedDurations(mapped);
-    }
+        for (const [key, value] of queryParams.entries()) {
+            if (key.startsWith("durations[")) {
+                durations.push(value);
+            }
+        }
 
-    
-    const stars = queryParams.getAll("stars[]").map(Number);
-    if (stars.length) {
-        setSelectedStars(stars);
-    }
+        const mappedDurations = durations
+            .map((d) => {
+                if (d === "7") return "٧ أيام";
+                if (d === "10") return "١٠ أيام";
+                if (d === "14") return "١٤ يوم فأكثر";
+                return null;
+            })
+            .filter(Boolean);
 
-    
-    const govId = queryParams.get("governorate_id");
-    if (govId) {
-        setSelectedGovernment(Number(govId));
-    }
+        setSelectedDurations(mappedDurations);
 
-}, []);
+        const stars = queryParams.getAll("stars[]").map(Number);
+        if (stars.length) {
+            setSelectedStars(stars);
+        }
+
+        const govId = queryParams.get("governorate_id");
+        if (govId) {
+            setSelectedGovernment(Number(govId));
+        }
+    }, []);
 
     const [selectedGovernment, setSelectedGovernment] = useState(null);
     const [selectedDurations, setSelectedDurations] = useState([]);
@@ -64,6 +65,12 @@ useEffect(() => {
     const MAX = Math.ceil(priceRange?.max ?? 10000);
     const STEP = 500;
     const [selectedPrice, setSelectedPrice] = useState([MIN, MAX]);
+
+    const { url } = usePage();
+    const getCurrentParams = () => {
+        const queryString = url.includes("?") ? url.split("?")[1] : "";
+        return Object.fromEntries(new URLSearchParams(queryString));
+    };
 
     // const governments = ["الحكومة السعودية", "الحكومة المصرية", "الحكومة الأردنية"];
     const durations = ["٧ أيام", "١٠ أيام", "١٤ يوم فأكثر"];
@@ -131,7 +138,7 @@ useEffect(() => {
     };
 
     const applyFilters = () => {
-console.log("Selected government:", selectedGovernment);
+        console.log("Selected government:", selectedGovernment);
         router.get(
             route("packages"),
             {
@@ -177,10 +184,24 @@ console.log("Selected government:", selectedGovernment);
                             setSelectedPrice([MIN, MAX]);
                             setSelectedDate("");
                             setSelectedGovernment(null);
+                            // router.get(
+                            //     route("packages"),
+                            //     {},
+                            //     { preserveState: true, replace: true },
+                            // );
+                            const params = getCurrentParams();
+
                             router.get(
-                                route("packages"),
-                                {},
-                                { preserveState: true, replace: true },
+                                route(route().current()),
+                                {
+                                    ...params,
+                                    filter: f.value || undefined,
+                                },
+                                {
+                                    preserveState: true,
+                                    preserveScroll: true,
+                                    replace: true,
+                                },
                             );
                         }}
                     >
@@ -323,7 +344,7 @@ console.log("Selected government:", selectedGovernment);
 
                     <div className="space-y-3">
                         <label className="text-sm font-bold text-[#111813]">
-                       المحافظة
+                            المحافظة
                         </label>
                         <div className="space-y-2 text-sm">
                             <Select
@@ -333,12 +354,23 @@ console.log("Selected government:", selectedGovernment);
                                     value: g.id,
                                     label: g.name,
                                 }))}
-                                value={selectedGovernment ? { value: selectedGovernment, label: governorates.find(g => g.id === selectedGovernment)?.name } : null}
-                                onChange={(option)=>{
-
-                                    setSelectedGovernment(option ? option.value : null);        
-}
-}
+                                value={
+                                    selectedGovernment
+                                        ? {
+                                              value: selectedGovernment,
+                                              label: governorates.find(
+                                                  (g) =>
+                                                      g.id ===
+                                                      selectedGovernment,
+                                              )?.name,
+                                          }
+                                        : null
+                                }
+                                onChange={(option) => {
+                                    setSelectedGovernment(
+                                        option ? option.value : null,
+                                    );
+                                }}
                             />
                         </div>
                     </div>

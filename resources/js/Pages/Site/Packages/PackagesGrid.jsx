@@ -3,7 +3,7 @@ import PackageCard from "@/Components/PackageCard";
 import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
 import AllPackagesCard from "@/Components/AllPackagesCard";
 import { useEffect, useState } from "react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 const filters = [
     { label: "الكل", value: "" },
@@ -18,6 +18,12 @@ export default function PackagesGrid({ offers, special }) {
     const [filteredOffers, setFilteredOffers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
+
+    const { url } = usePage();
+    const getCurrentParams = () => {
+        const queryString = url.includes("?") ? url.split("?")[1] : "";
+        return Object.fromEntries(new URLSearchParams(queryString));
+    };
 
     const hasActiveFilters = activeFilter !== "";
     useEffect(() => {
@@ -76,15 +82,25 @@ export default function PackagesGrid({ offers, special }) {
                                 key={f.value}
                                 onClick={() => {
                                     setActiveFilter(f.value);
+
+                                    const params = getCurrentParams();
+
                                     router.get(
-                                        "/packages",
-                                        {},
-                                        { preserveState: true, replace: true },
+                                        route(route().current()),
+                                        {
+                                            ...params,
+                                            filter: f.value || undefined,
+                                        },
+                                        {
+                                            preserveState: true,
+                                            preserveScroll: true,
+                                            replace: true,
+                                        },
                                     );
                                 }}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors  ${
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                                     activeFilter === f.value
-                                        ? "btn-primary text-white shadow-sm ring-2 ring-green-600  ring-offset-2"
+                                        ? "btn-primary text-white shadow-sm ring-2 ring-green-600 ring-offset-2"
                                         : "bg-[#f6f8f6] text-[#111813] hover:bg-primary/10 hover:text-primary"
                                 }`}
                             >
@@ -173,8 +189,7 @@ export default function PackagesGrid({ offers, special }) {
                                         }
                                         rating={
                                             pkg.rating
-                                                ? pkg.rating
-                                                : pkg.average_hotel_rating
+                                                
                                         }
                                         customers_rating={
                                             pkg.number_of_rating_customers

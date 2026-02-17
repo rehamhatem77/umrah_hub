@@ -109,6 +109,7 @@ class PackagesPageController extends Controller
                     'start_date' => $offer->start_date,
                     'is_special_offer' => $offer->is_special_offer,
                     'is_popular' => $offer->is_popular,
+                    'rating' => $offer->rating,
                     'image' => $offer->main_image_url,
                     'locations' => $offer->locations,
                     'tour_level' => $this->tourLevelMap[$offer->tour_level] ?? $offer->tour_level,

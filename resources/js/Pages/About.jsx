@@ -17,7 +17,7 @@ import SiteLayout from "@/Layouts/SiteLayout";
 export default function About({aboutUs }) {
 
   return (
-    <SiteLayout title="Umrah Hub - عن الشركة ">
+    <SiteLayout title="عن الشركة">
 
       <Hero data={aboutUs} />
       <div className='row pattern-bg'>

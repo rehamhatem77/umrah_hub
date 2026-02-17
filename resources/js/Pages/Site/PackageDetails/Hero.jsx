@@ -17,18 +17,18 @@ export default function Hero({ data }) {
 
   const getColSpan = (idx) => {
     const count = visibleImages.length;
-    if (count === 1) return "md:col-span-4 md:row-span-1";
-    if (count === 2) return "md:col-span-2 md:row-span-1"; 
-    if (count === 3 && idx === 0) return "md:col-span-2 md:row-span-1"; 
-    if (count === 4 && idx === 0) return "md:col-span-2 md:row-span-2"; 
-    if (count >= 5 && idx === 0) return "md:col-span-2 md:row-span-2"; 
-    return "md:col-span-1 md:row-span-1"; 
+    if (count === 1) return "col-span-2 row-span-1 md:col-span-4 md:row-span-1";
+    if (count === 2) return "col-span-2 row-span-1 md:col-span-2 md:row-span-1"; 
+    if (count === 3 && idx === 0) return "col-span-2 row-span-1 md:col-span-2 md:row-span-1"; 
+    if (count === 4 && idx === 0) return "col-span-2 row-span-2 md:col-span-2 md:row-span-2"; 
+    if (count >= 5 && idx === 0) return "col-span-2 row-span-2 md:col-span-2 md:row-span-2"; 
+    return "col-span-1 row-span-1 md:col-span-1 md:row-span-1"; 
   };
 
   return (
     <>
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[350px] md:h-[400px] text-black">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-[350px] md:h-[400px] text-black">
         {visibleImages.map((img, idx) => (
           <motion.div
             key={idx}
@@ -45,7 +45,7 @@ export default function Hero({ data }) {
             {idx === 0 && <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />}
 
             {idx === maxVisible - 1 && remainingCount > 0 && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <span className="text-white font-bold text-lg">
                   +{toArabicNumbers(remainingCount)} صور
                 </span>

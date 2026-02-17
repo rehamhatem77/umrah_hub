@@ -7,7 +7,7 @@ import { FiChevronLeft } from "react-icons/fi";
 
 export default function ContactUs({contactUs}) {
     return (
-        <SiteLayout title="Umrah Hub - تواصل معنا">
+        <SiteLayout title="تواصل معنا">
             <ContactHero data={contactUs}/>
             <div className=" row pattern-bg">
                 <div className="w-full ">

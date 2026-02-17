@@ -5,10 +5,13 @@ import {
     FaClock,
     FaHotel,
     FaMapMarkerAlt,
+    FaRegStar,
+    FaStarHalfAlt,
 } from "react-icons/fa";
 import { Inertia } from "@inertiajs/inertia";
 import { MdOutlineMessage } from "react-icons/md";
 import { usePage } from "@inertiajs/react";
+import toArabicNumbers from "./Utils/ArabicNumbers";
 
 export default function AllPackagesCard({
     title,
@@ -85,6 +88,10 @@ export default function AllPackagesCard({
     );
     const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -133,25 +140,38 @@ export default function AllPackagesCard({
             <div className="p-4 flex flex-col flex-grow">
                 <div className="flex justify-between items-center mb-2">
                     <div className="flex text-amber-400 text-sm gap-1 items-center">
-                        {Array.from({ length: Math.round(rating || 0) }).map(
-                            (_, i) => (
-                                <FaStar key={i} />
-                            ),
-                        )}
-                        {/* Show customer rating only if it exists */}
+                        <div className="flex flex-row-reverse text-amber-400">
+                            {Array.from({ length: emptyStars }).map((_, i) => (
+                                <FaRegStar key={`empty-${i}`} />
+                            ))}
+
+                            {hasHalfStar && (
+                                <FaStarHalfAlt
+                                    key="half"
+                                    className="scale-x-[-1]"
+                                />
+                            )}
+
+                            {Array.from({ length: fullStars }).map((_, i) => (
+                                <FaStar key={`full-${i}`} />
+                            ))}
+                        </div>
+
                         {customers_rating != null && (
                             <span className="text-gray-400 ml-2">
-                                ({customers_rating})
+                                ({toArabicNumbers(customers_rating)})
                             </span>
                         )}
                     </div>
                     <div className="flex items-center gap-1">
-                        {governorates.length > 0 ?(
+                        {governorates.length > 0 ? (
                             <span className="text-sm text-gray-400">
-                                {governorates.map((gov) => gov.name).join(", ") } 
-                             </span>
+                                {governorates.map((gov) => gov.name).join(", ")}
+                            </span>
                         ) : (
-                            <span className="text-sm text-gray-400">الموقع غير محدد</span>
+                            <span className="text-sm text-gray-400">
+                                الموقع غير محدد
+                            </span>
                         )}
                     </div>
                 </div>

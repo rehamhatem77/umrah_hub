@@ -15,7 +15,7 @@ import SiteLayout from "@/Layouts/SiteLayout";
 export default function Home({ services, specialOffers, packages, homepage, testimonials }) {
 
   return (
-    <SiteLayout title="Umrah Hub - الصفحة الرئيسية">
+    <SiteLayout title="الصفحة الرئيسية">
       <Hero homepage={homepage} />
       <Services services={services} title={homepage.services_title} description={homepage.services_description} />
       <SpecialPackages

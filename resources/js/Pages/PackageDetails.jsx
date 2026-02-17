@@ -26,7 +26,7 @@ export default function PackageDetails({ offer }) {
     return (
         <>
 
-            <SiteLayout title={`Umrah Hub - ${offer.title}`}>
+            <SiteLayout title={`${offer.title}`}>
                 <div className="pattern-bg layout-container flex flex-col min-h-screen">
                     <div className="flex-1 flex justify-center py-6 lg:py-10 px-4 sm:px-6 lg:px-8">
                         <div className="flex flex-col max-w-7xl w-full gap-8">

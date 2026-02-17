@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\SpecialOffer;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\TripTypeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SIte\AboutUsController;
+use App\Http\Controllers\Site\AboutUsController;
 use App\Http\Controllers\Site\ChatbotController;
 use App\Http\Controllers\Site\ContactController;
 use App\Http\Controllers\Site\FooterController;
