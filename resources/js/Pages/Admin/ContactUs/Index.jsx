@@ -74,7 +74,7 @@ export default function AdminContactUs({ contactPage }) {
         hero: ["hero_title", "hero_description"],
         contact_info: [
             "contact_title",
-            "contact_address",
+            // "contact_address",
             "contact_email",
             "contact_phone",
             // "contact_location",
@@ -132,9 +132,9 @@ export default function AdminContactUs({ contactPage }) {
             }
             const data = new FormData();
             Object.entries(formData).forEach(([key, value]) => {
-                if (value !== null && value !== "") {
+                // if (value !== null && value !== "") {
                     data.append(key, value);
-                }
+                // }
             });
 
             router.post(urlMap[sectionKey], data, {

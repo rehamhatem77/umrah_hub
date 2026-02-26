@@ -19,7 +19,7 @@ class Offer extends Model
         'number_of_rating_customers',
         'price_contain',
         'price_not_contain',
-        
+
         'slug',
         'trip_type_id',
         'company_id',
@@ -27,6 +27,7 @@ class Offer extends Model
         'price',
         'airline',
         'program',
+        'prices',
 
         'tour_level',
         'is_special_offer',
@@ -48,8 +49,13 @@ class Offer extends Model
         'is_active'        => 'boolean',
         'start_date'       => 'date',
         'end_date'         => 'date',
-        'program' => 'array', 
+        'program' => 'array',
+        'prices' => 'array',
     ];
+public function setPricesAttribute($value)
+{
+    $this->attributes['prices'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+}
 
     /* ================= Relations ================= */
 

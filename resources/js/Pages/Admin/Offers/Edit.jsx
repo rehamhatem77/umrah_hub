@@ -11,6 +11,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { MdOutlineHotel } from "react-icons/md";
 import toArabicNumbers from "@/Components/Utils/ArabicNumbers";
+import { FaPlus } from "react-icons/fa";
 
 const pageMotion = {
     hidden: { opacity: 0, y: 6 },
@@ -92,6 +93,7 @@ export default function Edit({
         airline: offer?.airline || "",
         program_days: Array.isArray(offer?.program) ? offer.program : [],
         program: [],
+        prices: offer?.prices || [],
 
         start_date: offer?.start_date ? offer.start_date.slice(0, 10) : "",
 
@@ -129,6 +131,15 @@ export default function Edit({
     const [priceNotContainItems, setPriceNotContainItems] = useState([]);
     const [newPriceContain, setNewPriceContain] = useState("");
     const [newPriceNotContain, setNewPriceNotContain] = useState("");
+    const [showPriceModal, setShowPriceModal] = useState(false);
+    const [newPrice, setNewPrice] = useState({
+        title: null,
+        amount: "",
+    });
+    const [addPriceErrors, setAddPriceErrors] = useState({
+        title: null,
+        amount: null,
+    });
 
     const selectStyles = {
         control: (base, state) => ({
@@ -263,10 +274,15 @@ export default function Edit({
 
         form.setData("program_days", updated);
     }, [form.data.duration_days]);
-    useEffect(() => {
+    // useEffect(() => {
+    //     form.setData("program", form.data.program_days);
+    // }, [form.data.program_days]);
+    const updateProgramDay = (index, key, value) => {
+        const updated = [...form.data.program_days];
+        updated[index][key] = value;
+        form.setData("program_days", updated);
         form.setData("program", form.data.program_days);
-    }, [form.data.program_days]);
-
+    };
     const addPriceContainItem = () => {
         if (
             newPriceContain.trim() &&
@@ -459,7 +475,15 @@ export default function Edit({
 
     const submit = (e) => {
         e.preventDefault();
+        form.setData("program", form.data.program_days);
         if (!validate()) return;
+        if (!form.data.program || form.data.program.length === 0) {
+            setFrontendErrors((prev) => ({
+                ...prev,
+                program: "يجب إدخال بيانات يوم واحد على الأقل",
+            }));
+            return;
+        }
 
         form.post(route("admin.offers.update", offer.id), {
             forceFormData: true,
@@ -617,48 +641,68 @@ export default function Edit({
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="label">مدة الرحلة</label>
-                                    <Select
-                                        styles={selectStyles}
-                                        hasError={frontendErrors.duration_days}
-                                        noOptionsMessage={noOptionsMessage}
-                                        placeholder="اختر مدة الرحلة"
-                                        options={[
-                                            { value: 7, label: "7 أيام" },
-                                            { value: 10, label: "10 أيام" },
-                                            { value: 14, label: "14 يوم" },
-                                        ]}
-                                        value={
-                                            form.data.duration_days
-                                                ? {
-                                                      value: Number(
-                                                          form.data
-                                                              .duration_days,
-                                                      ),
-                                                      label: `${form.data.duration_days} أيام`,
-                                                  }
-                                                : null
-                                        }
-                                        onChange={(opt) => {
-                                            form.setData(
-                                                "duration_days",
-                                                opt?.value,
-                                            );
-                                            setFrontendErrors((p) => ({
-                                                ...p,
-                                                duration_days: null,
-                                            }));
-                                        }}
-                                    />
-                                    <InputError
-                                        message={
-                                            frontendErrors.duration_days ||
-                                            form.errors.duration_days
-                                        }
-                                    />
+                                <div className="flex flex-col gap-1">
+                                    <label className="label">
+                                        أسعار اضافية (جنيه)
+                                    </label>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary "
+                                        onClick={() => setShowPriceModal(true)}
+                                    >
+                                        <div className="flex items-center justify-center gap-3">
+                                            <FaPlus className="text-lg" />
+                                            <span>اضافة سعر</span>
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
+                            {form.data.prices?.length > 0 && (
+                                <div className="mt-6 bg-gray-50 rounded-2xl p-4 shadow-sm">
+                                    <h3 className="text-sm font-semibold mb-3 text-gray-700">
+                                        معاينة الأسعار الإضافية
+                                    </h3>
+
+                                    <div className="space-y-3">
+                                        {form.data.prices.map(
+                                            (price, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm border"
+                                                >
+                                                    <div>
+                                                        <p className="text-sm font-medium text-gray-800">
+                                                            {price.title}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">
+                                                            {price.amount} جنيه
+                                                        </p>
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        className="text-red-500 text-xs hover:underline"
+                                                        onClick={() => {
+                                                            const updated =
+                                                                form.data.prices.filter(
+                                                                    (_, i) =>
+                                                                        i !==
+                                                                        index,
+                                                                );
+                                                            form.setData(
+                                                                "prices",
+                                                                updated,
+                                                            );
+                                                        }}
+                                                    >
+                                                        حذف
+                                                    </button>
+                                                </div>
+                                            ),
+                                        )}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <div>
@@ -770,50 +814,102 @@ export default function Edit({
                                     />
                                 </div>
                             </div>
-
-                            <div>
-                                <label className="label">مستوى الرحلة</label>
-                                <Select
-                                    styles={selectStyles}
-                                    hasError={frontendErrors.tour_level}
-                                    options={[
-                                        {
-                                            value: "economical",
-                                            label: "اقتصادي",
-                                        },
-                                        { value: "standard", label: "عادي" },
-                                        { value: "vip", label: "VIP" },
-                                    ]}
-                                    value={
-                                        form.data.tour_level
-                                            ? {
-                                                  value: form.data.tour_level,
-                                                  label:
-                                                      form.data.tour_level ===
-                                                      "vip"
-                                                          ? "VIP"
-                                                          : form.data
-                                                                  .tour_level ===
-                                                              "standard"
-                                                            ? "عادي"
-                                                            : "اقتصادي",
-                                              }
-                                            : null
-                                    }
-                                    onChange={(opt) => {
-                                        form.setData("tour_level", opt.value);
-                                        setFrontendErrors((p) => ({
-                                            ...p,
-                                            tour_level: null,
-                                        }));
-                                    }}
-                                />
-                                <InputError
-                                    message={
-                                        frontendErrors.tour_level ||
-                                        form.errors.tour_level
-                                    }
-                                />
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="label">
+                                        مستوى الرحلة
+                                    </label>
+                                    <Select
+                                        styles={selectStyles}
+                                        hasError={frontendErrors.tour_level}
+                                        options={[
+                                            {
+                                                value: "economical",
+                                                label: "اقتصادي",
+                                            },
+                                            {
+                                                value: "standard",
+                                                label: "عادي",
+                                            },
+                                            { value: "vip", label: "VIP" },
+                                        ]}
+                                        value={
+                                            form.data.tour_level
+                                                ? {
+                                                      value: form.data
+                                                          .tour_level,
+                                                      label:
+                                                          form.data
+                                                              .tour_level ===
+                                                          "vip"
+                                                              ? "VIP"
+                                                              : form.data
+                                                                      .tour_level ===
+                                                                  "standard"
+                                                                ? "عادي"
+                                                                : "اقتصادي",
+                                                  }
+                                                : null
+                                        }
+                                        onChange={(opt) => {
+                                            form.setData(
+                                                "tour_level",
+                                                opt.value,
+                                            );
+                                            setFrontendErrors((p) => ({
+                                                ...p,
+                                                tour_level: null,
+                                            }));
+                                        }}
+                                    />
+                                    <InputError
+                                        message={
+                                            frontendErrors.tour_level ||
+                                            form.errors.tour_level
+                                        }
+                                    />
+                                </div>
+                                <div>
+                                    <label className="label">مدة الرحلة</label>
+                                    <Select
+                                        styles={selectStyles}
+                                        hasError={frontendErrors.duration_days}
+                                        noOptionsMessage={noOptionsMessage}
+                                        placeholder="اختر مدة الرحلة"
+                                        options={[
+                                            { value: 7, label: "7 أيام" },
+                                            { value: 10, label: "10 أيام" },
+                                            { value: 14, label: "14 يوم" },
+                                        ]}
+                                        value={
+                                            form.data.duration_days
+                                                ? {
+                                                      value: Number(
+                                                          form.data
+                                                              .duration_days,
+                                                      ),
+                                                      label: `${form.data.duration_days} أيام`,
+                                                  }
+                                                : null
+                                        }
+                                        onChange={(opt) => {
+                                            form.setData(
+                                                "duration_days",
+                                                opt?.value,
+                                            );
+                                            setFrontendErrors((p) => ({
+                                                ...p,
+                                                duration_days: null,
+                                            }));
+                                        }}
+                                    />
+                                    <InputError
+                                        message={
+                                            frontendErrors.duration_days ||
+                                            form.errors.duration_days
+                                        }
+                                    />
+                                </div>
                             </div>
 
                             <div className="grid sm:grid-cols-2 gap-4">
@@ -1204,55 +1300,76 @@ export default function Edit({
                                                     className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  font-semibold text-[var(--app-primary)]"
                                                     value={day.label}
                                                     placeholder="مثال: اليوم 3-5"
-                                                    onChange={(e) => {
-                                                        const updated = [
-                                                            ...form.data
-                                                                .program_days,
-                                                        ];
-                                                        updated[index].label =
-                                                            e.target.value;
-                                                        form.setData(
-                                                            "program_days",
-                                                            updated,
-                                                        );
-                                                    }}
+                                                    // onChange={(e) => {
+                                                    //     const updated = [
+                                                    //         ...form.data
+                                                    //             .program_days,
+                                                    //     ];
+                                                    //     updated[index].label =
+                                                    //         e.target.value;
+                                                    //     form.setData(
+                                                    //         "program_days",
+                                                    //         updated,
+                                                    //     );
+                                                    // }}
+                                                    onChange={(e) =>
+                                                        updateProgramDay(
+                                                            index,
+                                                            "label",
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                 />
 
                                                 <input
-                                                    className="input w-full"
+                                                    className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
                                                     placeholder="عنوان اليوم"
                                                     value={day.title}
-                                                    onChange={(e) => {
-                                                        const updated = [
-                                                            ...form.data
-                                                                .program_days,
-                                                        ];
-                                                        updated[index].title =
-                                                            e.target.value;
-                                                        form.setData(
-                                                            "program_days",
-                                                            updated,
-                                                        );
-                                                    }}
+                                                    // onChange={(e) => {
+                                                    //     const updated = [
+                                                    //         ...form.data
+                                                    //             .program_days,
+                                                    //     ];
+                                                    //     updated[index].title =
+                                                    //         e.target.value;
+                                                    //     form.setData(
+                                                    //         "program_days",
+                                                    //         updated,
+                                                    //     );
+                                                    // }}
+                                                    onChange={(e) =>
+                                                        updateProgramDay(
+                                                            index,
+                                                            "title",
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                 />
 
                                                 <textarea
                                                     rows={3}
-                                                    className="input w-full"
+                                                    className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
                                                     placeholder="وصف اليوم"
                                                     value={day.desc}
-                                                    onChange={(e) => {
-                                                        const updated = [
-                                                            ...form.data
-                                                                .program_days,
-                                                        ];
-                                                        updated[index].desc =
-                                                            e.target.value;
-                                                        form.setData(
-                                                            "program_days",
-                                                            updated,
-                                                        );
-                                                    }}
+                                                    // onChange={(e) => {
+                                                    //     const updated = [
+                                                    //         ...form.data
+                                                    //             .program_days,
+                                                    //     ];
+                                                    //     updated[index].desc =
+                                                    //         e.target.value;
+                                                    //     form.setData(
+                                                    //         "program_days",
+                                                    //         updated,
+                                                    //     );
+                                                    // }}
+                                                    onChange={(e) =>
+                                                        updateProgramDay(
+                                                            index,
+                                                            "desc",
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                 />
                                             </div>
                                         ),
@@ -1456,6 +1573,165 @@ export default function Edit({
                         </div>
                     </div>
                 </form>
+
+                {showPriceModal && (
+                    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                            <h2 className="text-lg font-semibold mb-4">
+                                إضافة سعر حسب عدد الأشخاص
+                            </h2>
+
+                            {/* Label */}
+                            <div className="mb-4">
+                                <label className="label">التصنيف</label>
+
+                                <Select
+                                    styles={selectStyles}
+                                    value={newPrice.title}
+                                    placeholder="اختر التصنيف"
+                                    onChange={(selectedOption) => {
+                                        setNewPrice({
+                                            ...newPrice,
+                                            title: selectedOption,
+                                        });
+                                    }}
+                                    options={[
+                                        { value: "شخصين", label: "شخصين" },
+                                        {
+                                            value: "ثلاثة أشخاص",
+                                            label: "ثلاثة أشخاص",
+                                        },
+                                        {
+                                            value: "أربعة أشخاص",
+                                            label: "أربعة أشخاص",
+                                        },
+                                        {
+                                            value: "خمسة أشخاص",
+                                            label: "خمسة أشخاص",
+                                        },
+                                        {
+                                            value: "ستة أشخاص",
+                                            label: "ستة أشخاص",
+                                        },
+                                        {
+                                            value: "سبعة أشخاص",
+                                            label: "سبعة أشخاص",
+                                        },
+                                        {
+                                            value: "ثمانية أشخاص",
+                                            label: "ثمانية أشخاص",
+                                        },
+                                        {
+                                            value: "تسعة أشخاص",
+                                            label: "تسعة أشخاص",
+                                        },
+                                        {
+                                            value: "عشرة أشخاص",
+                                            label: "عشرة أشخاص",
+                                        },
+                                    ]}
+                                />
+                            </div>
+                            {addPriceErrors.title && (
+                                <p className="text-red-500 text-xs mt-1">
+                                    {addPriceErrors.title}
+                                </p>
+                            )}
+
+                            {/* Amount */}
+                            <div className="mb-6">
+                                <label className="label">السعر</label>
+                                <input
+                                    type="number"
+                                    min={0}
+                                    className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm"
+                                    value={newPrice.amount}
+                                    onChange={(e) =>
+                                        setNewPrice({
+                                            ...newPrice,
+                                            amount: e.target.value,
+                                        })
+                                    }
+                                />
+                                {addPriceErrors.amount && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {addPriceErrors.amount}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="flex justify-end gap-3">
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 rounded-lg bg-gray-200"
+                                    onClick={() => setShowPriceModal(false)}
+                                >
+                                    إلغاء
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 rounded-lg text-white"
+                                    style={{
+                                        backgroundColor: "var(--app-primary)",
+                                    }}
+                                    onClick={() => {
+                                        console.log(
+                                            "Adding price:",
+                                            typeof newPrice.title.label,
+                                        );
+                                        let errors = {
+                                            title: null,
+                                            amount: null,
+                                        };
+
+                                        if (
+                                            !newPrice.title ||
+                                            !newPrice.title.label
+                                        ) {
+                                            errors.title = "يجب اختيار تصنيف";
+                                        }
+                                        if (
+                                            newPrice.amount === "" ||
+                                            Number(newPrice.amount) < 0
+                                        ) {
+                                            errors.amount =
+                                                "السعر يجب أن يكون 0 أو أكبر";
+                                        }
+
+                                        setAddPriceErrors(errors);
+
+                                        if (errors.title || errors.amount)
+                                            return;
+
+                                        form.setData("prices", [
+                                            ...form.data.prices,
+                                            {
+                                                title: newPrice.title.label,
+                                                amount: Number(newPrice.amount),
+                                            },
+                                        ]);
+
+                                        setNewPrice({
+                                            title: null,
+                                            amount: "",
+                                        });
+
+                                        setAddPriceErrors({
+                                            title: null,
+                                            amount: null,
+                                        });
+
+                                        setShowPriceModal(false);
+                                    }}
+                                >
+                                    حفظ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </motion.div>
         </AuthenticatedLayout>
     );

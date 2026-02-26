@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('title');
 
             $table->string('desc');
-            
+
             $table->string('slug')->unique();
 
             // $table->foreignId('governorate_id')->constrained('governorates')->cascadeOnDelete();
@@ -30,13 +30,14 @@ return new class extends Migration
             $table->integer('duration_days');
             $table->decimal('price', 10, 2);
 
-             $table->decimal('rating', 10, 2);
-             $table->integer('number_of_rating_customers');
-               $table->string('price_contain');
-                 $table->string('price_not_contain');
+            $table->decimal('rating', 10, 2);
+            $table->integer('number_of_rating_customers');
+            $table->string('price_contain');
+            $table->string('price_not_contain');
 
             $table->string('airline')->nullable();
             $table->json('program')->nullable();
+            $table->json('prices')->nullable();
 
             // $table->foreignId('hotel_id')
             //     ->nullable()
@@ -65,7 +66,7 @@ return new class extends Migration
             $table->string('seo_title')->nullable();
             $table->text('seo_description')->nullable();
             $table->softDeletes();
-            
+
 
             $table->timestamps();
         });

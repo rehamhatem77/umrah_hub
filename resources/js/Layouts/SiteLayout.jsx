@@ -6,6 +6,7 @@ import { Head, usePage } from "@inertiajs/react";
 
 export default function SiteLayout({ children, title }) {
     const { footer } = usePage().props;
+const {services} = usePage().props;
     return (
         <>
             <Head 
@@ -20,7 +21,7 @@ title={title || "Umrah Hub"}
 
                 <main className="flex-grow">{children}</main>
 
-                <Footer footer={footer} />
+                <Footer footer={footer} services={services} />
                 <WhatsAppButton />
                 {/* <Chatbot /> */}
             </div>

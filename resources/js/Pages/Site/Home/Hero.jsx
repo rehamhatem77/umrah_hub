@@ -7,12 +7,31 @@ import { router } from "@inertiajs/react";
 export default function Hero({ homepage }) {
     const [destination, setDestination] = useState(null);
 
-    const [date, setDate] = useState("");
-    const [budget, setBudget] = useState("");
+    const [date, setDate] = useState(null);
+    const [budget, setBudget] = useState(null);
 
     const destinationOptions = [
         { value: "مكة", label: "مكة" },
         { value: "المدينة المنورة", label: "المدينة" },
+    ];
+    const budgetOptions = [
+        { value: "economical", label: "اقتصادي" },
+        { value: "standard", label: "متوسط" },
+        { value: "luxury", label: "فاخر" },
+    ];
+    const dateOptions = [
+        { label: "يناير", value: 1 },
+        { label: "فبراير", value: 2 },
+        { label: "مارس", value: 3 },
+        { label: "أبريل", value: 4 },
+        { label: "مايو", value: 5 },
+        { label: "يونيو", value: 6 },
+        { label: "يوليو", value: 7 },
+        { label: "أغسطس", value: 8 },
+        { label: "سبتمبر", value: 9 },
+        { label: "أكتوبر", value: 10 },
+        { label: "نوفمبر", value: 11 },
+        { label: "ديسمبر", value: 12 },
     ];
     const heroImage = homepage?.hero_image
         ? `/storage/${homepage.hero_image}`
@@ -49,15 +68,15 @@ export default function Hero({ homepage }) {
     };
 
     return (
-//         <section
-//             className="
-//         pattern-bg
-//   px-4 lg:px-20
-//   pt-5
-//   pb-40 sm:pb-44 lg:pb-28
-//   bg-gray-100
-// "
-//         >
+        //         <section
+        //             className="
+        //         pattern-bg
+        //   px-4 lg:px-20
+        //   pt-5
+        //   pb-40 sm:pb-44 lg:pb-28
+        //   bg-gray-100
+        // "
+        //         >
         <section
             className="
         pattern-bg
@@ -82,12 +101,12 @@ export default function Hero({ homepage }) {
                         المناسبة لك
                     </h1> */}
 
-                    <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight line-clamp-2">
+                    <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
                         {homepage?.hero_title ||
                             "اعثر على باقة العمرة المناسبة لك"}
                     </h1>
 
-                    <p className="text-gray-200 text-sm sm:text-base lg:text-lg">
+                    <p className="text-gray-200  text-sm sm:text-base lg:text-lg">
                         {homepage?.hero_description ||
                             "قارن بين أفضل باقات العمرة واحجز بكل ثقة"}
                     </p>
@@ -98,7 +117,7 @@ export default function Hero({ homepage }) {
   absolute z-20
   left-1/2 -translate-x-1/2
   w-full px-4 sm:px-8 lg:px-12
-  pt-[400px] sm:pt-[400px] lg:pt-0
+  pt-[450px] lg:pt-[425px] sm:pt-[400px] lg:pt-0
   lg:-bottom-20                
 "
                 >
@@ -136,11 +155,14 @@ export default function Hero({ homepage }) {
                                     تاريخ السفر
                                 </label>
 
-                                <input
-                                    type="date"
+                                <Select
+                                    isRtl
+                                    placeholder="اختر تاريخ السفر"
+                                    options={dateOptions}
+                                    styles={selectStyles}
                                     value={date}
-                                    onChange={(e) => setDate(e.target.value)}
-                                    className="input py-2.5 px-3 text-sm rounded-lg shadow-sm focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)]"
+                                    onChange={setDate}
+                                    isSearchable={false}
                                 />
                             </div>
 
@@ -149,14 +171,23 @@ export default function Hero({ homepage }) {
                                     <MdMoney className="text-[var(--app-primary)]" />
                                     الميزانية
                                 </label>
+                                <Select
+                                    isRtl
+                                    placeholder="اختر الميزانية"
+                                    options={budgetOptions}
+                                    styles={selectStyles}
+                                    value={budget}
+                                    onChange={setBudget}
+                                    isSearchable={false}
+                                />
 
-                                <input
+                                {/* <input
                                     type="number"
                                     value={budget}
                                     onChange={(e) => setBudget(e.target.value)}
                                     placeholder="أي سعر"
                                     className="input py-2.5 px-3 text-sm rounded-lg shadow-sm focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)]"
-                                />
+                                /> */}
                             </div>
 
                             <button
@@ -167,9 +198,11 @@ export default function Hero({ homepage }) {
                                 onClick={() => {
                                     router.get("/packages", {
                                         destination: destination?.value || null,
-                                        date: date || null,
-                                        price_to: budget || null,
-                                        price_from: 0,
+                                        // date: date || null,
+                                        month: date?.value || null,
+                                        level: budget?.value || null,
+                                        // price_to: budget || null,
+                                        // price_from: 0,
                                     });
                                 }}
                             >

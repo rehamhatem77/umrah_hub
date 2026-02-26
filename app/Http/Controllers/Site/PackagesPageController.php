@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Governorate;
 use App\Models\Offer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -15,7 +16,7 @@ class PackagesPageController extends Controller
 
     private array $tourLevelMap = [
         'economical' => 'اقتصادي',
-        'standard'   => 'عادي',
+        'standard'   => 'متوسط',
         'vip'        => 'VIP',
         'luxury'     => 'فاخر',
     ];
@@ -56,6 +57,22 @@ class PackagesPageController extends Controller
 
             if ($request->filled('date')) {
                 $offersQuery->whereDate('start_date', '>=', $request->date);
+            }
+
+            if ($request->filled('month')) {
+
+                $month = (int) $request->month;
+
+
+                $offersQuery->where(function ($query) use ($month) {
+                    $selectedDate = Carbon::create(now()->year, $month, 1);
+
+                    $query->whereMonth('start_date', '=', $selectedDate);
+                        // ->whereMonth('end_date', '>=', $selectedDate);
+                });
+            }
+            if ($request->filled('level')) {
+                $offersQuery->where('tour_level', $request->level);
             }
 
 
@@ -200,6 +217,7 @@ class PackagesPageController extends Controller
                 'slug' => $offer->slug,
                 'offer_code' => $offer->offer_code,
                 'price' => $offer->price,
+                'prices' => $offer->prices,
                 'price_contain' => $offer->price_contain,
                 'price_not_contain' => $offer->price_not_contain,
                 'duration_days' => $offer->duration_days,

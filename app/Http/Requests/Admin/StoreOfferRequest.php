@@ -64,6 +64,25 @@ class StoreOfferRequest extends FormRequest
 
             'price' => 'required|numeric|min:0',
 
+             'prices' => [
+                'nullable',
+                'array',
+                function ($attribute, $value, $fail) {
+
+                    foreach ($value as $item) {
+                        if (empty($item['title']) || !isset($item['amount'])) {
+                            $fail('يجب إدخال كل من التصنيف والمبلغ لكل سعر إضافي.');
+                            return;
+                        }
+                    }
+                    foreach ($value as $item) {
+                        if (!is_numeric($item['amount']) || $item['amount'] < 0) {
+                            $fail('يجب أن يكون المبلغ في كل سعر إضافي رقمًا يساوي أو أكبر من صفر.');
+                            return;
+                        }
+                    }
+                }],
+
             'airline' => 'required|string|max:255',
 
 
