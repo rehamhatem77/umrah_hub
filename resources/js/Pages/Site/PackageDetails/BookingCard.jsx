@@ -149,13 +149,13 @@ ${data.slug ? `رابط الباقة:\n${route("packages.show", data.slug)}` : "
                                         key={index}
                                         className="flex justify-between items-center p-3 border rounded-lg bg-gray-50"
                                     >
-                                        <span className="text-gray-600">
-                                            {toArabicNumbers(price.amount)} ج.م
-                                            /{" "}
-                                        </span>
                                         <span className="text-sm font-medium text-gray-500">
                                             {" "}
                                             {price.title}{" "}
+                                        </span>
+                                        <span className="text-gray-600">
+                                            {toArabicNumbers(price.amount)} ج.م
+                                            / شخص
                                         </span>
                                     </div>
                                 ))
@@ -179,7 +179,7 @@ ${data.slug ? `رابط الباقة:\n${route("packages.show", data.slug)}` : "
                             {startDateHijri} - {endDateHijri}
                         </span>
                         <span className="text-sm font-bold text-gray-500">
-                            الموافق   {formatDate(data.start_date)} -{" "}
+                            الموافق {formatDate(data.start_date)} -{" "}
                             {formatDate(data.end_date)}
                         </span>
                     </div>

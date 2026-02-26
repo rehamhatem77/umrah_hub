@@ -70,6 +70,15 @@ export default function Edit({
     features,
 }) {
     const { flash } = usePage().props;
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return "";
+        const d = new Date(dateString);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
 
     const form = useForm({
         offer_code: offer?.offer_code || "",
@@ -92,12 +101,11 @@ export default function Edit({
         price: offer?.price || "",
         airline: offer?.airline || "",
         program_days: Array.isArray(offer?.program) ? offer.program : [],
-        program: [],
+        program: Array.isArray(offer?.program) ? offer.program : [],
         prices: offer?.prices || [],
 
-        start_date: offer?.start_date ? offer.start_date.slice(0, 10) : "",
-
-        end_date: offer?.end_date ? offer.end_date.slice(0, 10) : "",
+        start_date: formatDateForInput(offer?.start_date),
+        end_date: formatDateForInput(offer?.end_date),
 
         available_places: offer?.available_places ?? "",
         whatsapp_number: offer?.whatsapp_number || "",
@@ -277,11 +285,17 @@ export default function Edit({
     // useEffect(() => {
     //     form.setData("program", form.data.program_days);
     // }, [form.data.program_days]);
+    useEffect(() => {
+        if (offer.program && offer.program.length > 0) {
+            form.setData("program_days", offer.program);
+            form.setData("program", offer.program);
+        }
+    }, []);
     const updateProgramDay = (index, key, value) => {
         const updated = [...form.data.program_days];
         updated[index][key] = value;
         form.setData("program_days", updated);
-        form.setData("program", form.data.program_days);
+        form.setData("program", updated);
     };
     const addPriceContainItem = () => {
         if (
@@ -461,10 +475,8 @@ export default function Edit({
             form.data.price_not_contain.trim() === ""
         )
             errors.price_not_contain = "المحتويات غير المشمولة في السعر مطلوبة";
-        const hasAtLeastOneDayFilled = form.data.program_days.some(
-            (day) =>
-                (day.title && day.title.trim() !== "") ||
-                (day.desc && day.desc.trim() !== ""),
+        const hasAtLeastOneDayFilled = form.data.program_days?.some(
+            (day) => day?.title?.trim() || day?.desc?.trim(),
         );
         if (!hasAtLeastOneDayFilled)
             errors.program_days = "يجب إدخال بيانات يوم واحد على الأقل";
@@ -475,7 +487,9 @@ export default function Edit({
 
     const submit = (e) => {
         e.preventDefault();
-        form.setData("program", form.data.program_days);
+        const program = form.data.program_days;
+
+        form.setData("program", program);
         if (!validate()) return;
         if (!form.data.program || form.data.program.length === 0) {
             setFrontendErrors((prev) => ({
@@ -829,7 +843,7 @@ export default function Edit({
                                             },
                                             {
                                                 value: "standard",
-                                                label: "عادي",
+                                                label: "متوسط",
                                             },
                                             { value: "vip", label: "VIP" },
                                         ]}
@@ -846,7 +860,7 @@ export default function Edit({
                                                               : form.data
                                                                       .tour_level ===
                                                                   "standard"
-                                                                ? "عادي"
+                                                                ? "متوسط"
                                                                 : "اقتصادي",
                                                   }
                                                 : null

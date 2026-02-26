@@ -66,7 +66,7 @@ export default function PackageHeaderAnimatedTabs({ data }) {
   };
    const levelStyles = {
         اقتصادي: { text: 'text-green-600', bg: 'bg-green-100' },
-        عادي: { text: 'text-blue-600', bg: 'bg-blue-100' },
+        متوسط: { text: 'text-blue-600', bg: 'bg-blue-100' },
         VIP: { text: 'text-yellow-600', bg: 'bg-yellow-100' },
         فاخر: { text: 'text-red-600', bg: 'bg-red-100' },
     };

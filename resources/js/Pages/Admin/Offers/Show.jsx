@@ -49,6 +49,15 @@ export default function ShowOffer({
     features,
 }) {
     const { flash } = usePage().props;
+  const formatDateForInput = (dateString) => {
+        if (!dateString) return "";
+        const d = new Date(dateString);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
 
     return (
         <AuthenticatedLayout>
@@ -171,7 +180,7 @@ export default function ShowOffer({
                                     </label>
                                     <input
                                         type="date"
-                                        value={offer.start_date?.slice(0, 10)}
+                                        value={formatDateForInput(offer.start_date)}
                                         disabled
                                         className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed"
                                     />
@@ -183,7 +192,7 @@ export default function ShowOffer({
                                     </label>
                                     <input
                                         type="date"
-                                        value={offer.end_date?.slice(0, 10)}
+                                        value={formatDateForInput(offer.end_date)}
                                         disabled
                                         className="input w-full py-2.5 px-3 text-sm rounded-lg bg-gray-100 cursor-not-allowed"
                                     />

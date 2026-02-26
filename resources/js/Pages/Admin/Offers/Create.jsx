@@ -699,7 +699,7 @@ console.log(form.data);
                                             },
                                             {
                                                 value: "standard",
-                                                label: "عادي",
+                                                label: "متوسط",
                                             },
                                             { value: "vip", label: "VIP" },
                                             { value: "luxury", label: "فاخر" },
@@ -711,7 +711,7 @@ console.log(form.data);
                                                     ? "VIP"
                                                     : form.data.tour_level ===
                                                         "standard"
-                                                      ? "عادي"
+                                                      ? "متوسط"
                                                       : form.data.tour_level ===
                                                           "economical"
                                                         ? "اقتصادي"
