@@ -13,7 +13,7 @@ import ContactMap from "./ContactMap";
 export function ContactInfoSidebar({data}) {
 
   const contactTitle = data?.contact_title || "بيانات التواصل";
-  const contactAddress = data?.contact_address || "شارع إبراهيم الخليل، مكة المكرمة المملكة العربية السعودية";
+  // const contactAddress = data?.contact_address || "شارع إبراهيم الخليل، مكة المكرمة المملكة العربية السعودية";
   const workingHours = data?.working_hours || "يومياً من ٨ ص – ١٠ م";
   const contactEmail = data?.contact_email || "لا توجد بيانات";
   const contactPhone = data?.contact_phone || "لا توجد بيانات";
@@ -39,9 +39,9 @@ export function ContactInfoSidebar({data}) {
         <h3 className="text-lg font-medium text-[#111813] mb-8 text-right"> {contactTitle}</h3>
 
         <div className="flex flex-col gap-6">
-          <InfoItem icon={<FiMapPin />} title="العنوان">
+          {/* <InfoItem icon={<FiMapPin />} title="العنوان">
            {contactAddress}
-          </InfoItem>
+          </InfoItem> */}
 
           <InfoItem icon={<FiPhoneCall />} title="خدمة العملاء">
             <span dir="ltr" className="block text-right">

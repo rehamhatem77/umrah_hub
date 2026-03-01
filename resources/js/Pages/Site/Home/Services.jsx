@@ -2,18 +2,17 @@ import { FaBus, FaPlane, FaHotel, FaPassport } from "react-icons/fa";
 import { motion } from "framer-motion";
 import * as FaIcons from "react-icons/fa";
 import * as FiIcons from "react-icons/fi";
-import * as Fa6Icons from "react-icons/fa6";
+import * as Fa6Icons from 'react-icons/fa6';
+import * as Hi2Icons from 'react-icons/hi2';
+import * as PiIcons from 'react-icons/pi';
+import * as BsIcons from 'react-icons/bs';
 
 export default function Services({ services , title, description}) {
 
-    const getIconComponent = (iconName) => {
-        return (
-            FaIcons[iconName] ||
-            FiIcons[iconName] ||
-            Fa6Icons[iconName] ||
-            null
-        );
-    };
+     const getIconComponent = (iconName) => {
+            if (!iconName) return null;
+            return FiIcons[iconName] || FaIcons[iconName] || Fa6Icons[iconName] || Hi2Icons[iconName] || PiIcons[iconName] || BsIcons[iconName] || null;
+        };
 
     const containerVariants = {
         hidden: {},

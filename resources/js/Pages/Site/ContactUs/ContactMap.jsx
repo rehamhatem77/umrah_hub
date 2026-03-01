@@ -27,7 +27,7 @@ export default function ContactMap({location}) {
         >
           <span className="text-red-600 text-lg">📍</span>
           <span className="text-sm font-medium text-[#111813]">
-            مقرنا الرئيسي
+           مكة المكرمة، السعودية
           </span>
         </motion.div>
       </div>

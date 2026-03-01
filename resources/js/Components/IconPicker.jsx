@@ -15,7 +15,7 @@ import {
     FaSwimmer,FaPlane
 } from 'react-icons/fa';
 import { FaCarSide, FaPassport, FaUmbrellaBeach, FaUtensils } from 'react-icons/fa6';
-import { HiOutlineHeart, HiOutlineShieldCheck, HiOutlineSparkles } from 'react-icons/hi';
+import { HiOutlineHeart, HiOutlineShieldCheck, HiOutlineSparkles } from 'react-icons/hi2';
 import { PiCertificate } from "react-icons/pi";
 import { BsJournalCheck } from "react-icons/bs";
 

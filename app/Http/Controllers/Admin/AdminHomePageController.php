@@ -13,8 +13,8 @@ class AdminHomePageController extends Controller
     private function homepage()
     {
         return AdminHomePage::firstOrCreate([], [
-            'hero_title' => '',
-            'hero_description' => '',
+            'hero_title' => null,
+            'hero_description' => null,
             'hero_image' => "",
             'services_title' => '',
             'services_description' => '',

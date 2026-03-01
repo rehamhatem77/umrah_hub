@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiSearch, FiX } from "react-icons/fi";
 import NavLink from "@/Components/NavLink";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 
 export default function HomeHeader({ onSearch }) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -68,12 +68,14 @@ export default function HomeHeader({ onSearch }) {
         <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b shadow-sm">
             <div className="relative flex items-center justify-between px-6 lg:px-40 py-4">
                 <div className="flex items-center gap-2 font-semibold z-50">
-                    <img
-                        src="/omrahublogo.png"
-                        alt="Omra Hub"
-                        style={{ width: "130px", height: "auto" }}
-                    />
-                    
+                    <a href="/" > 
+                        <img
+                            src="/omrahublogo.png"
+                            alt="Omra Hub"
+
+                            style={{ width: "130px", height: "auto" }}
+                        />
+                    </a>
                 </div>
 
                 <div className="hidden lg:flex items-center flex-1 gap-6 justify-end">

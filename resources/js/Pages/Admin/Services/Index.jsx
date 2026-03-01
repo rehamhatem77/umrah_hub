@@ -18,6 +18,10 @@ import {
 } from 'react-icons/fi';
 import * as FiIcons from 'react-icons/fi';
 import * as FaIcons from 'react-icons/fa';
+import * as Fa6Icons from 'react-icons/fa6';
+import * as Hi2Icons from 'react-icons/hi2';
+import * as PiIcons from 'react-icons/pi';
+import * as BsIcons from 'react-icons/bs';
 import IconPicker from '@/Components/IconPicker';
 import { LuPackagePlus } from 'react-icons/lu';
 
@@ -39,8 +43,10 @@ export default function Index({ services, filters }) {
         id: null,
     });
 
-    const getIconComponent = (iconName) =>
-        FiIcons[iconName] || FaIcons[iconName] || null;
+     const getIconComponent = (iconName) => {
+        if (!iconName) return null;
+        return FiIcons[iconName] || FaIcons[iconName] || Fa6Icons[iconName] || Hi2Icons[iconName] || PiIcons[iconName] || BsIcons[iconName] || null;
+    };
 
     const selectIcon = ({ icon }) => {
         form.setData('icon', icon);

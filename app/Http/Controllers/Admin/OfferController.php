@@ -90,7 +90,7 @@ class OfferController extends Controller
                 })
             )
             ->latest()
-            ->paginate(20)
+            ->paginate(9)
             ->withQueryString();
         $counts = [
             'all' => Offer::count(),
