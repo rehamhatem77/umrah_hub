@@ -16,6 +16,10 @@ import {
 } from 'react-icons/fa';
 import { FaCarSide, FaPassport, FaUmbrellaBeach, FaUtensils } from 'react-icons/fa6';
 import { HiOutlineHeart, HiOutlineShieldCheck, HiOutlineSparkles } from 'react-icons/hi';
+import { PiCertificate } from "react-icons/pi";
+import { BsJournalCheck } from "react-icons/bs";
+
+
 
 
 import * as HiIcons from 'react-icons/hi';
@@ -63,10 +67,11 @@ export const umrahHajjIcons = [
     { icon: FaCarSide, label: 'نقل خاص' },
     { icon: FaPlane, label: 'حجز طيران' },
     { icon: FaBus, label: 'نقل ومواصلات' },
-    {icon: HiOutlineHeart ,lable:"الروحانية أولاً"},
-    {icon:HiOutlineSparkles,lable:"اليسر والسهولة"},
-    {icon:HiOutlineShieldCheck,lable:"النزاهة والشفافية"},
-
+    {icon: HiOutlineHeart , label:'الروحانية أولاً'},
+    {icon:HiOutlineSparkles, label:'اليسر والسهولة'},
+    {icon:HiOutlineShieldCheck, label:'النزاهة والشفافية'},
+    {icon:PiCertificate , label:'برامج معتمدة'},
+    {icon:BsJournalCheck  , label:'خيارات ذكية'},
 
 ];
 
@@ -84,6 +89,7 @@ export default function IconPicker({ show, onClose, onSelect }) {
                             className="border rounded-lg p-3 hover:border-[var(--app-primary)] flex flex-col items-center gap-1 transition"
                         >
                             <Icon className="text-xl text-[var(--app-primary)]" />
+                            <span className="text-xs text-gray-600">{label}</span>
                         </button>
                 ))}
             </div>

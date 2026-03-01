@@ -43,8 +43,8 @@ class AdminHomePageController extends Controller
             $homepage = $this->homepage();
 
             $validated = $request->validate([
-                'hero_title' => 'required|string|max:255',
-                'hero_description' => 'required|string',
+                'hero_title' => 'nullable|string|max:255',
+                'hero_description' => 'nullable|string',
             ]);
 
             if ($request->hasFile('hero_image')) {

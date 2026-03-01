@@ -70,7 +70,7 @@ export default function HomeHeader({ onSearch }) {
                 <div className="flex items-center gap-2 font-semibold z-50">
                     <img
                         src="/omrahublogo.png"
-                        alt="Umrah Hub"
+                        alt="Omra Hub"
                         style={{ width: "130px", height: "auto" }}
                     />
                     

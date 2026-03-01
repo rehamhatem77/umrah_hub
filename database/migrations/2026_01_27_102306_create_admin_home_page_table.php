@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admin_home_page', function (Blueprint $table) {
-            $table->string('hero_title');
-            $table->text('hero_description');
+            $table->string('hero_title')->nullable();
+            $table->text('hero_description')->nullable();
             $table->string('hero_image');
 
             $table->string('services_title');

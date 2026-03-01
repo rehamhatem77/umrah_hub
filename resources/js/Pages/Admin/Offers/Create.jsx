@@ -92,7 +92,7 @@ export default function Create({
         duration_days: "",
         price: "",
         airline: "",
-        program_days: [],
+        // program_days: [],
         program: [],
         prices: [],
         start_date: "",
@@ -261,17 +261,24 @@ export default function Create({
             desc: "",
         }));
 
-        form.setData("program_days", generatedDays);
+        form.setData("program", generatedDays);
     }, [form.data.duration_days]);
     // useEffect(() => {
-    //     form.setData("program", form.data.program_days);
-    // }, [form.data.program_days]);
+    //     form.setData("program", form.data.program);
+    // }, [form.data.program]);
 
-    const updateProgramDay = (index, key, value) => {
-        const updated = [...form.data.program_days];
-        updated[index][key] = value;
-        form.setData("program_days", updated);
-    };
+    useEffect(() => {
+        if (form.data.program && form.data.program.length > 0) {
+            form.setData("program", form.data.program);
+           
+        }
+    }, []);
+
+    // const updateProgramDay = (index, key, value) => {
+    //     const updated = [...form.data.program];
+    //     updated[index][key] = value;
+    //     form.setData("program", updated);
+    // };
 
     const removeImage = (index) => {
         const imgs = [...previewImages];
@@ -323,13 +330,13 @@ export default function Create({
         if (!form.data.start_date)
             errors.start_date = "اختر تاريخ بداية الباقة";
         if (!form.data.end_date) errors.end_date = "اختر تاريخ نهاية الباقة";
-        const hasAtLeastOneDayFilled = form.data.program_days.some(
+        const hasAtLeastOneDayFilled = form.data.program.some(
             (day) =>
                 (day.title && day.title.trim() !== "") ||
                 (day.desc && day.desc.trim() !== ""),
         );
         if (!hasAtLeastOneDayFilled)
-            errors.program_days = "يجب إدخال بيانات يوم واحد على الأقل";
+            errors.program = "يجب إدخال بيانات يوم واحد على الأقل";
 
         if (!form.data.tour_level) errors.tour_level = "اختر مستوى الرحلة";
         if (!form.data.available_places)
@@ -344,8 +351,8 @@ export default function Create({
 
     const submit = (e) => {
         e.preventDefault();
-        form.setData("program", form.data.program_days);
-console.log(form.data);
+        form.setData("program", form.data.program);
+        console.log(form.data);
         if (!validate()) return;
         if (!form.data.program || form.data.program.length === 0) {
             setFrontendErrors((prev) => ({
@@ -1120,7 +1127,7 @@ console.log(form.data);
 
                         <div className="card p-6 space-y-4">
                             <h3 className="font-bold mb-3">برنامج الرحلة</h3>
-                            <InputError message={frontendErrors.program_days} />
+                            <InputError message={frontendErrors.program} />
 
                             {!form.data.duration_days ? (
                                 <div className="p-4 text-sm text-gray-500 bg-gray-50 border rounded-lg">
@@ -1128,7 +1135,7 @@ console.log(form.data);
                                 </div>
                             ) : (
                                 <div className="space-y-4">
-                                    {form.data.program_days.map(
+                                    {form.data.program.map(
                                         (dayObj, index) => (
                                             <div
                                                 key={index}
@@ -1138,50 +1145,50 @@ console.log(form.data);
                                                     className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  font-semibold text-[var(--app-primary)]"
                                                     value={dayObj.label}
                                                     placeholder="مثال: اليوم 3-5"
-                                                    // onChange={(e) => {
-                                                    //     const updated = [
-                                                    //         ...form.data
-                                                    //             .program_days,
-                                                    //     ];
-                                                    //     updated[index].label =
-                                                    //         e.target.value;
-                                                    //     form.setData(
-                                                    //         "program_days",
-                                                    //         updated,
-                                                    //     );
-                                                    // }}
-                                                    onChange={(e) =>
-                                                        updateProgramDay(
-                                                            index,
-                                                            "label",
-                                                            e.target.value,
-                                                        )
-                                                    }
+                                                    onChange={(e) => {
+                                                        const updated = [
+                                                            ...form.data
+                                                                .program,
+                                                        ];
+                                                        updated[index].label =
+                                                            e.target.value;
+                                                        form.setData(
+                                                            "program",
+                                                            updated,
+                                                        );
+                                                    }}
+                                                    // onChange={(e) =>
+                                                    //     updateProgramDay(
+                                                    //         index,
+                                                    //         "label",
+                                                    //         e.target.value,
+                                                    //     )
+                                                    // }
                                                 />
 
                                                 <input
                                                     className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
                                                     placeholder="عنوان اليوم"
                                                     value={dayObj.title}
-                                                    // onChange={(e) => {
-                                                    //     const updated = [
-                                                    //         ...form.data
-                                                    //             .program_days,
-                                                    //     ];
-                                                    //     updated[index].title =
-                                                    //         e.target.value;
-                                                    //     form.setData(
-                                                    //         "program_days",
-                                                    //         updated,
-                                                    //     );
-                                                    // }}
-                                                    onChange={(e) =>
-                                                        updateProgramDay(
-                                                            index,
-                                                            "title",
-                                                            e.target.value,
-                                                        )
-                                                    }
+                                                    onChange={(e) => {
+                                                        const updated = [
+                                                            ...form.data
+                                                                .program,
+                                                        ];
+                                                        updated[index].title =
+                                                            e.target.value;
+                                                        form.setData(
+                                                            "program",
+                                                            updated,
+                                                        );
+                                                    }}
+                                                    // onChange={(e) =>
+                                                    //     updateProgramDay(
+                                                    //         index,
+                                                    //         "title",
+                                                    //         e.target.value,
+                                                    //     )
+                                                    // }
                                                 />
 
                                                 <textarea
@@ -1189,25 +1196,25 @@ console.log(form.data);
                                                     className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
                                                     placeholder="وصف اليوم"
                                                     value={dayObj.desc}
-                                                    // onChange={(e) => {
-                                                    //     const updated = [
-                                                    //         ...form.data
-                                                    //             .program_days,
-                                                    //     ];
-                                                    //     updated[index].desc =
-                                                    //         e.target.value;
-                                                    //     form.setData(
-                                                    //         "program_days",
-                                                    //         updated,
-                                                    //     );
-                                                    // }}
-                                                    onChange={(e) =>
-                                                        updateProgramDay(
-                                                            index,
-                                                            "desc",
-                                                            e.target.value,
-                                                        )
-                                                    }
+                                                    onChange={(e) => {
+                                                        const updated = [
+                                                            ...form.data
+                                                                .program,
+                                                        ];
+                                                        updated[index].desc =
+                                                            e.target.value;
+                                                        form.setData(
+                                                            "program",
+                                                            updated,
+                                                        );
+                                                    }}
+                                                    // onChange={(e) =>
+                                                    //     updateProgramDay(
+                                                    //         index,
+                                                    //         "desc",
+                                                    //         e.target.value,
+                                                    //     )
+                                                    // }
                                                 />
                                             </div>
                                         ),
@@ -1515,7 +1522,10 @@ console.log(form.data);
                                         backgroundColor: "var(--app-primary)",
                                     }}
                                     onClick={() => {
-console.log("Adding price:", typeof(newPrice.title.label));
+                                        console.log(
+                                            "Adding price:",
+                                            typeof newPrice.title.label,
+                                        );
                                         let errors = {
                                             title: null,
                                             amount: null,

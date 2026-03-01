@@ -248,7 +248,7 @@ class PackagesPageController extends Controller
                 'features' => $offer->features,
             ],
             'meta' => [
-                'title' => "Umrah Hub - {$offer->title}",
+                'title' => "Omra Hub - {$offer->title}",
                 'description' => $offer->desc ?? $offer->title,
                 'image' => asset($offer->main_image_url),
                 'url' => url()->current(),

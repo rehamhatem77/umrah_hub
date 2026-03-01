@@ -10,7 +10,7 @@ const {services} = usePage().props;
     return (
         <>
             <Head 
-title={title || "Umrah Hub"}
+title={title || "Omra Hub"}
  />
 
             <div

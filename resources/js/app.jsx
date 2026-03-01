@@ -11,7 +11,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    title: (title) => `${title} - Umrah Hub`,
+    title: (title) => `${title} - Omra Hub`,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,

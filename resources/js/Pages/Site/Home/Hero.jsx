@@ -91,9 +91,9 @@ export default function Hero({ homepage }) {
                     className="absolute inset-0 w-full h-full object-cover rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"
                     alt="Kaaba"
                 />
-
-                <div className="absolute inset-0 bg-black/55 rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"></div>
-
+                
+                        <div className="absolute inset-0 bg-black/55 rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"></div>,
+                   
                 <div className="relative z-10 text-center max-w-3xl px-4">
                     {/* <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
                         اعثر على باقة العمرة
@@ -101,15 +101,19 @@ export default function Hero({ homepage }) {
                         المناسبة لك
                     </h1> */}
 
-                    <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
-                        {homepage?.hero_title ||
-                            "اعثر على باقة العمرة المناسبة لك"}
-                    </h1>
+                    {homepage?.hero_title && (
+                        <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
+                            {homepage?.hero_title ||
+                                "اعثر على باقة العمرة المناسبة لك"}
+                        </h1>
+                    )}
 
-                    <p className="text-gray-200  text-sm sm:text-base lg:text-lg">
-                        {homepage?.hero_description ||
-                            "قارن بين أفضل باقات العمرة واحجز بكل ثقة"}
-                    </p>
+                    {homepage?.hero_description && (
+                        <p className="text-gray-200  text-sm sm:text-base lg:text-lg">
+                            {homepage?.hero_description ||
+                                "قارن بين أفضل باقات العمرة واحجز بكل ثقة"}
+                        </p>
+                    )}
                 </div>
 
                 <div

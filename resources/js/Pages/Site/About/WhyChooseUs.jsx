@@ -53,7 +53,7 @@
 //             viewport={{ once: true }}
 //           >
 //             <h2 className="text-[#111813] text-3xl font-bold leading-tight mb-3">
-//               لماذا تختار Umrah Hub؟
+//               لماذا تختار Omra Hub؟
 //             </h2>
 //             <p className="text-gray-500 text-base">
 //               نقدم لك تجربة متكاملة تجمع بين الراحة والروحانية

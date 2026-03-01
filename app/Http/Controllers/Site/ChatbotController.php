@@ -111,7 +111,7 @@ PROMPT;
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . config('services.openrouter.key'),
                 'HTTP-Referer' => config('app.url'),
-                'X-Title' => 'Umrah Hub AI Assistant',
+                'X-Title' => 'Omra Hub AI Assistant',
             ])->post('https://openrouter.ai/api/v1/chat/completions', [
                 'model' => 'openai/gpt-4o-mini',
                 'temperature' => 0.3,

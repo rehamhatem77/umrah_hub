@@ -25,7 +25,7 @@ export default function Footer({ footer, services }) {
                 <div className="relative">
                     <img
                         src="/whitelogo.png"
-                        alt="Umrah Hub"
+                        alt="Omra Hub"
                         style={{ width: "130px", height: "auto" }}
                     />
 
@@ -135,7 +135,7 @@ export default function Footer({ footer, services }) {
                             <li className="flex items-center gap-3">
                                 <FaEnvelope className="text-white/60" />
                                 <a
-                                    href={`mailto:${footer?.contact_email || ""}?subject=تواصل مع Umrah Hub`}
+                                    href={`mailto:${footer?.contact_email || ""}?subject=تواصل مع Omra Hub`}
                                     className="hover:text-white transition"
                                 >
                                     {footer?.contact_email || ""}
@@ -147,7 +147,7 @@ export default function Footer({ footer, services }) {
             </div>
 
             <div className="mt-14 border-t border-white/10 py-6 text-center text-sm text-white/60">
-                جميع الحقوق محفوظة © Umrah Hub 2026
+                جميع الحقوق محفوظة © Omra Hub 2026
             </div>
         </footer>
     );

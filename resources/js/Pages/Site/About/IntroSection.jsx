@@ -34,7 +34,7 @@
 //             transition={{ duration: 0.6, delay: 0.2 }}
 //             viewport={{ once: true }}
 //           >
-//             نبذة عن Umrah Hub
+//             نبذة عن Omra Hub
 //           </motion.h2>
 
 //           {/* Paragraph Animation */}
