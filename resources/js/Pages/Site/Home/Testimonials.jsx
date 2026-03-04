@@ -4,111 +4,132 @@ import { FaStar } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
 export default function Testimonials({ testimonials, title, description }) {
-    const visible = 3;
-    const cardWidth = 340;
+
+    const [visible, setVisible] = useState(3);
+    const [index, setIndex] = useState(0);
+
+    const cardWidth = 330;
     const gap = 24;
     const step = cardWidth + gap;
+
+    
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 640) setVisible(1);
+            else if (window.innerWidth < 1024) setVisible(2);
+            else setVisible(3);
+        };
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     const maxIndex = testimonials.length - visible;
 
-    const [index, setIndex] = useState(0);
-    const containerVariants = {
-        hidden: {},
-        show: {
-            transition: { staggerChildren: 0.15 },
-        },
+    
+    const next = () => {
+        if (index >= maxIndex) {
+            setIndex(0);
+        } else {
+            setIndex(index + 1);
+        }
+    };
+
+    const prev = () => {
+        if (index <= 0) {
+            setIndex(maxIndex);
+        } else {
+            setIndex(index - 1);
+        }
+    };
+
+  
+    useEffect(() => {
+        const interval = setInterval(() => {
+            next();
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [index, maxIndex]);
+
+    const handleDragEnd = (event, info) => {
+        const threshold = 80;
+
+        if (info.offset.x >threshold) {
+            next();
+        } else if (info.offset.x < - threshold) {
+            prev();
+        }
     };
 
     return (
         <section className="py-20 bg-[#fafafa]" dir="rtl">
 
             <div className="max-w-6xl mx-auto text-center mb-12 px-4">
-                <motion.h2
-                    initial={{ opacity: 0, y: -15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, amount: 0.3 }}
-                    transition={{ duration: 0.5 }}
-                    className="text-2xl sm:text-3xl font-extrabold text-gray-800"
-                >
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
                     {title || "آراء عملائنا"}
-                </motion.h2>
-
-                <motion.div
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: false, amount: 0.3 }}
-                    transition={{ duration: 0.4 }}
-                    className="w-12 h-1 bg-[var(--app-primary)] mx-auto my-3 rounded-full"
-                />
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: false, amount: 0.3 }}
-                    transition={{ delay: 0.15 }}
-                    className="text-gray-500 text-sm sm:text-base mb-10 max-w-lg mx-auto"
-                >
+                </h2>
+                <div className="w-12 h-1 bg-[var(--app-primary)] mx-auto my-3 rounded-full" />
+                <p className="text-gray-500 text-sm sm:text-base mb-10 max-w-lg mx-auto">
                     {description || "تجارب حقيقية من عملائنا الكرام"}
-                </motion.p>
-
+                </p>
             </div>
 
+            <div className="relative max-w-6xl mx-auto px-4">
 
-            <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: false, amount: 0.2 }}
-                className="relative max-w-6xl mx-auto px-4">
-
-
-                {testimonials.length >= 3 && (
-
-
+                {/* Right Button */}
+                {testimonials.length > visible && (
                     <button
-                        onClick={() => setIndex((i) => Math.min(i + 1, maxIndex))}
-                        disabled={index === maxIndex}
+                        onClick={next}
                         className="absolute right-0 top-1/2 -translate-y-1/2 z-20
-          w-11 h-11 rounded-full bg-[var(--app-primary)] shadow-lg
-          flex items-center justify-center
-          disabled:opacity-30"
+                        w-11 h-11 rounded-full bg-[var(--app-primary)]
+                        flex items-center justify-center shadow-lg"
                     >
                         <FiChevronRight size={22} className="text-white" />
                     </button>
-
                 )}
-                {testimonials.length >= 3 && (
+
+                {/* Left Button */}
+                {testimonials.length > visible && (
                     <button
-                        onClick={() => setIndex((i) => Math.max(i - 1, 0))}
-                        disabled={index === 0}
+                        onClick={prev}
                         className="absolute left-0 top-1/2 -translate-y-1/2 z-20
-          w-11 h-11 rounded-full bg-[var(--app-primary)] shadow-lg
-          flex items-center justify-center
-          disabled:opacity-30"
+                        w-11 h-11 rounded-full bg-[var(--app-primary)]
+                        flex items-center justify-center shadow-lg"
                     >
                         <FiChevronLeft size={22} className="text-white" />
                     </button>
-
                 )}
-                <div className="overflow-hidden">
+
+                <div className="overflow-hidden cursor-grab active:cursor-grabbing">
                     <motion.div
+                        drag="x"
+                        dragConstraints={{
+                            left: 0,
+                            right: maxIndex * step,
+                        }}
+                        dragElastic={0.15}
+                        dragMomentum={true}
+                        onDragEnd={handleDragEnd}
                         animate={{ x: index * step }}
                         transition={{
                             type: "spring",
-                            stiffness: 90,
+                            stiffness: 120,
                             damping: 18,
-                            mass: 0.9,
+                            mass: 0.8,
                         }}
                         className="flex gap-6"
                     >
                         {testimonials.map((item, i) => (
                             <div
                                 key={i}
-                                className="w-[340px] shrink-0
-                bg-white rounded-2xl p-6
-                border border-gray-100 shadow-sm"
+                                className="w-[340px] shrink-0 bg-white
+                                rounded-2xl p-6 border border-gray-100 shadow-sm"
                             >
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="w-10 h-10 rounded-full bg-[var(--app-primary)]
-                  flex items-center justify-center text-white">
+                                    flex items-center justify-center text-white">
                                         <FiUser size={18} />
                                     </div>
 
@@ -120,10 +141,11 @@ export default function Testimonials({ testimonials, title, description }) {
                                             {[...Array(5)].map((_, j) => (
                                                 <FaStar
                                                     key={j}
-                                                    className={`text-xs ${j < item.rating
-                                                        ? "text-yellow-400"
-                                                        : "text-gray-300"
-                                                        }`}
+                                                    className={`text-xs ${
+                                                        j < item.rating
+                                                            ? "text-yellow-400"
+                                                            : "text-gray-300"
+                                                    }`}
                                                 />
                                             ))}
                                         </div>
@@ -137,7 +159,22 @@ export default function Testimonials({ testimonials, title, description }) {
                         ))}
                     </motion.div>
                 </div>
-            </motion.div>
+
+                {/* Pagination Dots */}
+                <div className="flex justify-center gap-2 mt-8">
+                    {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setIndex(i)}
+                            className={`w-2.5 h-2.5 rounded-full transition ${
+                                i === index
+                                    ? "bg-[var(--app-primary)] scale-110"
+                                    : "bg-gray-300"
+                            }`}
+                        />
+                    ))}
+                </div>
+            </div>
         </section>
     );
 }

@@ -84,7 +84,7 @@ class AboutUsPageController extends Controller
                     'hero_title' => 'required|string|max:255',
                     'hero_badge_title' => 'nullable|string|max:255',
                     'hero_description' => 'required|string',
-                    'hero_image' => 'required|image|max:2048',
+                  
                 ];
                 break;
 
@@ -95,7 +95,7 @@ class AboutUsPageController extends Controller
                     'intro_description_long' => 'nullable|string',
                     'intro_badge' => 'nullable|string',
                      'intro_badge_sub' => 'nullable|string',
-                    'intro_image' => 'required|image',
+                   
                 ];
                 break;
 
@@ -159,14 +159,41 @@ class AboutUsPageController extends Controller
         $data = $request->validate($rules);
 
         // Handle image upload
-        foreach ($data as $key => $value) {
-            if ($request->hasFile($key)) {
-                if ($aboutUs->$key) {
-                    Storage::disk('public')->delete($aboutUs->$key);
-                }
-                $data[$key] = $request->file($key)->store('about_us', 'public');
-            }
+        // foreach ($data as $key => $value) {
+        //     if ($request->hasFile($key)) {
+        //         if ($aboutUs->$key) {
+        //             Storage::disk('public')->delete($aboutUs->$key);
+        //         }
+        //         $data[$key] = $request->file($key)->store('about_us', 'public');
+        //     }
+        // }
+// Handle hero image like homepage
+if ($section === 'hero') {
+    if ($request->hasFile('hero_image')) {
+        if ($aboutUs->hero_image) {
+            Storage::disk('public')->delete($aboutUs->hero_image);
         }
+
+        $data['hero_image'] = $request
+            ->file('hero_image')
+            ->store('about_us', 'public');
+    } else {
+        $data['hero_image'] = $aboutUs->hero_image;
+    }
+}
+if ($section === 'intro') {
+    if ($request->hasFile('intro_image')) {
+        if ($aboutUs->intro_image) {
+            Storage::disk('public')->delete($aboutUs->intro_image);
+        }
+
+        $data['intro_image'] = $request
+            ->file('intro_image')
+            ->store('about_us', 'public');
+    } else {
+        $data['intro_image'] = $aboutUs->intro_image;
+    }
+}
 
         $aboutUs->update($data);
 

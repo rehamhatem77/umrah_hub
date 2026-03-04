@@ -82,18 +82,19 @@ export default function Hero({ homepage }) {
         pattern-bg
   px-4 lg:px-20
   pt-5
-  pb-40 sm:pb-44 lg:pb-28  
+  pb-60 sm:pb-44 lg:pb-28  
 "
         >
-            <div className="relative rounded-[32px] min-h-[480px] sm:min-h-[520px] flex items-center justify-center">
+            <div className="relative rounded-[32px] min-h-[420px] sm:min-h-[520px] flex items-center justify-center">
                 <img
                     src={heroImage}
                     className="absolute inset-0 w-full h-full object-cover rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"
                     alt="Kaaba"
                 />
-                
-                        <div className="absolute inset-0 bg-black/55 rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"></div>,
-                   
+
+                {homepage?.hero_title || homepage?.hero_description ? (
+                    <div className="absolute inset-0 bg-black/55 rounded-[32px] sm:rounded-[48px] lg:rounded-[32px]"></div>
+                ) : null}
                 <div className="relative z-10 text-center max-w-3xl px-4">
                     {/* <h1 className="text-white text-3xl sm:text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
                         اعثر على باقة العمرة
