@@ -237,11 +237,11 @@ export default function Create() {
 
                     <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="label">المسافة من الكعبة (كم)</label>
+                            <label className="label">المسافة من الكعبة (م)</label>
                             <input
                                 type="number"
                                 min={0}
-                                placeholder="كم"
+                                placeholder="متر"
                                 readOnly={form.data.city !== 'مكة'}
                                 className={`input w-full ${frontendErrors.distance_from_kaaba ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] '} ${form.data.city !== 'مكة' ? 'bg-gray-100 opacity-70 cursor-not-allowed' : ''}`}
                                 value={form.data.distance_from_kaaba}
@@ -253,11 +253,11 @@ export default function Create() {
                             <InputError message={frontendErrors.distance_from_kaaba || form.errors.distance_from_kaaba} />
                         </div>
                         <div>
-                            <label className="label">المسافة من النبوي (كم)</label>
+                            <label className="label">المسافة من النبوي (م)</label>
                             <input
                                 type="number"
                                 min={0}
-                                placeholder="كم"
+                                placeholder="متر"
                                 readOnly={form.data.city !== 'المدينة المنورة'}
                                 className={`input w-full ${frontendErrors.distance_from_nabawi ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] '} ${form.data.city !== 'المدينة المنورة' ? 'bg-gray-100 opacity-70 cursor-not-allowed' : ''}`}
                                 value={form.data.distance_from_nabawi}

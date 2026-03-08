@@ -48,9 +48,9 @@ export default function HotelsSection({ hotels }) {
         let locationText = hotel.address_location || "موقع غير متوفر";
         if (hotel.city) {
           if (["مكة", "مكة المكرمة", "Mekka"].includes(hotel.city)) {
-            locationText = `على بعد ${hotel.distance_from_kaaba ?? "غير متوفر"} كم من الكعبة`;
+            locationText = `على بعد ${hotel.distance_from_kaaba ?? "غير متوفر"} م من الكعبة`;
           } else if (["المدينة", "المدينة المنورة", "Madinah"].includes(hotel.city)) {
-            locationText = `على بعد ${hotel.distance_from_nabawi ?? "غير متوفر"} كم من المسجد النبوي`;
+            locationText = `على بعد ${hotel.distance_from_nabawi ?? "غير متوفر"} م من المسجد النبوي`;
           }
         }
 

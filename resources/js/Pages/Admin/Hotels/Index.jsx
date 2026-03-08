@@ -273,7 +273,7 @@ export default function Index({ hotels, filters }) {
                                     <FiMapPin className="text-blue-500 w-5 h-5" />
                                     <div>
                                         <div className="text-gray-500 text-xs">المسافة من الكعبة</div>
-                                        <div className="font-medium text-gray-800">{selectedHotel.distance_from_kaaba} كم</div>
+                                        <div className="font-medium text-gray-800">{selectedHotel.distance_from_kaaba} م</div>
                                     </div>
                                 </div>
                             )}
@@ -282,7 +282,7 @@ export default function Index({ hotels, filters }) {
                                     <FiMapPin className="text-blue-500 w-5 h-5" />
                                     <div>
                                         <div className="text-gray-500 text-xs">المسافة من النبوي</div>
-                                        <div className="font-medium text-gray-800">{selectedHotel.distance_from_nabawi} كم</div>
+                                        <div className="font-medium text-gray-800">{selectedHotel.distance_from_nabawi} م</div>
                                     </div>
                                 </div>
                             )}

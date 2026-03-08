@@ -40,7 +40,7 @@ export default function HotelCard({
           </div>
         </div>
 
-        <p className="text-text-muted text-sm line-clamp-2 mb-4">
+        <p className="text-text-muted text-sm line-clamp-5 mb-4">
           {description}
         </p>
 

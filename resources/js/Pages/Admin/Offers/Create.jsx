@@ -78,11 +78,12 @@ export default function Create({
         seo_title: "",
         seo_description: "",
 
-        desc: "",
+        desc: "استمتع بروحانية العشر الأواخر في مكة المكرمة مع باقة مصممة خصيصاً لراحتك. تشمل هذه الباقة إقامة فاخرة قريبة من الحرم المكي، وتنقيلات خاصة بأحدث الباصات، مع مرشدين ذوي خبرة لمساعدتك في أداء المناسك بكل يسر وسهولة. تجربة لا تُنسى تجمع بين الروحانية والرفاهية.",
         rating: "",
         number_of_rating_customers: "",
-        price_contain: "",
-        price_not_contain: "",
+        price_contain:
+            "تأشيرة العمرة والباركود , تذكرة الطيران , الانتقالات , مزارات مكة والمدينة, مشرف طوال الرحلة , هدايا قيمة للمعتمرين",
+        price_not_contain: "التسوق",
 
         trip_type_id: null,
         company_id: null,
@@ -270,7 +271,6 @@ export default function Create({
     useEffect(() => {
         if (form.data.program && form.data.program.length > 0) {
             form.setData("program", form.data.program);
-           
         }
     }, []);
 
@@ -1135,90 +1135,85 @@ export default function Create({
                                 </div>
                             ) : (
                                 <div className="space-y-4">
-                                    {form.data.program.map(
-                                        (dayObj, index) => (
-                                            <div
-                                                key={index}
-                                                className="border rounded-lg p-4 space-y-2 bg-gray-50"
-                                            >
-                                                <input
-                                                    className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  font-semibold text-[var(--app-primary)]"
-                                                    value={dayObj.label}
-                                                    placeholder="مثال: اليوم 3-5"
-                                                    onChange={(e) => {
-                                                        const updated = [
-                                                            ...form.data
-                                                                .program,
-                                                        ];
-                                                        updated[index].label =
-                                                            e.target.value;
-                                                        form.setData(
-                                                            "program",
-                                                            updated,
-                                                        );
-                                                    }}
-                                                    // onChange={(e) =>
-                                                    //     updateProgramDay(
-                                                    //         index,
-                                                    //         "label",
-                                                    //         e.target.value,
-                                                    //     )
-                                                    // }
-                                                />
+                                    {form.data.program.map((dayObj, index) => (
+                                        <div
+                                            key={index}
+                                            className="border rounded-lg p-4 space-y-2 bg-gray-50"
+                                        >
+                                            <input
+                                                className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm  font-semibold text-[var(--app-primary)]"
+                                                value={dayObj.label}
+                                                placeholder="مثال: اليوم 3-5"
+                                                onChange={(e) => {
+                                                    const updated = [
+                                                        ...form.data.program,
+                                                    ];
+                                                    updated[index].label =
+                                                        e.target.value;
+                                                    form.setData(
+                                                        "program",
+                                                        updated,
+                                                    );
+                                                }}
+                                                // onChange={(e) =>
+                                                //     updateProgramDay(
+                                                //         index,
+                                                //         "label",
+                                                //         e.target.value,
+                                                //     )
+                                                // }
+                                            />
 
-                                                <input
-                                                    className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
-                                                    placeholder="عنوان اليوم"
-                                                    value={dayObj.title}
-                                                    onChange={(e) => {
-                                                        const updated = [
-                                                            ...form.data
-                                                                .program,
-                                                        ];
-                                                        updated[index].title =
-                                                            e.target.value;
-                                                        form.setData(
-                                                            "program",
-                                                            updated,
-                                                        );
-                                                    }}
-                                                    // onChange={(e) =>
-                                                    //     updateProgramDay(
-                                                    //         index,
-                                                    //         "title",
-                                                    //         e.target.value,
-                                                    //     )
-                                                    // }
-                                                />
+                                            <input
+                                                className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
+                                                placeholder="عنوان اليوم"
+                                                value={dayObj.title}
+                                                onChange={(e) => {
+                                                    const updated = [
+                                                        ...form.data.program,
+                                                    ];
+                                                    updated[index].title =
+                                                        e.target.value;
+                                                    form.setData(
+                                                        "program",
+                                                        updated,
+                                                    );
+                                                }}
+                                                // onChange={(e) =>
+                                                //     updateProgramDay(
+                                                //         index,
+                                                //         "title",
+                                                //         e.target.value,
+                                                //     )
+                                                // }
+                                            />
 
-                                                <textarea
-                                                    rows={3}
-                                                    className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
-                                                    placeholder="وصف اليوم"
-                                                    value={dayObj.desc}
-                                                    onChange={(e) => {
-                                                        const updated = [
-                                                            ...form.data
-                                                                .program,
-                                                        ];
-                                                        updated[index].desc =
-                                                            e.target.value;
-                                                        form.setData(
-                                                            "program",
-                                                            updated,
-                                                        );
-                                                    }}
-                                                    // onChange={(e) =>
-                                                    //     updateProgramDay(
-                                                    //         index,
-                                                    //         "desc",
-                                                    //         e.target.value,
-                                                    //     )
-                                                    // }
-                                                />
-                                            </div>
-                                        ),
-                                    )}
+                                            <textarea
+                                                rows={3}
+                                                className="input w-full py-2.5 px-3 text-sm rounded-lg focus:outline-none focus:ring-0 focus:ring-[var(--app-primary)] focus:border-[var(--app-primary)] shadow-sm "
+                                                placeholder="وصف اليوم"
+                                                value={dayObj.desc}
+                                                onChange={(e) => {
+                                                    const updated = [
+                                                        ...form.data.program,
+                                                    ];
+                                                    updated[index].desc =
+                                                        e.target.value;
+                                                    form.setData(
+                                                        "program",
+                                                        updated,
+                                                    );
+                                                }}
+                                                // onChange={(e) =>
+                                                //     updateProgramDay(
+                                                //         index,
+                                                //         "desc",
+                                                //         e.target.value,
+                                                //     )
+                                                // }
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             )}
 
@@ -1423,7 +1418,7 @@ export default function Create({
                     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                         <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
                             <h2 className="text-lg font-semibold mb-4">
-                                إضافة سعر حسب عدد الأشخاص
+                                إضافة سعر حسب الغرف
                             </h2>
 
                             {/* Label */}
@@ -1441,38 +1436,30 @@ export default function Create({
                                         });
                                     }}
                                     options={[
-                                        { value: "شخصين", label: "شخصين" },
                                         {
-                                            value: "ثلاثة أشخاص",
-                                            label: "ثلاثة أشخاص",
+                                            value: "غرفة فردية",
+                                            label: "غرفة فردية",
+                                        },
+
+                                        {
+                                            value: "غرفة ثنائية",
+                                            label: "غرفة ثنائية",
                                         },
                                         {
-                                            value: "أربعة أشخاص",
-                                            label: "أربعة أشخاص",
+                                            value: "غرفة ثلاثية",
+                                            label: "غرفة ثلاثية",
                                         },
                                         {
-                                            value: "خمسة أشخاص",
-                                            label: "خمسة أشخاص",
+                                            value: "غرفة رباعية",
+                                            label: "غرفة رباعية",
                                         },
                                         {
-                                            value: "ستة أشخاص",
-                                            label: "ستة أشخاص",
+                                            value: "غرفة خماسية",
+                                            label: "غرفة خماسية",
                                         },
                                         {
-                                            value: "سبعة أشخاص",
-                                            label: "سبعة أشخاص",
-                                        },
-                                        {
-                                            value: "ثمانية أشخاص",
-                                            label: "ثمانية أشخاص",
-                                        },
-                                        {
-                                            value: "تسعة أشخاص",
-                                            label: "تسعة أشخاص",
-                                        },
-                                        {
-                                            value: "عشرة أشخاص",
-                                            label: "عشرة أشخاص",
+                                            value: "غرفة سداسية",
+                                            label: "غرفة سداسية",
                                         },
                                     ]}
                                 />

@@ -18,6 +18,7 @@ export default function Hero({ homepage }) {
         { value: "economical", label: "اقتصادي" },
         { value: "standard", label: "متوسط" },
         { value: "luxury", label: "فاخر" },
+        { value: "vip", label: "VIP" },
     ];
     const dateOptions = [
         { label: "يناير", value: 1 },

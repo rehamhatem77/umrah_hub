@@ -126,8 +126,8 @@ ${data.slug ? `رابط الباقة:\n${route("packages.show", data.slug)}` : "
                         >
                             <span>
                                 {showPrices
-                                    ? " قائمة الأسعار"
-                                    : " قائمة الأسعار"}
+                                    ? "سعر الفرد في الغرفة"
+                                    : "سعر الفرد في الغرفة"}
                             </span>
                             {showPrices ? <FaChevronUp /> : <FaChevronDown />}
                         </button>

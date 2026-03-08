@@ -846,6 +846,7 @@ export default function Edit({
                                                 label: "متوسط",
                                             },
                                             { value: "vip", label: "VIP" },
+                                            { value: "luxury", label: "فاخر" }
                                         ]}
                                         value={
                                             form.data.tour_level
@@ -1610,38 +1611,30 @@ export default function Edit({
                                         });
                                     }}
                                     options={[
-                                        { value: "شخصين", label: "شخصين" },
                                         {
-                                            value: "ثلاثة أشخاص",
-                                            label: "ثلاثة أشخاص",
+                                            value: "غرفة فردية",
+                                            label: "غرفة فردية",
+                                        },
+
+                                        {
+                                            value: "غرفة ثنائية",
+                                            label: "غرفة ثنائية",
                                         },
                                         {
-                                            value: "أربعة أشخاص",
-                                            label: "أربعة أشخاص",
+                                            value: "غرفة ثلاثية",
+                                            label: "غرفة ثلاثية",
                                         },
                                         {
-                                            value: "خمسة أشخاص",
-                                            label: "خمسة أشخاص",
+                                            value: "غرفة رباعية",
+                                            label: "غرفة رباعية",
                                         },
                                         {
-                                            value: "ستة أشخاص",
-                                            label: "ستة أشخاص",
+                                            value: "غرفة خماسية",
+                                            label: "غرفة خماسية",
                                         },
                                         {
-                                            value: "سبعة أشخاص",
-                                            label: "سبعة أشخاص",
-                                        },
-                                        {
-                                            value: "ثمانية أشخاص",
-                                            label: "ثمانية أشخاص",
-                                        },
-                                        {
-                                            value: "تسعة أشخاص",
-                                            label: "تسعة أشخاص",
-                                        },
-                                        {
-                                            value: "عشرة أشخاص",
-                                            label: "عشرة أشخاص",
+                                            value: "غرفة سداسية",
+                                            label: "غرفة سداسية",
                                         },
                                     ]}
                                 />
